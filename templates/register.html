@@ -2,107 +2,192 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Cadastro | Anti-Fraude</title>
+<title>Criar Conta | Painel Anti-Fraude</title>
 
 <style>
     body {
         margin: 0;
         font-family: Arial, sans-serif;
-        background: #0b1220;
+        background: #f4f6f9;
+        color: #1f2937;
+    }
+
+    .container {
         display: flex;
+        height: 100vh;
+    }
+
+    .left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        color: white;
-    }
-
-    .box {
-        width: 360px;
-        background: #111a2e;
-        padding: 40px;
-        border-radius: 12px;
-        box-shadow: 0 0 25px rgba(0,0,0,0.6);
+        background: #ffffff;
+        border-right: 1px solid #e5e7eb;
         text-align: center;
+        padding: 20px;
     }
 
-    .logo-img {
-        width: 90px;
-        margin-bottom: 10px;
+    .logo {
+        width: 220px;
+        margin-bottom: 20px;
     }
 
     .title {
+        font-size: 22px;
+        font-weight: bold;
+        color: #e53935;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        font-size: 13px;
+        color: #6b7280;
+        max-width: 260px;
+    }
+
+    .right {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f4f6f9;
+    }
+
+    .card {
+        width: 420px;
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card-title {
         font-size: 18px;
         font-weight: bold;
-        color: #4da3ff;
         margin-bottom: 20px;
+        color: #111827;
+    }
+
+    form {
+        width: 100%;
     }
 
     input {
         width: 100%;
+        box-sizing: border-box;
         padding: 12px;
-        margin: 8px 0;
-        border: none;
+        margin: 7px 0;
+        border: 1px solid #e5e7eb;
         border-radius: 8px;
-        background: #0b1220;
-        color: white;
+        background: #f9fafb;
         outline: none;
-        border: 1px solid #1d2a44;
+        transition: 0.2s;
     }
 
     input:focus {
-        border: 1px solid #4da3ff;
+        border: 1px solid #e53935;
+        background: #ffffff;
     }
 
     button {
         width: 100%;
         padding: 12px;
-        background: #4da3ff;
+        background: #e53935;
         border: none;
         border-radius: 8px;
         color: white;
         font-weight: bold;
         cursor: pointer;
         margin-top: 10px;
+        transition: 0.2s;
     }
 
     button:hover {
-        background: #2f8be6;
+        background: #c62828;
     }
 
     a {
-        color: #4da3ff;
+        color: #e53935;
         text-decoration: none;
         font-size: 13px;
     }
 
     .footer {
-        margin-top: 15px;
+        margin-top: 12px;
         font-size: 12px;
-        color: #777;
+        color: #6b7280;
+        text-align: center;
     }
+
+    .error {
+        color: #dc2626;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="container">
 
-    <img class="logo-img" src="https://i.ibb.co/N6xvdtss/eirilar-logo-vermelho.png">
+    <!-- ESQUERDA -->
+    <div class="left">
 
-    <div class="title">Criar conta</div>
+        <img class="logo" src="https://i.ibb.co/N6xvdtss/eirilar-logo-vermelho.png">
 
-    <form method="POST">
-        <input type="text" name="username" placeholder="Usuário" required>
-        <input type="password" name="password" placeholder="Senha" required>
+        <div class="title">Painel Anti-Fraude</div>
 
-        <button type="submit">Cadastrar</button>
-    </form>
+        <div class="subtitle">
+            Crie sua conta para acessar o sistema interno de monitoramento.
+        </div>
 
-    <br>
-    <a href="/login">Já tenho conta</a>
+    </div>
 
-    <div class="footer">
-        Apenas equipe autorizada
+    <!-- DIREITA -->
+    <div class="right">
+
+        <div class="card">
+
+            <div class="card-title">Criar Conta</div>
+
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('register') }}">
+
+                <input type="text" name="username" placeholder="Usuário (login)" required>
+
+                <input type="password" name="password" placeholder="Senha" required>
+
+                <input type="email" name="email" placeholder="Email" required>
+
+                <input type="text" name="phone" placeholder="Telefone" required>
+
+                <input type="date" name="birthdate" required>
+
+                <button type="submit">Criar Conta</button>
+            </form>
+
+            <div style="margin-top: 12px;">
+                <a href="{{ url_for('login') }}">Já tenho conta</a>
+            </div>
+
+            <div class="footer">
+                Cadastro interno protegido
+            </div>
+
+        </div>
+
     </div>
 
 </div>
