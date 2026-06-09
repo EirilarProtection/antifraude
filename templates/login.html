@@ -8,7 +8,7 @@
     body {
         margin: 0;
         font-family: Arial, sans-serif;
-        background: #f4f6f9; /* 🔥 branco/cinza (novo padrão) */
+        background: #f4f6f9;
         color: #1f2937;
     }
 
@@ -17,7 +17,6 @@
         height: 100vh;
     }
 
-    /* ESQUERDA (branding) */
     .left {
         flex: 1;
         display: flex;
@@ -31,14 +30,14 @@
     }
 
     .logo {
-        width: 190px;
+        width: 220px;
         margin-bottom: 20px;
     }
 
     .title {
         font-size: 22px;
         font-weight: bold;
-        color: #e53935; /* vermelho do sistema */
+        color: #e53935;
         margin-bottom: 10px;
     }
 
@@ -48,7 +47,6 @@
         max-width: 260px;
     }
 
-    /* DIREITA */
     .right {
         flex: 1;
         display: flex;
@@ -57,7 +55,6 @@
         background: #f4f6f9;
     }
 
-    /* CARD */
     .card {
         width: 380px;
         background: #ffffff;
@@ -130,6 +127,12 @@
         text-align: center;
     }
 
+    .error {
+        color: #dc2626;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+
 </style>
 </head>
 
@@ -157,7 +160,12 @@
 
             <div class="card-title">Acesso ao Sistema</div>
 
-            <form method="POST">
+            <!-- ERRO DO FLASK -->
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('login') }}">
                 <input type="text" name="username" placeholder="Usuário" required>
                 <input type="password" name="password" placeholder="Senha" required>
 
@@ -165,7 +173,7 @@
             </form>
 
             <div style="margin-top: 12px;">
-                <a href="/register">Criar nova conta</a>
+                <a href="{{ url_for('register') }}">Criar nova conta</a>
             </div>
 
             <div class="footer">
