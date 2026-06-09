@@ -3,10 +3,9 @@ from flask import Flask, render_template, request, redirect, session, url_for
 app = Flask(__name__)
 app.secret_key = "chave_super_secreta"
 
-# usuário fixo (depois pode virar banco de dados)
-USER = {
-    "username": "admin",
-    "password": "123456"
+# "banco de dados" em memória
+USERS = {
+    "admin": "123456"
 }
 
 # LOGIN
@@ -16,7 +15,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        if username == USER["username"] and password == USER["password"]:
+        if username in USERS and USERS[username] == password:
             session["user"] = username
             return redirect(url_for("dashboard"))
 
@@ -25,7 +24,23 @@ def login():
     return render_template("login.html")
 
 
-# DASHBOARD (SEU PAINEL ORIGINAL)
+# REGISTER
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        if username in USERS:
+            return render_template("register.html", error="Usuário já existe")
+
+        USERS[username] = password
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
+
+# DASHBOARD (PROTEGIDO)
 @app.route("/dashboard")
 def dashboard():
     if "user" not in session:
@@ -39,10 +54,7 @@ def dashboard():
         "blocked_devices": 12
     }
 
-    return render_template(
-        "dashboard.html",
-        stats=stats
-    )
+    return render_template("dashboard.html", stats=stats)
 
 
 # LOGOUT
