@@ -1,4 +1,17 @@
 from flask import Flask, render_template, request, redirect, session, url_for
+import os
+import psycopg2
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+def get_connection():
+    if not DATABASE_URL:
+        raise Exception("DATABASE_URL não configurada no ambiente")
+
+    return psycopg2.connect(
+        DATABASE_URL,
+        sslmode='require'
+    )
 
 app = Flask(__name__)
 app.secret_key = "chave_super_secreta"
