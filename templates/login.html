@@ -1,137 +1,111 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Login - Eirilar Protection</title>
+<meta charset="UTF-8">
+<title>Login | Anti-Fraude</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f6fa;
-            display: flex;
-            height: 100vh;
-        }
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0b1220;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: white;
+    }
 
-        /* Lado esquerdo (branding) */
-        .left {
-            flex: 1;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-right: 1px solid #eee;
-        }
+    .box {
+        width: 360px;
+        background: #111a2e;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 0 25px rgba(0,0,0,0.6);
+        text-align: center;
+    }
 
-        .left img {
-            width: 160px;
-            margin-bottom: 20px;
-        }
+    .logo-img {
+        width: 90px;
+        margin-bottom: 10px;
+    }
 
-        .left h2 {
-            color: #e74c3c;
-            margin: 0;
-        }
+    .title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #4da3ff;
+        margin-bottom: 20px;
+    }
 
-        .left p {
-            color: #777;
-            font-size: 14px;
-        }
+    input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 8px;
+        background: #0b1220;
+        color: white;
+        outline: none;
+        border: 1px solid #1d2a44;
+    }
 
-        /* Lado direito (login) */
-        .right {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    input:focus {
+        border: 1px solid #4da3ff;
+    }
 
-        .card {
-            background: #fff;
-            padding: 40px;
-            border-radius: 14px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            width: 320px;
-        }
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #4da3ff;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
 
-        .card h3 {
-            margin-bottom: 20px;
-            color: #333;
-        }
+    button:hover {
+        background: #2f8be6;
+    }
 
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-        }
+    a {
+        color: #4da3ff;
+        text-decoration: none;
+        font-size: 13px;
+    }
 
-        input:focus {
-            border-color: #e74c3c;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #e74c3c;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background: #d63b2f;
-        }
-
-        .error {
-            color: red;
-            font-size: 13px;
-            margin-bottom: 10px;
-        }
-
-        .footer {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #999;
-            text-align: center;
-        }
-    </style>
+    .footer {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #777;
+    }
+</style>
 </head>
 
 <body>
 
-    <!-- ESQUERDA -->
-    <div class="left">
-        <img src="{{ url_for('static', filename='https://i.ibb.co/N6xvdtss/eirilar-logo-vermelho.png') }}" alt="Logo">
-        <h2>Eirilar Protection</h2>
-        <p>Sistema Anti-Fraude Seguro</p>
+<div class="box">
+
+    <img class="logo-img" src="https://i.ibb.co/N6xvdtss/eirilar-logo-vermelho.png">
+
+    <div class="title">Painel Anti-Fraude</div>
+
+    <form method="POST">
+        <input type="text" name="username" placeholder="Usuário" required>
+        <input type="password" name="password" placeholder="Senha" required>
+
+        <button type="submit">Entrar</button>
+    </form>
+
+    <br>
+    <a href="/register">Criar nova conta</a>
+
+    <div class="footer">
+        Acesso restrito à equipe interna
     </div>
 
-    <!-- DIREITA -->
-    <div class="right">
-        <div class="card">
-            <h3>Login do Sistema</h3>
-
-            {% if error %}
-                <div class="error">{{ error }}</div>
-            {% endif %}
-
-            <form method="POST">
-                <input type="text" name="username" placeholder="Usuário">
-                <input type="password" name="password" placeholder="Senha">
-                <button type="submit">Entrar</button>
-            </form>
-
-            <div class="footer">
-                Acesso restrito para administradores
-            </div>
-        </div>
-    </div>
+</div>
 
 </body>
 </html>
