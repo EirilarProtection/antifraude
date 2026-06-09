@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eirilar Protection</title>
+
+    <style>
+
+        body{
+            margin:0;
+            background:#0f172a;
+            color:white;
+            font-family:Arial;
+        }
+
+        .header{
+            padding:20px;
+            background:#111827;
+            border-bottom:1px solid #1f2937;
+        }
+
+        .cards{
+            display:grid;
+            grid-template-columns:repeat(5,1fr);
+            gap:20px;
+            padding:20px;
+        }
+
+        .card{
+            background:#1e293b;
+            padding:20px;
+            border-radius:12px;
+        }
+
+        .value{
+            font-size:32px;
+            font-weight:bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Eirilar Protection</h1>
+    <p>Painel Anti Fraude</p>
+</div>
+
+<div class="cards">
+
+    <div class="card">
+        <div>Total Pedidos</div>
+        <div class="value">{{ stats.orders }}</div>
+    </div>
+
+    <div class="card">
+        <div>Aprovados</div>
+        <div class="value">{{ stats.approved }}</div>
+    </div>
+
+    <div class="card">
+        <div>Alertas</div>
+        <div class="value">{{ stats.alerts }}</div>
+    </div>
+
+    <div class="card">
+        <div>IPs Bloqueados</div>
+        <div class="value">{{ stats.blocked_ips }}</div>
+    </div>
+
+    <div class="card">
+        <div>Devices Bloqueados</div>
+        <div class="value">{{ stats.blocked_devices }}</div>
+    </div>
+
+</div>
+
+</body>
+</html>
