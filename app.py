@@ -7,11 +7,11 @@ app = Flask(__name__)
 def dashboard():
 
     stats = {
-        "orders": 0,
-        "approved": 0,
-        "alerts": 0,
-        "blocked_ips": 0,
-        "blocked_devices": 0
+        "orders": 1248,
+        "approved": 1182,
+        "alerts": 19,
+        "blocked_ips": 47,
+        "blocked_devices": 12
     }
 
     return render_template(
@@ -20,7 +20,4 @@ def dashboard():
     )
 
 if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000))
-    )
+    app.run(debug=True)
