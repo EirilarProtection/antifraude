@@ -3,9 +3,14 @@ from flask import Flask, render_template, request, redirect, session, url_for
 app = Flask(__name__)
 app.secret_key = "chave_super_secreta"
 
-# "banco de dados" em memória
+# "banco de dados" em memória (agora com mais dados)
 USERS = {
-    "admin": "123456"
+    "admin": {
+        "password": "123456",
+        "email": "",
+        "phone": "",
+        "birthdate": ""
+    }
 }
 
 # LOGIN
@@ -15,7 +20,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        if username in USERS and USERS[username] == password:
+        if username in USERS and USERS[username]["password"] == password:
             session["user"] = username
             return redirect(url_for("dashboard"))
 
@@ -31,10 +36,21 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
 
+        # novos campos do formulário
+        email = request.form["email"]
+        phone = request.form["phone"]
+        birthdate = request.form["birthdate"]
+
         if username in USERS:
             return render_template("register.html", error="Usuário já existe")
 
-        USERS[username] = password
+        USERS[username] = {
+            "password": password,
+            "email": email,
+            "phone": phone,
+            "birthdate": birthdate
+        }
+
         return redirect(url_for("login"))
 
     return render_template("register.html")
@@ -46,6 +62,8 @@ def dashboard():
     if "user" not in session:
         return redirect(url_for("login"))
 
+    user = USERS.get(session["user"])
+
     stats = {
         "orders": 1248,
         "approved": 1182,
@@ -54,7 +72,11 @@ def dashboard():
         "blocked_devices": 12
     }
 
-    return render_template("dashboard.html", stats=stats)
+    return render_template(
+        "dashboard.html",
+        stats=stats,
+        user=user
+    )
 
 
 # LOGOUT
