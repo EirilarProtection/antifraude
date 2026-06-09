@@ -24,7 +24,6 @@ body{
 }
 
 /* SIDEBAR */
-
 .sidebar{
     width:240px;
     height:100vh;
@@ -71,13 +70,13 @@ body{
 }
 
 /* MAIN */
-
 .main{
     margin-left:240px;
     width:calc(100% - 240px);
     padding:20px;
 }
 
+/* HEADER */
 .header{
     display:flex;
     justify-content:space-between;
@@ -85,22 +84,57 @@ body{
     margin-bottom:20px;
 }
 
-.header h1{
-    font-size:32px;
-}
-
 .header p{
     color:#6b7280;
 }
 
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+/* FILTRO */
 .filter{
     padding:10px 15px;
     border:1px solid #d1d5db;
     border-radius:10px;
 }
 
-/* CARDS */
+/* USER */
+.user-box{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
 
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#fee2e2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#dc2626;
+}
+
+.username{
+    font-weight:600;
+    color:#374151;
+}
+
+.logout{
+    background:#e53935;
+    color:#fff;
+    padding:8px 12px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+}
+
+/* CARDS */
 .cards{
     display:grid;
     grid-template-columns:repeat(5,1fr);
@@ -118,7 +152,6 @@ body{
 .card-top{
     display:flex;
     justify-content:space-between;
-    align-items:center;
 }
 
 .card-title{
@@ -141,33 +174,13 @@ body{
     justify-content:center;
 }
 
-.blue{
-    background:#dbeafe;
-    color:#2563eb;
-}
+.blue{background:#dbeafe;color:#2563eb;}
+.red{background:#fee2e2;color:#dc2626;}
+.yellow{background:#fef3c7;color:#d97706;}
+.green{background:#dcfce7;color:#16a34a;}
+.purple{background:#ede9fe;color:#7c3aed;}
 
-.red{
-    background:#fee2e2;
-    color:#dc2626;
-}
-
-.yellow{
-    background:#fef3c7;
-    color:#d97706;
-}
-
-.green{
-    background:#dcfce7;
-    color:#16a34a;
-}
-
-.purple{
-    background:#ede9fe;
-    color:#7c3aed;
-}
-
-/* CHARTS */
-
+/* ROW */
 .row{
     display:grid;
     grid-template-columns:2fr 1fr;
@@ -182,24 +195,18 @@ body{
     box-shadow:0 1px 4px rgba(0,0,0,.08);
 }
 
-.panel h2{
-    font-size:20px;
-    margin-bottom:15px;
-}
-
 .chart{
     height:260px;
     background:#f9fafb;
     border:2px dashed #d1d5db;
     border-radius:10px;
     display:flex;
-    justify-content:center;
     align-items:center;
+    justify-content:center;
     color:#6b7280;
 }
 
 /* TABLE */
-
 .table-panel{
     background:white;
     border-radius:16px;
@@ -230,20 +237,15 @@ td{
     font-weight:600;
 }
 
-.ok{
-    background:#dcfce7;
-    color:#166534;
-}
-
-.alert{
-    background:#fee2e2;
-    color:#991b1b;
-}
+.ok{background:#dcfce7;color:#166534;}
+.alert{background:#fee2e2;color:#991b1b;}
 
 </style>
 </head>
+
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
 
     <div class="logo-box">
@@ -252,72 +254,57 @@ td{
 
     <div class="menu">
 
-        <a href="#" class="active">
-            <i class="fas fa-chart-line"></i>
-            Dashboard
-        </a>
-
-        <a href="#">
-            <i class="fas fa-cart-shopping"></i>
-            Pedidos
-        </a>
-
-        <a href="#">
-            <i class="fas fa-triangle-exclamation"></i>
-            Alertas
-        </a>
-
-        <a href="#">
-            <i class="fas fa-laptop"></i>
-            Dispositivos
-        </a>
-
-        <a href="#">
-            <i class="fas fa-list-check"></i>
-            Regras
-        </a>
-
-        <a href="#">
-            <i class="fas fa-ban"></i>
-            IPs Bloqueados
-        </a>
-
-        <a href="#">
-            <i class="fas fa-mobile-screen"></i>
-            Dispo/ Bloqueados
-        </a>
-
-        <a href="#">
-            <i class="fas fa-file-lines"></i>
-            Registros de Auditoria
-        </a>
+        <a href="#" class="active"><i class="fas fa-chart-line"></i>Dashboard</a>
+        <a href="#"><i class="fas fa-cart-shopping"></i>Pedidos</a>
+        <a href="#"><i class="fas fa-triangle-exclamation"></i>Alertas</a>
+        <a href="#"><i class="fas fa-laptop"></i>Dispositivos</a>
+        <a href="#"><i class="fas fa-ban"></i>IPs Bloqueados</a>
 
     </div>
 
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
+    <!-- HEADER -->
     <div class="header">
 
-        <div>
-            <p>Sistema de Proteção a Roubos e Fraudes Eirilar 2026/2027</p>
-        </div>
+        <p>Sistema de Proteção Anti-Fraude Eirilar</p>
 
-        <select class="filter">
-            <option>Últimos 7 dias</option>
-        </select>
+        <div class="header-right">
+
+            <select class="filter">
+                <option>Últimos 7 dias</option>
+            </select>
+
+            <div class="user-box">
+
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+
+                <span class="username">
+                    {{ session['user'] }}
+                </span>
+
+                <a href="{{ url_for('logout') }}" class="logout">
+                    Sair
+                </a>
+
+            </div>
+
+        </div>
 
     </div>
 
+    <!-- CARDS -->
     <div class="cards">
 
         <div class="card">
             <div class="card-top">
                 <span class="card-title">Pedidos</span>
-                <div class="icon blue">
-                    <i class="fas fa-cart-shopping"></i>
-                </div>
+                <div class="icon blue"><i class="fas fa-cart-shopping"></i></div>
             </div>
             <div class="card-value">{{ stats.orders }}</div>
         </div>
@@ -325,9 +312,7 @@ td{
         <div class="card">
             <div class="card-top">
                 <span class="card-title">Aprovados</span>
-                <div class="icon green">
-                    <i class="fas fa-check"></i>
-                </div>
+                <div class="icon green"><i class="fas fa-check"></i></div>
             </div>
             <div class="card-value">{{ stats.approved }}</div>
         </div>
@@ -335,9 +320,7 @@ td{
         <div class="card">
             <div class="card-top">
                 <span class="card-title">Alertas</span>
-                <div class="icon yellow">
-                    <i class="fas fa-triangle-exclamation"></i>
-                </div>
+                <div class="icon yellow"><i class="fas fa-triangle-exclamation"></i></div>
             </div>
             <div class="card-value">{{ stats.alerts }}</div>
         </div>
@@ -345,45 +328,42 @@ td{
         <div class="card">
             <div class="card-top">
                 <span class="card-title">IPs Bloqueados</span>
-                <div class="icon red">
-                    <i class="fas fa-ban"></i>
-                </div>
+                <div class="icon red"><i class="fas fa-ban"></i></div>
             </div>
             <div class="card-value">{{ stats.blocked_ips }}</div>
         </div>
 
         <div class="card">
             <div class="card-top">
-                <span class="card-title">Devices Bloqueados</span>
-                <div class="icon purple">
-                    <i class="fas fa-mobile-screen"></i>
-                </div>
+                <span class="card-title">Devices</span>
+                <div class="icon purple"><i class="fas fa-mobile-screen"></i></div>
             </div>
             <div class="card-value">{{ stats.blocked_devices }}</div>
         </div>
 
     </div>
 
+    <!-- ROW -->
     <div class="row">
 
         <div class="panel">
             <h2>Pedidos por Risco</h2>
-            <div class="chart">Gráfico Chart.js</div>
+            <div class="chart">Gráfico aqui</div>
         </div>
 
         <div class="panel">
-            <h2>Distribuição de Risco</h2>
-            <div class="chart">Gráfico Donut</div>
+            <h2>Distribuição</h2>
+            <div class="chart">Gráfico aqui</div>
         </div>
 
     </div>
 
+    <!-- TABLE -->
     <div class="table-panel">
 
         <h2>Últimos Pedidos</h2>
 
         <table>
-
             <thead>
                 <tr>
                     <th>Pedido</th>
@@ -394,7 +374,6 @@ td{
             </thead>
 
             <tbody>
-
                 <tr>
                     <td>#1001</td>
                     <td>João Silva</td>
@@ -408,7 +387,6 @@ td{
                     <td>R$999,90</td>
                     <td><span class="badge alert">Suspeito</span></td>
                 </tr>
-
             </tbody>
 
         </table>
