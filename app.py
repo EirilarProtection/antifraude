@@ -31,7 +31,8 @@ def login():
         cur.close()
         conn.close()
 
-        if user and check_password_hash(user[1], password):
+        # 🔥 proteção contra NULL (causa do seu 500)
+        if user and user[1] and check_password_hash(user[1], password):
             session["user"] = user[0]
             return redirect(url_for("dashboard"))
 
@@ -49,7 +50,12 @@ def register():
     if request.method == "POST":
 
         username = request.form.get("username")
-        password = generate_password_hash(request.form.get("password"))
+        password_raw = request.form.get("password")
+
+        if not username or not password_raw:
+            return render_template("register.html", error="Preencha todos os campos")
+
+        password = generate_password_hash(password_raw)
 
         conn = get_connection()
         cur = conn.cursor()
@@ -95,7 +101,6 @@ def dashboard():
         ORDER BY id DESC
         LIMIT 100
     """)
-
     orders = cur.fetchall()
 
     cur.execute("SELECT COUNT(*) FROM orders")
@@ -114,6 +119,9 @@ def dashboard():
     """)
     ips = cur.fetchone()[0]
 
+    cur.close()
+    conn.close()
+
     stats = {
         "orders": total_orders,
         "approved": approved,
@@ -121,9 +129,6 @@ def dashboard():
         "blocked_ips": ips,
         "blocked_devices": 0
     }
-
-    cur.close()
-    conn.close()
 
     return render_template("dashboard.html", stats=stats, orders=orders)
 
@@ -217,6 +222,9 @@ def analyze():
     if cur.fetchone():
         score += 80
 
+    cur.close()
+    conn.close()
+
     if amount > 2000:
         score += 20
     if amount > 5000:
@@ -228,9 +236,6 @@ def analyze():
         status = "Revisão"
     else:
         status = "Aprovado"
-
-    cur.close()
-    conn.close()
 
     return jsonify({"score": score, "status": status})
 
