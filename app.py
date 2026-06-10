@@ -1,23 +1,10 @@
-from flask import Flask, render_template, request, redirect, session, url_for
-import os
-import psycopg2
+from flask import Flask, render_template, request, redirect, session, url_for, jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
+from database import get_connection
 
 app = Flask(__name__)
-app.secret_key = "chave_super_secreta"
+app.secret_key = "troque_essa_chave_agora"
 
-DATABASE_URL = "postgresql://postgres:OfEYKNGiqqhUOhsNlwuYyxRzrMiiLsIj@acela.proxy.rlwy.net:22734/railway"
-
-# ==========================
-# CONEXÃO POSTGRESQL
-# ==========================
-def get_connection():
-    if not DATABASE_URL:
-        raise Exception("DATABASE_URL não configurada")
-
-    return psycopg2.connect(
-        DATABASE_URL,
-        sslmode="require"
-    )
 
 # ==========================
 # LOGIN
@@ -30,38 +17,31 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        try:
+        conn = get_connection()
+        cur = conn.cursor()
 
-            conn = get_connection()
-            cur = conn.cursor()
+        cur.execute("""
+            SELECT username, password_hash
+            FROM users
+            WHERE username = %s
+        """, (username,))
 
-            cur.execute("""
-                SELECT username, password
-                FROM users
-                WHERE username = %s
-            """, (username,))
+        user = cur.fetchone()
 
-            user = cur.fetchone()
+        cur.close()
+        conn.close()
 
-            cur.close()
-            conn.close()
+        if user and check_password_hash(user[1], password):
+            session["user"] = user[0]
+            return redirect(url_for("dashboard"))
 
-            if user and user[1] == password:
-                session["user"] = username
-                return redirect(url_for("dashboard"))
-
-            return render_template(
-                "login.html",
-                error="Usuário ou senha inválidos"
-            )
-
-        except Exception as e:
-            return f"Erro de banco: {e}"
+        return render_template("login.html", error="Usuário ou senha inválidos")
 
     return render_template("login.html")
 
+
 # ==========================
-# REGISTRO
+# REGISTER
 # ==========================
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -69,63 +49,34 @@ def register():
     if request.method == "POST":
 
         username = request.form["username"]
-        password = request.form["password"]
+        password = generate_password_hash(request.form["password"])
         email = request.form["email"]
-        phone = request.form["phone"]
-        birthdate = request.form["birthdate"]
 
-        try:
+        conn = get_connection()
+        cur = conn.cursor()
 
-            conn = get_connection()
-            cur = conn.cursor()
+        cur.execute("SELECT id FROM users WHERE username=%s", (username,))
+        exists = cur.fetchone()
 
-            cur.execute(
-                "SELECT id FROM users WHERE username = %s",
-                (username,)
-            )
-
-            exists = cur.fetchone()
-
-            if exists:
-
-                cur.close()
-                conn.close()
-
-                return render_template(
-                    "register.html",
-                    error="Usuário já existe"
-                )
-
-            cur.execute("""
-                INSERT INTO users
-                (
-                    username,
-                    password,
-                    email,
-                    phone,
-                    birthdate
-                )
-                VALUES
-                (%s,%s,%s,%s,%s)
-            """, (
-                username,
-                password,
-                email,
-                phone,
-                birthdate
-            ))
-
-            conn.commit()
-
+        if exists:
             cur.close()
             conn.close()
+            return render_template("register.html", error="Usuário já existe")
 
-            return redirect(url_for("login"))
+        cur.execute("""
+            INSERT INTO users (username, password_hash, role)
+            VALUES (%s, %s, %s)
+        """, (username, password, "admin"))
 
-        except Exception as e:
-            return f"Erro de banco: {e}"
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        return redirect(url_for("login"))
 
     return render_template("register.html")
+
 
 # ==========================
 # DASHBOARD
@@ -136,92 +87,159 @@ def dashboard():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    try:
+    conn = get_connection()
+    cur = conn.cursor()
 
-        conn = get_connection()
-        cur = conn.cursor()
+    # Orders
+    cur.execute("""
+        SELECT *
+        FROM orders
+        ORDER BY id DESC
+        LIMIT 100
+    """)
+    orders = cur.fetchall()
 
-        # pedidos
-        cur.execute("""
-            SELECT *
-            FROM orders
-            ORDER BY id DESC
-            LIMIT 100
-        """)
+    # Stats
+    cur.execute("SELECT COUNT(*) FROM orders")
+    total_orders = cur.fetchone()[0]
 
-        columns = [desc[0] for desc in cur.description]
-        orders = cur.fetchall()
+    cur.execute("SELECT COUNT(*) FROM orders WHERE status = 'Aprovado'")
+    approved = cur.fetchone()[0]
 
-        # usuário logado
-        cur.execute("""
-            SELECT username, email, phone, birthdate
-            FROM users
-            WHERE username = %s
-        """, (session["user"],))
+    cur.execute("SELECT COUNT(*) FROM orders WHERE status = 'Suspeito'")
+    alerts = cur.fetchone()[0]
 
-        user = cur.fetchone()
+    cur.execute("SELECT COUNT(DISTINCT ip_address) FROM orders")
+    ips = cur.fetchone()[0]
 
-        # estatísticas reais
-        cur.execute("SELECT COUNT(*) FROM orders")
-        total_orders = cur.fetchone()[0]
+    stats = {
+        "orders": total_orders,
+        "approved": approved,
+        "alerts": alerts,
+        "blocked_ips": ips,
+        "blocked_devices": 0
+    }
 
-        cur.execute("""
-            SELECT COUNT(*)
-            FROM orders
-            WHERE status = 'Aprovado'
-        """)
-        approved = cur.fetchone()[0]
+    cur.close()
+    conn.close()
 
-        cur.execute("""
-            SELECT COUNT(*)
-            FROM orders
-            WHERE status = 'Suspeito'
-        """)
-        alerts = cur.fetchone()[0]
+    return render_template(
+        "dashboard.html",
+        stats=stats,
+        orders=orders
+    )
 
-        cur.execute("""
-            SELECT COUNT(DISTINCT ip)
-            FROM orders
-        """)
-        ips = cur.fetchone()[0]
 
-        cur.execute("""
-            SELECT COUNT(DISTINCT device)
-            FROM orders
-        """)
-        devices = cur.fetchone()[0]
+# ==========================
+# APPROVE ORDER
+# ==========================
+@app.route("/approve/<int:order_id>")
+def approve(order_id):
 
-        cur.close()
-        conn.close()
+    if "user" not in session:
+        return redirect(url_for("login"))
 
-        stats = {
-            "orders": total_orders,
-            "approved": approved,
-            "alerts": alerts,
-            "blocked_ips": ips,
-            "blocked_devices": devices
-        }
+    conn = get_connection()
+    cur = conn.cursor()
 
-        return render_template(
-            "dashboard.html",
-            stats=stats,
-            user=user,
-            orders=orders,
-            columns=columns
-        )
+    cur.execute("""
+        UPDATE orders
+        SET status = 'Aprovado'
+        WHERE id = %s
+    """, (order_id,))
 
-    except Exception as e:
-        return f"Erro de banco: {e}"
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect(url_for("dashboard"))
+
+
+# ==========================
+# BLOCK ORDER
+# ==========================
+@app.route("/block/<int:order_id>")
+def block(order_id):
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE orders
+        SET status = 'Suspeito'
+        WHERE id = %s
+    """, (order_id,))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect(url_for("dashboard"))
+
 
 # ==========================
 # LOGOUT
 # ==========================
 @app.route("/logout")
 def logout():
-
-    session.pop("user", None)
-
+    session.clear()
     return redirect(url_for("login"))
+
+
+# ==========================
+# API ANTIFRAUDE
+# ==========================
+@app.route("/api/analyze", methods=["POST"])
+def analyze():
+
+    data = request.json
+
+    score = 0
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    # BLACKLIST CPF
+    cur.execute("SELECT id FROM blacklist_cpfs WHERE cpf=%s", (data["cpf"],))
+    if cur.fetchone():
+        score += 100
+
+    # BLACKLIST EMAIL
+    cur.execute("SELECT id FROM blacklist_emails WHERE email=%s", (data["email"],))
+    if cur.fetchone():
+        score += 80
+
+    # BLACKLIST IP
+    cur.execute("SELECT id FROM blacklist_ips WHERE ip=%s", (data["ip_address"],))
+    if cur.fetchone():
+        score += 80
+
+    # RULES SIMPLES
+    if data["amount"] > 2000:
+        score += 20
+
+    if data["amount"] > 5000:
+        score += 30
+
+    # RESULTADO FINAL
+    if score >= 80:
+        status = "Suspeito"
+    elif score >= 40:
+        status = "Revisão"
+    else:
+        status = "Aprovado"
+
+    cur.close()
+    conn.close()
+
+    return jsonify({
+        "score": score,
+        "status": status
+    })
+
 
 # ==========================
 # START
