@@ -2,136 +2,141 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Login | Painel Anti-Fraude</title>
 
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f4f6f9;
-        color: #1f2937;
-    }
 
-    .container {
-        display: flex;
-        height: 100vh;
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #1f2937;
+}
 
-    .left {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background: #ffffff;
-        border-right: 1px solid #e5e7eb;
-        text-align: center;
-        padding: 20px;
-    }
+.container {
+    display: flex;
+    height: 100vh;
+}
 
-    .logo {
-        width: 220px;
-        margin-bottom: 20px;
-    }
+/* LADO ESQUERDO */
+.left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    text-align: center;
+    padding: 20px;
+}
 
-    .title {
-        font-size: 22px;
-        font-weight: bold;
-        color: #e53935;
-        margin-bottom: 10px;
-    }
+.logo {
+    width: 220px;
+    margin-bottom: 20px;
+}
 
-    .subtitle {
-        font-size: 13px;
-        color: #6b7280;
-        max-width: 260px;
-    }
+.title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #e53935;
+    margin-bottom: 10px;
+}
 
-    .right {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: #f4f6f9;
-    }
+.subtitle {
+    font-size: 13px;
+    color: #6b7280;
+    max-width: 260px;
+}
 
-    .card {
-        width: 380px;
-        background: #ffffff;
-        padding: 40px;
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+/* LADO DIREITO */
+.right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f4f6f9;
+}
 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+.card {
+    width: 380px;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 
-    .card-title {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        color: #111827;
-    }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-    form {
-        width: 100%;
-    }
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #111827;
+}
 
-    input {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 12px;
-        margin: 8px 0;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        background: #f9fafb;
-        color: #111827;
-        outline: none;
-        transition: 0.2s;
-    }
+form {
+    width: 100%;
+}
 
-    input:focus {
-        border: 1px solid #e53935;
-        background: #ffffff;
-    }
+input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #f9fafb;
+    color: #111827;
+    outline: none;
+    transition: 0.2s;
+}
 
-    button {
-        width: 100%;
-        padding: 12px;
-        background: #e53935;
-        border: none;
-        border-radius: 8px;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 10px;
-        transition: 0.2s;
-    }
+input:focus {
+    border: 1px solid #e53935;
+    background: #ffffff;
+}
 
-    button:hover {
-        background: #c62828;
-    }
+button {
+    width: 100%;
+    padding: 12px;
+    background: #e53935;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.2s;
+}
 
-    a {
-        color: #e53935;
-        text-decoration: none;
-        font-size: 13px;
-    }
+button:hover {
+    background: #c62828;
+}
 
-    .footer {
-        margin-top: 12px;
-        font-size: 12px;
-        color: #6b7280;
-        text-align: center;
-    }
+a {
+    color: #e53935;
+    text-decoration: none;
+    font-size: 13px;
+}
 
-    .error {
-        color: #dc2626;
-        font-size: 13px;
-        margin-bottom: 10px;
-    }
+.footer {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #6b7280;
+    text-align: center;
+}
+
+.error {
+    color: #dc2626;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
 
 </style>
 </head>
@@ -148,7 +153,7 @@
         <div class="title">Painel Anti-Fraude</div>
 
         <div class="subtitle">
-            Sistema interno de monitoramento e proteção de transações da equipe.
+            Sistema interno de monitoramento e proteção de transações.
         </div>
 
     </div>
@@ -160,16 +165,20 @@
 
             <div class="card-title">Acesso ao Sistema</div>
 
-            <!-- ERRO DO FLASK -->
+            <!-- ERRO FLASK -->
             {% if error %}
                 <div class="error">{{ error }}</div>
             {% endif %}
 
+            <!-- FORM LOGIN -->
             <form method="POST" action="{{ url_for('login') }}">
+
                 <input type="text" name="username" placeholder="Usuário" required>
+
                 <input type="password" name="password" placeholder="Senha" required>
 
                 <button type="submit">Entrar</button>
+
             </form>
 
             <div style="margin-top: 12px;">
