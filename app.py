@@ -5,7 +5,7 @@ import psycopg2
 app = Flask(__name__)
 app.secret_key = "chave_super_secreta"
 
-DATABASE_URL = "postgresql://postgres:SUA_SENHA@acela.proxy.rlwy.net:22734/railway"
+DATABASE_URL = "postgresql://postgres:OfEYKNGiqqhUOhsNlwuYyxRzrMiiLsIj@acela.proxy.rlwy.net:22734/railway"
 
 # ==========================
 # CONEXÃO POSTGRESQL
