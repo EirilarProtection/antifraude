@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from database import get_connection
 
 app = Flask(__name__)
-app.secret_key = "troque_essa_chave_agora"
+app.secret_key = "9f3K!xQ7vL2mR8sT6pZ4aN1dC"
 
 
 # ==========================
@@ -13,7 +13,6 @@ app.secret_key = "troque_essa_chave_agora"
 def login():
 
     if request.method == "POST":
-
         username = request.form.get("username")
         password = request.form.get("password")
 
@@ -31,7 +30,6 @@ def login():
         cur.close()
         conn.close()
 
-        # 🔥 proteção contra NULL (causa do seu 500)
         if user and user[1] and check_password_hash(user[1], password):
             session["user"] = user[0]
             return redirect(url_for("dashboard"))
@@ -51,32 +49,42 @@ def register():
 
         username = request.form.get("username")
         password_raw = request.form.get("password")
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        birthdate = request.form.get("birthdate")
 
+        # validação básica
         if not username or not password_raw:
-            return render_template("register.html", error="Preencha todos os campos")
+            return render_template("register.html", error="Preencha usuário e senha")
 
         password = generate_password_hash(password_raw)
 
         conn = get_connection()
         cur = conn.cursor()
 
-        cur.execute("SELECT id FROM users WHERE username=%s", (username,))
-        exists = cur.fetchone()
+        try:
+            # verifica usuário existente
+            cur.execute("SELECT id FROM users WHERE username=%s", (username,))
+            exists = cur.fetchone()
 
-        if exists:
+            if exists:
+                return render_template("register.html", error="Usuário já existe")
+
+            # INSERÇÃO
+            cur.execute("""
+                INSERT INTO users (username, password_hash, role, email, phone, birthdate)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (username, password, "admin", email, phone, birthdate))
+
+            conn.commit()
+
+        except Exception as e:
+            print("ERRO REGISTER:", e)
+            return render_template("register.html", error="Erro ao criar conta")
+
+        finally:
             cur.close()
             conn.close()
-            return render_template("register.html", error="Usuário já existe")
-
-        cur.execute("""
-            INSERT INTO users (username, password_hash, role)
-            VALUES (%s, %s, %s)
-        """, (username, password, "admin"))
-
-        conn.commit()
-
-        cur.close()
-        conn.close()
 
         return redirect(url_for("login"))
 
@@ -101,6 +109,7 @@ def dashboard():
         ORDER BY id DESC
         LIMIT 100
     """)
+
     orders = cur.fetchall()
 
     cur.execute("SELECT COUNT(*) FROM orders")
@@ -112,23 +121,16 @@ def dashboard():
     cur.execute("SELECT COUNT(*) FROM orders WHERE status = 'Suspeito'")
     alerts = cur.fetchone()[0]
 
-    cur.execute("""
-        SELECT COUNT(DISTINCT ip_address)
-        FROM orders
-        WHERE ip_address IS NOT NULL
-    """)
-    ips = cur.fetchone()[0]
-
-    cur.close()
-    conn.close()
-
     stats = {
         "orders": total_orders,
         "approved": approved,
         "alerts": alerts,
-        "blocked_ips": ips,
+        "blocked_ips": 0,
         "blocked_devices": 0
     }
+
+    cur.close()
+    conn.close()
 
     return render_template("dashboard.html", stats=stats, orders=orders)
 
@@ -210,20 +212,21 @@ def analyze():
     conn = get_connection()
     cur = conn.cursor()
 
-    cur.execute("SELECT 1 FROM blacklist_cpfs WHERE cpf=%s", (cpf,))
-    if cur.fetchone():
-        score += 100
+    try:
+        cur.execute("SELECT 1 FROM blacklist_cpfs WHERE cpf=%s", (cpf,))
+        if cur.fetchone():
+            score += 100
 
-    cur.execute("SELECT 1 FROM blacklist_emails WHERE email=%s", (email,))
-    if cur.fetchone():
-        score += 80
+        cur.execute("SELECT 1 FROM blacklist_emails WHERE email=%s", (email,))
+        if cur.fetchone():
+            score += 80
 
-    cur.execute("SELECT 1 FROM blacklist_ips WHERE ip=%s", (ip,))
-    if cur.fetchone():
-        score += 80
+        cur.execute("SELECT 1 FROM blacklist_ips WHERE ip=%s", (ip,))
+        if cur.fetchone():
+            score += 80
 
-    cur.close()
-    conn.close()
+    except Exception as e:
+        print("ERRO API:", e)
 
     if amount > 2000:
         score += 20
@@ -236,6 +239,9 @@ def analyze():
         status = "Revisão"
     else:
         status = "Aprovado"
+
+    cur.close()
+    conn.close()
 
     return jsonify({"score": score, "status": status})
 
