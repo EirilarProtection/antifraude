@@ -5,6 +5,10 @@ def get_connection():
     db_url = os.getenv("DATABASE_URL")
 
     if not db_url:
-        raise Exception("DATABASE_URL não configurada no Railway")
+        raise Exception("DATABASE_URL não configurada")
 
-    return psycopg2.connect(db_url, sslmode="require")
+    return psycopg2.connect(
+        db_url,
+        sslmode="require",
+        connect_timeout=10
+    )
