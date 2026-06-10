@@ -14,8 +14,8 @@ def login():
 
     if request.method == "POST":
 
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password = request.form.get("password")
 
         conn = get_connection()
         cur = conn.cursor()
@@ -48,9 +48,8 @@ def register():
 
     if request.method == "POST":
 
-        username = request.form["username"]
-        password = generate_password_hash(request.form["password"])
-        email = request.form["email"]
+        username = request.form.get("username")
+        password = generate_password_hash(request.form.get("password"))
 
         conn = get_connection()
         cur = conn.cursor()
@@ -90,16 +89,15 @@ def dashboard():
     conn = get_connection()
     cur = conn.cursor()
 
-    # Orders
     cur.execute("""
-        SELECT *
+        SELECT id, order_number, customer_name, amount, status, created_at
         FROM orders
         ORDER BY id DESC
         LIMIT 100
     """)
+
     orders = cur.fetchall()
 
-    # Stats
     cur.execute("SELECT COUNT(*) FROM orders")
     total_orders = cur.fetchone()[0]
 
@@ -109,7 +107,11 @@ def dashboard():
     cur.execute("SELECT COUNT(*) FROM orders WHERE status = 'Suspeito'")
     alerts = cur.fetchone()[0]
 
-    cur.execute("SELECT COUNT(DISTINCT ip_address) FROM orders")
+    cur.execute("""
+        SELECT COUNT(DISTINCT ip_address)
+        FROM orders
+        WHERE ip_address IS NOT NULL
+    """)
     ips = cur.fetchone()[0]
 
     stats = {
@@ -123,15 +125,11 @@ def dashboard():
     cur.close()
     conn.close()
 
-    return render_template(
-        "dashboard.html",
-        stats=stats,
-        orders=orders
-    )
+    return render_template("dashboard.html", stats=stats, orders=orders)
 
 
 # ==========================
-# APPROVE ORDER
+# APPROVE
 # ==========================
 @app.route("/approve/<int:order_id>")
 def approve(order_id):
@@ -156,7 +154,7 @@ def approve(order_id):
 
 
 # ==========================
-# BLOCK ORDER
+# BLOCK
 # ==========================
 @app.route("/block/<int:order_id>")
 def block(order_id):
@@ -195,36 +193,35 @@ def logout():
 @app.route("/api/analyze", methods=["POST"])
 def analyze():
 
-    data = request.json
+    data = request.json or {}
+
+    cpf = data.get("cpf", "")
+    email = data.get("email", "")
+    ip = data.get("ip_address", "")
+    amount = float(data.get("amount", 0))
 
     score = 0
 
     conn = get_connection()
     cur = conn.cursor()
 
-    # BLACKLIST CPF
-    cur.execute("SELECT id FROM blacklist_cpfs WHERE cpf=%s", (data["cpf"],))
+    cur.execute("SELECT 1 FROM blacklist_cpfs WHERE cpf=%s", (cpf,))
     if cur.fetchone():
         score += 100
 
-    # BLACKLIST EMAIL
-    cur.execute("SELECT id FROM blacklist_emails WHERE email=%s", (data["email"],))
+    cur.execute("SELECT 1 FROM blacklist_emails WHERE email=%s", (email,))
     if cur.fetchone():
         score += 80
 
-    # BLACKLIST IP
-    cur.execute("SELECT id FROM blacklist_ips WHERE ip=%s", (data["ip_address"],))
+    cur.execute("SELECT 1 FROM blacklist_ips WHERE ip=%s", (ip,))
     if cur.fetchone():
         score += 80
 
-    # RULES SIMPLES
-    if data["amount"] > 2000:
+    if amount > 2000:
         score += 20
-
-    if data["amount"] > 5000:
+    if amount > 5000:
         score += 30
 
-    # RESULTADO FINAL
     if score >= 80:
         status = "Suspeito"
     elif score >= 40:
@@ -235,10 +232,7 @@ def analyze():
     cur.close()
     conn.close()
 
-    return jsonify({
-        "score": score,
-        "status": status
-    })
+    return jsonify({"score": score, "status": status})
 
 
 # ==========================
