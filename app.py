@@ -7,142 +7,224 @@ app.secret_key = "chave_super_secreta"
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-
-# ------------------------
-# CONEXÃO BANCO (RAILWAY)
-# ------------------------
+# ==========================
+# CONEXÃO POSTGRESQL
+# ==========================
 def get_connection():
     if not DATABASE_URL:
-        raise Exception("DATABASE_URL não configurada no ambiente")
+        raise Exception("DATABASE_URL não configurada")
 
-    return psycopg2.connect(DATABASE_URL, sslmode="require")
+    return psycopg2.connect(
+        DATABASE_URL,
+        sslmode="require"
+    )
 
-
-# ------------------------
+# ==========================
 # LOGIN
-# ------------------------
+# ==========================
 @app.route("/", methods=["GET", "POST"])
 def login():
+
     if request.method == "POST":
+
         username = request.form["username"]
         password = request.form["password"]
 
-        conn = get_connection()
-        cur = conn.cursor()
+        try:
 
-        cur.execute("""
-            SELECT username, password
-            FROM users
-            WHERE username = %s
-        """, (username,))
+            conn = get_connection()
+            cur = conn.cursor()
 
-        user = cur.fetchone()
+            cur.execute("""
+                SELECT username, password
+                FROM users
+                WHERE username = %s
+            """, (username,))
 
-        cur.close()
-        conn.close()
+            user = cur.fetchone()
 
-        if user and user[1] == password:
-            session["user"] = username
-            return redirect(url_for("dashboard"))
+            cur.close()
+            conn.close()
 
-        return render_template("login.html", error="Usuário ou senha inválidos")
+            if user and user[1] == password:
+                session["user"] = username
+                return redirect(url_for("dashboard"))
+
+            return render_template(
+                "login.html",
+                error="Usuário ou senha inválidos"
+            )
+
+        except Exception as e:
+            return f"Erro de banco: {e}"
 
     return render_template("login.html")
 
-
-# ------------------------
-# REGISTER
-# ------------------------
+# ==========================
+# REGISTRO
+# ==========================
 @app.route("/register", methods=["GET", "POST"])
 def register():
+
     if request.method == "POST":
+
         username = request.form["username"]
         password = request.form["password"]
         email = request.form["email"]
         phone = request.form["phone"]
         birthdate = request.form["birthdate"]
 
-        conn = get_connection()
-        cur = conn.cursor()
+        try:
 
-        # verifica se existe
-        cur.execute("SELECT username FROM users WHERE username = %s", (username,))
-        exists = cur.fetchone()
+            conn = get_connection()
+            cur = conn.cursor()
 
-        if exists:
+            cur.execute(
+                "SELECT id FROM users WHERE username = %s",
+                (username,)
+            )
+
+            exists = cur.fetchone()
+
+            if exists:
+
+                cur.close()
+                conn.close()
+
+                return render_template(
+                    "register.html",
+                    error="Usuário já existe"
+                )
+
+            cur.execute("""
+                INSERT INTO users
+                (
+                    username,
+                    password,
+                    email,
+                    phone,
+                    birthdate
+                )
+                VALUES
+                (%s,%s,%s,%s,%s)
+            """, (
+                username,
+                password,
+                email,
+                phone,
+                birthdate
+            ))
+
+            conn.commit()
+
             cur.close()
             conn.close()
-            return render_template("register.html", error="Usuário já existe")
 
-        # insere usuário
-        cur.execute("""
-            INSERT INTO users (username, password, email, phone, birthdate)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (username, password, email, phone, birthdate))
+            return redirect(url_for("login"))
 
-        conn.commit()
-        cur.close()
-        conn.close()
-
-        return redirect(url_for("login"))
+        except Exception as e:
+            return f"Erro de banco: {e}"
 
     return render_template("register.html")
 
-
-# ------------------------
-# DASHBOARD (BANCO REAL)
-# ------------------------
+# ==========================
+# DASHBOARD
+# ==========================
 @app.route("/dashboard")
 def dashboard():
+
     if "user" not in session:
         return redirect(url_for("login"))
 
-    conn = get_connection()
-    cur = conn.cursor()
+    try:
 
-    # pedidos reais do banco
-    cur.execute("SELECT * FROM orders ORDER BY id DESC LIMIT 100;")
+        conn = get_connection()
+        cur = conn.cursor()
 
-    columns = [desc[0] for desc in cur.description]
-    orders = cur.fetchall()
+        # pedidos
+        cur.execute("""
+            SELECT *
+            FROM orders
+            ORDER BY id DESC
+            LIMIT 100
+        """)
 
-    # dados do usuário logado
-    cur.execute("""
-        SELECT username, email, phone, birthdate
-        FROM users
-        WHERE username = %s
-    """, (session["user"],))
+        columns = [desc[0] for desc in cur.description]
+        orders = cur.fetchall()
 
-    user = cur.fetchone()
+        # usuário logado
+        cur.execute("""
+            SELECT username, email, phone, birthdate
+            FROM users
+            WHERE username = %s
+        """, (session["user"],))
 
-    cur.close()
-    conn.close()
+        user = cur.fetchone()
 
-    stats = {
-        "orders": len(orders),
-        "approved": 0,
-        "alerts": 0,
-        "blocked_ips": 0,
-        "blocked_devices": 0
-    }
+        # estatísticas reais
+        cur.execute("SELECT COUNT(*) FROM orders")
+        total_orders = cur.fetchone()[0]
 
-    return render_template(
-        "dashboard.html",
-        stats=stats,
-        orders=orders,
-        columns=columns,
-        user=user
-    )
+        cur.execute("""
+            SELECT COUNT(*)
+            FROM orders
+            WHERE status = 'Aprovado'
+        """)
+        approved = cur.fetchone()[0]
 
+        cur.execute("""
+            SELECT COUNT(*)
+            FROM orders
+            WHERE status = 'Suspeito'
+        """)
+        alerts = cur.fetchone()[0]
 
-# ------------------------
+        cur.execute("""
+            SELECT COUNT(DISTINCT ip)
+            FROM orders
+        """)
+        ips = cur.fetchone()[0]
+
+        cur.execute("""
+            SELECT COUNT(DISTINCT device)
+            FROM orders
+        """)
+        devices = cur.fetchone()[0]
+
+        cur.close()
+        conn.close()
+
+        stats = {
+            "orders": total_orders,
+            "approved": approved,
+            "alerts": alerts,
+            "blocked_ips": ips,
+            "blocked_devices": devices
+        }
+
+        return render_template(
+            "dashboard.html",
+            stats=stats,
+            user=user,
+            orders=orders,
+            columns=columns
+        )
+
+    except Exception as e:
+        return f"Erro de banco: {e}"
+
+# ==========================
 # LOGOUT
-# ------------------------
+# ==========================
 @app.route("/logout")
 def logout():
+
     session.pop("user", None)
+
     return redirect(url_for("login"))
 
-
+# ==========================
+# START
+# ==========================
 if __name__ == "__main__":
     app.run(debug=True)
