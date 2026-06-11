@@ -3,21 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Eirilar Protection | Dashboard</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
+
 :root{
-    --bg:#0f1115;
-    --panel:#151922;
-    --panel2:#1b2130;
-    --text:#e6e6e6;
-    --muted:#9aa4b2;
-    --accent:#4f8cff;
-    --danger:#ff4d4d;
-    --success:#2ecc71;
-    --warning:#f1c40f;
+    --bg:#f4f6f9;
+    --panel:#ffffff;
+    --panel2:#f9fafb;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --primary:#2563eb;
+    --border:#e5e7eb;
+    --success:#16a34a;
+    --danger:#dc2626;
+    --warning:#d97706;
 }
 
 *{
@@ -36,33 +39,50 @@ body{
 /* SIDEBAR */
 .sidebar{
     width:260px;
-    background:var(--panel);
     height:100vh;
+    background:var(--panel);
+    border-right:1px solid var(--border);
     padding:20px;
     position:fixed;
     left:0;
     top:0;
 }
 
+/* LOGO */
 .logo{
-    font-size:22px;
-    font-weight:bold;
-    margin-bottom:30px;
-    color:var(--accent);
     display:flex;
-    align-items:center;
+    flex-direction:column;
+    align-items:flex-start;
     gap:10px;
+    margin-bottom:30px;
 }
 
+.logo img{
+    width:70px;
+    height:70px;
+    border-radius:12px;
+}
+
+.logo h1{
+    font-size:18px;
+    color:var(--primary);
+}
+
+.logo span{
+    font-size:12px;
+    color:var(--muted);
+}
+
+/* NAV */
 .nav a{
     display:flex;
     align-items:center;
     gap:10px;
     padding:12px;
-    color:var(--muted);
-    text-decoration:none;
-    border-radius:8px;
     margin-bottom:8px;
+    text-decoration:none;
+    color:var(--muted);
+    border-radius:10px;
     transition:.2s;
 }
 
@@ -74,8 +94,8 @@ body{
 /* MAIN */
 .main{
     margin-left:260px;
-    padding:25px;
     width:100%;
+    padding:25px;
 }
 
 /* TOPBAR */
@@ -86,22 +106,26 @@ body{
     margin-bottom:20px;
 }
 
+.topbar h2{
+    font-size:22px;
+}
+
 .search{
-    background:var(--panel);
-    padding:10px 15px;
-    border-radius:8px;
-    width:300px;
     display:flex;
     align-items:center;
     gap:10px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    padding:10px 15px;
+    border-radius:10px;
+    width:320px;
 }
 
 .search input{
-    background:transparent;
     border:none;
     outline:none;
-    color:var(--text);
     width:100%;
+    background:transparent;
 }
 
 /* CARDS */
@@ -114,27 +138,28 @@ body{
 
 .card{
     background:var(--panel);
+    border:1px solid var(--border);
     padding:18px;
     border-radius:12px;
 }
 
 .card h3{
-    font-size:14px;
+    font-size:13px;
     color:var(--muted);
 }
 
 .card p{
     font-size:22px;
-    margin-top:5px;
     font-weight:bold;
+    margin-top:5px;
 }
 
 /* TABLE */
 .table{
     background:var(--panel);
+    border:1px solid var(--border);
     border-radius:12px;
     padding:15px;
-    overflow-x:auto;
 }
 
 table{
@@ -150,10 +175,11 @@ th,td{
 
 th{
     color:var(--muted);
+    border-bottom:1px solid var(--border);
 }
 
 tr{
-    border-bottom:1px solid #222;
+    border-bottom:1px solid var(--border);
 }
 
 .status{
@@ -162,9 +188,9 @@ tr{
     font-size:12px;
 }
 
-.success{background:rgba(46,204,113,.2); color:var(--success);}
-.danger{background:rgba(255,77,77,.2); color:var(--danger);}
-.warning{background:rgba(241,196,15,.2); color:var(--warning);}
+.success{background:#dcfce7;color:var(--success);}
+.danger{background:#fee2e2;color:var(--danger);}
+.warning{background:#fef3c7;color:var(--warning);}
 
 /* RESPONSIVO */
 @media(max-width:1000px){
@@ -178,6 +204,7 @@ tr{
         margin-left:0;
     }
 }
+
 </style>
 </head>
 
@@ -185,18 +212,23 @@ tr{
 
 <!-- SIDEBAR -->
 <div class="sidebar">
+
     <div class="logo">
-        <i class="fa-solid fa-shield"></i>
-        Eirilar
+        <!-- TROQUE AQUI PELO SEU EMBLEMA -->
+        <img src="https://i.imgur.com/8Km9tLL.png" alt="Eirilar Logo">
+
+        <h1>Eirilar Protection</h1>
+        <span>Security Dashboard</span>
     </div>
 
     <div class="nav">
         <a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="#"><i class="fa-solid fa-shield"></i> Proteção</a>
         <a href="#"><i class="fa-solid fa-users"></i> Usuários</a>
         <a href="#"><i class="fa-solid fa-ban"></i> Bloqueios</a>
-        <a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Alertas</a>
         <a href="#"><i class="fa-solid fa-gear"></i> Configurações</a>
     </div>
+
 </div>
 
 <!-- MAIN -->
@@ -204,7 +236,7 @@ tr{
 
     <!-- TOP -->
     <div class="topbar">
-        <h2>Dashboard</h2>
+        <h2>Painel de Controle</h2>
 
         <div class="search">
             <i class="fa-solid fa-search"></i>
@@ -214,6 +246,7 @@ tr{
 
     <!-- CARDS -->
     <div class="cards">
+
         <div class="card">
             <h3>Pedidos</h3>
             <p>{{ stats.orders }}</p>
@@ -235,14 +268,16 @@ tr{
         </div>
 
         <div class="card">
-            <h3>Devices Bloqueados</h3>
+            <h3>Devices</h3>
             <p>{{ stats.blocked_devices }}</p>
         </div>
+
     </div>
 
     <!-- TABLE -->
     <div class="table">
-        <h3 style="margin-bottom:10px;">Atividades Recentes</h3>
+
+        <h3 style="margin-bottom:10px;">Atividades recentes</h3>
 
         <table>
             <thead>
@@ -257,7 +292,7 @@ tr{
 
             <tbody>
                 <tr>
-                    <td>#1023</td>
+                    <td>#1001</td>
                     <td>user_01</td>
                     <td>192.168.0.1</td>
                     <td><span class="status success">Aprovado</span></td>
@@ -265,22 +300,24 @@ tr{
                 </tr>
 
                 <tr>
-                    <td>#1024</td>
+                    <td>#1002</td>
                     <td>user_02</td>
-                    <td>177.45.22.9</td>
+                    <td>177.10.22.9</td>
                     <td><span class="status danger">Bloqueado</span></td>
                     <td>10/06/2026</td>
                 </tr>
 
                 <tr>
-                    <td>#1025</td>
+                    <td>#1003</td>
                     <td>user_03</td>
-                    <td>189.10.55.8</td>
+                    <td>189.55.12.8</td>
                     <td><span class="status warning">Suspeito</span></td>
                     <td>10/06/2026</td>
                 </tr>
             </tbody>
+
         </table>
+
     </div>
 
 </div>
