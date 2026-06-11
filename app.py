@@ -57,7 +57,7 @@ def register():
             return render_template("register.html", error="Usuário já existe")
 
         cur.execute("""
-            INSERT INTO users (username, password_hash, role, email, phone, birthdate)
+            INSERT INTO users (username, password, role, email, phone, birthdate)
             VALUES (%s, %s, %s, %s, %s, %s)
         """, (username, password, "admin", email, phone, birthdate))
 
