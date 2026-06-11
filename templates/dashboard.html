@@ -3,24 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Eirilar Protection | Dashboard</title>
+<title>Eirilar Protection | Security Dashboard</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
 
 :root{
-    --bg:#f4f6f9;
-    --panel:#ffffff;
-    --panel2:#f9fafb;
-    --text:#1f2937;
-    --muted:#6b7280;
-    --primary:#2563eb;
-    --border:#e5e7eb;
-    --success:#16a34a;
-    --danger:#dc2626;
-    --warning:#d97706;
+    --bg:#070A12;
+    --panel:rgba(255,255,255,0.04);
+    --panel2:rgba(255,255,255,0.07);
+    --text:#e5e7eb;
+    --muted:#9ca3af;
+    --red:#ff2d2d;
+    --redGlow:rgba(255,45,45,0.35);
+    --border:rgba(255,255,255,0.08);
 }
 
 *{
@@ -31,21 +28,22 @@
 }
 
 body{
-    background:var(--bg);
+    background: radial-gradient(circle at top, #120000 0%, var(--bg) 40%, #05060a 100%);
     color:var(--text);
     display:flex;
 }
 
 /* SIDEBAR */
 .sidebar{
-    width:260px;
+    width:270px;
     height:100vh;
-    background:var(--panel);
-    border-right:1px solid var(--border);
-    padding:20px;
     position:fixed;
     left:0;
     top:0;
+    padding:20px;
+    background:rgba(10,10,15,0.7);
+    backdrop-filter: blur(12px);
+    border-right:1px solid var(--border);
 }
 
 /* LOGO */
@@ -54,18 +52,19 @@ body{
     flex-direction:column;
     align-items:flex-start;
     gap:10px;
-    margin-bottom:30px;
+    margin-bottom:35px;
 }
 
 .logo img{
-    width:70px;
-    height:70px;
-    border-radius:12px;
+    width:80px;
+    height:80px;
+    filter: drop-shadow(0 0 12px var(--redGlow));
 }
 
 .logo h1{
     font-size:18px;
-    color:var(--primary);
+    color:var(--red);
+    letter-spacing:1px;
 }
 
 .logo span{
@@ -80,20 +79,23 @@ body{
     gap:10px;
     padding:12px;
     margin-bottom:8px;
-    text-decoration:none;
     color:var(--muted);
+    text-decoration:none;
     border-radius:10px;
     transition:.2s;
+    border:1px solid transparent;
 }
 
 .nav a:hover{
-    background:var(--panel2);
+    background:var(--panel);
+    border:1px solid var(--border);
     color:var(--text);
+    box-shadow:0 0 20px rgba(255,45,45,0.08);
 }
 
 /* MAIN */
 .main{
-    margin-left:260px;
+    margin-left:270px;
     width:100%;
     padding:25px;
 }
@@ -108,24 +110,26 @@ body{
 
 .topbar h2{
     font-size:22px;
+    color:var(--text);
 }
 
 .search{
     display:flex;
     align-items:center;
     gap:10px;
+    padding:10px 15px;
+    width:340px;
+    border-radius:12px;
     background:var(--panel);
     border:1px solid var(--border);
-    padding:10px 15px;
-    border-radius:10px;
-    width:320px;
 }
 
 .search input{
+    background:transparent;
     border:none;
     outline:none;
+    color:var(--text);
     width:100%;
-    background:transparent;
 }
 
 /* CARDS */
@@ -140,7 +144,27 @@ body{
     background:var(--panel);
     border:1px solid var(--border);
     padding:18px;
-    border-radius:12px;
+    border-radius:14px;
+    transition:.2s;
+    position:relative;
+    overflow:hidden;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 0 25px rgba(255,45,45,0.15);
+    border:1px solid rgba(255,45,45,0.25);
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:3px;
+    background:var(--red);
+    box-shadow:0 0 15px var(--redGlow);
 }
 
 .card h3{
@@ -150,16 +174,18 @@ body{
 
 .card p{
     font-size:22px;
+    margin-top:6px;
     font-weight:bold;
-    margin-top:5px;
+    color:var(--text);
 }
 
 /* TABLE */
 .table{
     background:var(--panel);
     border:1px solid var(--border);
-    border-radius:12px;
+    border-radius:14px;
     padding:15px;
+    backdrop-filter: blur(10px);
 }
 
 table{
@@ -169,11 +195,11 @@ table{
 
 th,td{
     padding:12px;
-    text-align:left;
     font-size:14px;
 }
 
 th{
+    text-align:left;
     color:var(--muted);
     border-bottom:1px solid var(--border);
 }
@@ -182,15 +208,29 @@ tr{
     border-bottom:1px solid var(--border);
 }
 
+/* STATUS */
 .status{
     padding:5px 10px;
     border-radius:20px;
     font-size:12px;
+    border:1px solid var(--border);
 }
 
-.success{background:#dcfce7;color:var(--success);}
-.danger{background:#fee2e2;color:var(--danger);}
-.warning{background:#fef3c7;color:var(--warning);}
+.success{
+    color:#22c55e;
+    background:rgba(34,197,94,0.08);
+}
+
+.danger{
+    color:var(--red);
+    background:rgba(255,45,45,0.08);
+    box-shadow:0 0 10px rgba(255,45,45,0.1);
+}
+
+.warning{
+    color:#f59e0b;
+    background:rgba(245,158,11,0.08);
+}
 
 /* RESPONSIVO */
 @media(max-width:1000px){
@@ -214,19 +254,17 @@ tr{
 <div class="sidebar">
 
     <div class="logo">
-        <!-- TROQUE AQUI PELO SEU EMBLEMA -->
-        <img src="https://i.imgur.com/8Km9tLL.png" alt="Eirilar Logo">
-
-        <h1>Eirilar Protection</h1>
-        <span>Security Dashboard</span>
+        <img src="https://i.ibb.co/ZRNVYdnm/eirilar-logo-vermelho.png" alt="Eirilar Logo">
+        <h1>EIRILAR PROTECTION</h1>
+        <span>Security Control Panel</span>
     </div>
 
     <div class="nav">
-        <a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-        <a href="#"><i class="fa-solid fa-shield"></i> Proteção</a>
-        <a href="#"><i class="fa-solid fa-users"></i> Usuários</a>
-        <a href="#"><i class="fa-solid fa-ban"></i> Bloqueios</a>
-        <a href="#"><i class="fa-solid fa-gear"></i> Configurações</a>
+        <a href="#"><i class="fa-solid fa-shield"></i> Overview</a>
+        <a href="#"><i class="fa-solid fa-bolt"></i> Threats</a>
+        <a href="#"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="#"><i class="fa-solid fa-ban"></i> Blocks</a>
+        <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
     </div>
 
 </div>
@@ -234,13 +272,12 @@ tr{
 <!-- MAIN -->
 <div class="main">
 
-    <!-- TOP -->
     <div class="topbar">
-        <h2>Painel de Controle</h2>
+        <h2>Security Dashboard</h2>
 
         <div class="search">
             <i class="fa-solid fa-search"></i>
-            <input placeholder="Buscar IP, usuário, evento...">
+            <input placeholder="Search IP, user, event...">
         </div>
     </div>
 
@@ -248,22 +285,22 @@ tr{
     <div class="cards">
 
         <div class="card">
-            <h3>Pedidos</h3>
+            <h3>Total Orders</h3>
             <p>{{ stats.orders }}</p>
         </div>
 
         <div class="card">
-            <h3>Aprovados</h3>
+            <h3>Approved</h3>
             <p>{{ stats.approved }}</p>
         </div>
 
         <div class="card">
-            <h3>Alertas</h3>
+            <h3>Threat Alerts</h3>
             <p>{{ stats.alerts }}</p>
         </div>
 
         <div class="card">
-            <h3>IPs Bloqueados</h3>
+            <h3>Blocked IPs</h3>
             <p>{{ stats.blocked_ips }}</p>
         </div>
 
@@ -276,17 +313,16 @@ tr{
 
     <!-- TABLE -->
     <div class="table">
-
-        <h3 style="margin-bottom:10px;">Atividades recentes</h3>
+        <h3 style="margin-bottom:10px;">Live Activity</h3>
 
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Usuário</th>
+                    <th>User</th>
                     <th>IP</th>
                     <th>Status</th>
-                    <th>Data</th>
+                    <th>Date</th>
                 </tr>
             </thead>
 
@@ -295,7 +331,7 @@ tr{
                     <td>#1001</td>
                     <td>user_01</td>
                     <td>192.168.0.1</td>
-                    <td><span class="status success">Aprovado</span></td>
+                    <td><span class="status success">Approved</span></td>
                     <td>10/06/2026</td>
                 </tr>
 
@@ -303,7 +339,7 @@ tr{
                     <td>#1002</td>
                     <td>user_02</td>
                     <td>177.10.22.9</td>
-                    <td><span class="status danger">Bloqueado</span></td>
+                    <td><span class="status danger">Blocked</span></td>
                     <td>10/06/2026</td>
                 </tr>
 
@@ -311,7 +347,7 @@ tr{
                     <td>#1003</td>
                     <td>user_03</td>
                     <td>189.55.12.8</td>
-                    <td><span class="status warning">Suspeito</span></td>
+                    <td><span class="status warning">Suspicious</span></td>
                     <td>10/06/2026</td>
                 </tr>
             </tbody>
