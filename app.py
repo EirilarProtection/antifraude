@@ -124,24 +124,38 @@ def dashboard():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    conn = get_connection()
-    cur = conn.cursor()
+    orders = []
 
     try:
-        cur.execute(
-            "SELECT * FROM orders ORDER BY id DESC LIMIT 50"
-        )
-        orders = cur.fetchall()
+        conn = get_connection()
+        cur = conn.cursor()
+
+        try:
+            cur.execute(
+                "SELECT * FROM orders ORDER BY id DESC LIMIT 50"
+            )
+            orders = cur.fetchall()
+        except Exception:
+            orders = []
+
+        cur.close()
+        conn.close()
 
     except Exception:
         orders = []
 
-    cur.close()
-    conn.close()
+    stats = {
+        "orders": len(orders),
+        "approved": 0,
+        "alerts": 0,
+        "blocked_ips": 0,
+        "blocked_devices": 0
+    }
 
     return render_template(
         "dashboard.html",
-        orders=orders
+        orders=orders,
+        stats=stats
     )
 
 
