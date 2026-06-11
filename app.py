@@ -126,31 +126,72 @@ def dashboard():
 
     orders = []
 
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
-
-        try:
-            cur.execute(
-                "SELECT * FROM orders ORDER BY id DESC LIMIT 50"
-            )
-            orders = cur.fetchall()
-        except Exception:
-            orders = []
-
-        cur.close()
-        conn.close()
-
-    except Exception:
-        orders = []
-
     stats = {
-        "orders": len(orders),
+        "orders": 0,
         "approved": 0,
         "alerts": 0,
         "blocked_ips": 0,
         "blocked_devices": 0
     }
+
+    try:
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        # PEDIDOS
+        try:
+            cur.execute(
+                "SELECT * FROM orders ORDER BY id DESC LIMIT 50"
+            )
+            orders = cur.fetchall()
+
+            stats["orders"] = len(orders)
+
+        except Exception:
+            orders = []
+
+        # APROVADOS
+        try:
+            cur.execute(
+                "SELECT COUNT(*) FROM orders WHERE status='Aprovado'"
+            )
+            stats["approved"] = cur.fetchone()[0]
+        except Exception:
+            pass
+
+        # ALERTAS
+        try:
+            cur.execute(
+                "SELECT COUNT(*) FROM orders WHERE status='Suspeito'"
+            )
+            stats["alerts"] = cur.fetchone()[0]
+        except Exception:
+            pass
+
+        # IPS BLOQUEADOS
+        try:
+            cur.execute(
+                "SELECT COUNT(*) FROM blacklist_ips"
+            )
+            stats["blocked_ips"] = cur.fetchone()[0]
+        except Exception:
+            pass
+
+        # DEVICES BLOQUEADOS
+        try:
+            cur.execute(
+                "SELECT COUNT(*) FROM blocked_devices"
+            )
+            stats["blocked_devices"] = cur.fetchone()[0]
+        except Exception:
+            pass
+
+        cur.close()
+        conn.close()
+
+    except Exception:
+        pass
 
     return render_template(
         "dashboard.html",
@@ -195,8 +236,10 @@ def analyze():
                 "SELECT 1 FROM blacklist_cpfs WHERE cpf=%s",
                 (cpf,)
             )
+
             if cur.fetchone():
                 score += 100
+
         except:
             pass
 
@@ -205,8 +248,10 @@ def analyze():
                 "SELECT 1 FROM blacklist_emails WHERE email=%s",
                 (email,)
             )
+
             if cur.fetchone():
                 score += 80
+
         except:
             pass
 
@@ -215,8 +260,10 @@ def analyze():
                 "SELECT 1 FROM blacklist_ips WHERE ip=%s",
                 (ip,)
             )
+
             if cur.fetchone():
                 score += 80
+
         except:
             pass
 
@@ -234,8 +281,10 @@ def analyze():
 
     if score >= 80:
         status = "Suspeito"
+
     elif score >= 40:
         status = "Revisão"
+
     else:
         status = "Aprovado"
 
