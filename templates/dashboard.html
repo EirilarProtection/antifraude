@@ -1,190 +1,542 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body>
 
-<title>Eirilar Protection</title>
+<div class="sidebar">
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+```
+<div class="logo-box">
+    <img src="https://i.ibb.co/N6xvdtss/eirilar-logo-vermelho.png">
+</div>
 
-<style>
+<div class="menu">
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Segoe UI,sans-serif;
+    <a href="#" class="active">
+        <i class="fas fa-chart-line"></i>
+        Dashboard
+    </a>
+
+    <a href="#">
+        <i class="fas fa-cart-shopping"></i>
+        Pedidos
+    </a>
+
+    <a href="#">
+        <i class="fas fa-shield-halved"></i>
+        Score de Risco
+    </a>
+
+    <a href="#">
+        <i class="fas fa-triangle-exclamation"></i>
+        Alertas
+    </a>
+
+    <a href="#">
+        <i class="fas fa-mobile-screen"></i>
+        Dispositivos
+    </a>
+
+    <a href="#">
+        <i class="fas fa-ban"></i>
+        IPs Bloqueados
+    </a>
+
+    <a href="#">
+        <i class="fas fa-user-lock"></i>
+        Blacklists
+    </a>
+
+</div>
+```
+
+</div>
+
+<div class="main">
+
+<div class="header">
+
+```
+<div>
+
+    <h2>EIRILAR PROTECTION</h2>
+
+    <p>
+        Central Inteligente de Proteção Anti-Fraude
+    </p>
+
+</div>
+
+<div class="header-right">
+
+    <select class="filter">
+        <option>Últimos 7 dias</option>
+        <option>Últimos 30 dias</option>
+        <option>Últimos 90 dias</option>
+    </select>
+
+    <div class="user-box">
+
+        <div class="avatar">
+            <i class="fas fa-user"></i>
+        </div>
+
+        <span class="username">
+            {{ session['user'] }}
+        </span>
+
+        <a href="{{ url_for('logout') }}"
+           class="logout">
+           Sair
+        </a>
+
+    </div>
+
+</div>
+```
+
+</div>
+<div class="cards">
+
+```
+<div class="card card-blue">
+
+    <div class="card-header">
+        <span>Pedidos</span>
+        <i class="fas fa-cart-shopping"></i>
+    </div>
+
+    <h1>{{ stats.orders }}</h1>
+
+    <small>Total de pedidos analisados</small>
+
+</div>
+
+<div class="card card-green">
+
+    <div class="card-header">
+        <span>Aprovados</span>
+        <i class="fas fa-check-circle"></i>
+    </div>
+
+    <h1>{{ stats.approved }}</h1>
+
+    <small>Transações seguras</small>
+
+</div>
+
+<div class="card card-yellow">
+
+    <div class="card-header">
+        <span>Alertas</span>
+        <i class="fas fa-triangle-exclamation"></i>
+    </div>
+
+    <h1>{{ stats.alerts }}</h1>
+
+    <small>Necessitam revisão</small>
+
+</div>
+
+<div class="card card-red">
+
+    <div class="card-header">
+        <span>IPs Bloqueados</span>
+        <i class="fas fa-ban"></i>
+    </div>
+
+    <h1>{{ stats.blocked_ips }}</h1>
+
+    <small>Tentativas bloqueadas</small>
+
+</div>
+
+<div class="card card-purple">
+
+    <div class="card-header">
+        <span>Dispositivos</span>
+        <i class="fas fa-mobile-screen"></i>
+    </div>
+
+    <h1>{{ stats.blocked_devices }}</h1>
+
+    <small>Devices suspeitos</small>
+
+</div>
+```
+
+</div>
+<div class="table-panel">
+
+```
+<h2 style="margin-bottom:20px;">
+    Volume de Análises
+</h2>
+
+<canvas id="fraudChart"></canvas>
+```
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+new Chart(
+document.getElementById('fraudChart'),
+{
+    type:'line',
+
+    data:{
+        labels:[
+            'Seg',
+            'Ter',
+            'Qua',
+            'Qui',
+            'Sex',
+            'Sab',
+            'Dom'
+        ],
+
+        datasets:[{
+
+            label:'Pedidos',
+
+            data:[
+                12,
+                19,
+                8,
+                15,
+                22,
+                17,
+                25
+            ],
+
+            borderWidth:3,
+            tension:0.4
+
+        }]
+    }
+});
+
+</script>
+<!-- PAINEL DE ATIVIDADE -->
+
+<div class="activity-grid">
+
+    <div class="activity-card">
+
+        <div class="activity-header">
+            <h3>Atividade do Sistema</h3>
+            <span class="live-dot"></span>
+        </div>
+
+        <div class="activity-item">
+            <div class="activity-icon green">
+                <i class="fas fa-check"></i>
+            </div>
+
+            <div class="activity-info">
+                <strong>Pedido aprovado</strong>
+                <span>Pagamento validado automaticamente</span>
+            </div>
+
+            <small>Agora</small>
+        </div>
+
+        <div class="activity-item">
+            <div class="activity-icon yellow">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
+
+            <div class="activity-info">
+                <strong>Pedido suspeito</strong>
+                <span>Score antifraude elevado</span>
+            </div>
+
+            <small>2 min</small>
+        </div>
+
+        <div class="activity-item">
+            <div class="activity-icon red">
+                <i class="fas fa-ban"></i>
+            </div>
+
+            <div class="activity-info">
+                <strong>IP bloqueado</strong>
+                <span>Detectada atividade incomum</span>
+            </div>
+
+            <small>8 min</small>
+        </div>
+
+        <div class="activity-item">
+            <div class="activity-icon blue">
+                <i class="fas fa-user-shield"></i>
+            </div>
+
+            <div class="activity-info">
+                <strong>Análise concluída</strong>
+                <span>Motor antifraude processou pedido</span>
+            </div>
+
+            <small>15 min</small>
+        </div>
+
+    </div>
+
+
+    <div class="activity-card">
+
+        <div class="activity-header">
+            <h3>Indicadores</h3>
+        </div>
+
+        <div class="progress-block">
+
+            <div class="progress-top">
+                <span>Taxa de Aprovação</span>
+                <span>94%</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill green-fill"></div>
+            </div>
+
+        </div>
+
+        <div class="progress-block">
+
+            <div class="progress-top">
+                <span>Fraudes Bloqueadas</span>
+                <span>82%</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill red-fill"></div>
+            </div>
+
+        </div>
+
+        <div class="progress-block">
+
+            <div class="progress-top">
+                <span>Alertas Revisados</span>
+                <span>71%</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill yellow-fill"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- TABELA PREMIUM -->
+
+<div class="table-card">
+
+    <div class="table-header">
+
+        <div>
+            <h2>Pedidos Monitorados</h2>
+            <span>Últimas transações analisadas pelo sistema</span>
+        </div>
+
+        <div class="table-actions">
+
+            <input
+                type="text"
+                placeholder="Buscar pedido..."
+                class="search-box"
+            >
+
+            <button class="btn-export">
+                <i class="fas fa-download"></i>
+                Exportar
+            </button>
+
+        </div>
+
+    </div>
+
+    <table>
+
+        <thead>
+
+            <tr>
+                <th>ID Pedido</th>
+                <th>Cliente</th>
+                <th>Valor</th>
+                <th>Score</th>
+                <th>Status</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for order in orders %}
+
+            <tr>
+
+                <td>
+                    <strong>#{{ order[1] }}</strong>
+                </td>
+
+                <td>{{ order[2] }}</td>
+
+                <td>
+                    <strong>R$ {{ order[3] }}</strong>
+                </td>
+
+                <td>
+
+                    {% if order[4] == 'Aprovado' %}
+
+                        <span class="score score-green">
+                            12
+                        </span>
+
+                    {% elif order[4] == 'Suspeito' %}
+
+                        <span class="score score-red">
+                            92
+                        </span>
+
+                    {% else %}
+
+                        <span class="score score-yellow">
+                            55
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if order[4] == 'Aprovado' %}
+
+                        <span class="status approved">
+                            <i class="fas fa-check-circle"></i>
+                            Aprovado
+                        </span>
+
+                    {% elif order[4] == 'Suspeito' %}
+
+                        <span class="status blocked">
+                            <i class="fas fa-ban"></i>
+                            Suspeito
+                        </span>
+
+                    {% else %}
+
+                        <span class="status review">
+                            <i class="fas fa-search"></i>
+                            Revisão
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>{{ order[5] }}</td>
+
+                <td>
+
+                    <div class="action-buttons">
+
+                        <button class="btn-view">
+                            <i class="fas fa-eye"></i>
+                        </button>
+
+                        <button class="btn-edit">
+                            <i class="fas fa-pen"></i>
+                        </button>
+
+                        <button class="btn-delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+/* ================================= */
+/* TABELA PREMIUM */
+/* ================================= */
+
+.table-card{
+    background:#fff;
+    border-radius:22px;
+    padding:25px;
+    margin-top:25px;
+    box-shadow:0 10px 35px rgba(0,0,0,.06);
+    border:1px solid #ececec;
 }
 
-body{
-    background:#f3f4f6;
-    display:flex;
-}
-
-/* SIDEBAR */
-.sidebar{
-    width:240px;
-    height:100vh;
-    background:white;
-    border-right:1px solid #e5e7eb;
-    position:fixed;
-    left:0;
-    top:0;
-}
-
-.logo-box{
-    padding:20px;
-    text-align:center;
-    border-bottom:1px solid #eee;
-}
-
-.logo-box img{
-    max-width:160px;
-}
-
-.menu{
-    padding:15px;
-}
-
-.menu a{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    text-decoration:none;
-    color:#374151;
-    padding:12px;
-    border-radius:10px;
-    margin-bottom:6px;
-    transition:.2s;
-}
-
-.menu a:hover{
-    background:#f3f4f6;
-}
-
-.menu .active{
-    background:#fee2e2;
-    color:#dc2626;
-}
-
-/* MAIN */
-.main{
-    margin-left:240px;
-    width:calc(100% - 240px);
-    padding:20px;
-}
-
-/* HEADER */
-.header{
+.table-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:20px;
+    margin-bottom:25px;
 }
 
-.header p{
+.table-header h2{
+    color:#111827;
+    margin-bottom:5px;
+}
+
+.table-header span{
     color:#6b7280;
-}
-
-.header-right{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.filter{
-    padding:10px 15px;
-    border:1px solid #d1d5db;
-    border-radius:10px;
-}
-
-/* USER */
-.user-box{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.avatar{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    background:#fee2e2;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#dc2626;
-}
-
-.username{
-    font-weight:600;
-    color:#374151;
-}
-
-.logout{
-    background:#e53935;
-    color:#fff;
-    padding:8px 12px;
-    border-radius:8px;
-    text-decoration:none;
-    font-size:13px;
-    font-weight:600;
-}
-
-/* CARDS */
-.cards{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:15px;
-    margin-bottom:20px;
-}
-
-.card{
-    background:white;
-    border-radius:16px;
-    padding:15px;
-    box-shadow:0 1px 4px rgba(0,0,0,.08);
-}
-
-.card-top{
-    display:flex;
-    justify-content:space-between;
-}
-
-.card-title{
     font-size:14px;
-    color:#6b7280;
 }
 
-.card-value{
-    font-size:34px;
-    font-weight:700;
-    margin-top:10px;
-}
-
-.icon{
-    width:48px;
-    height:48px;
-    border-radius:50%;
+.table-actions{
     display:flex;
     align-items:center;
-    justify-content:center;
+    gap:12px;
 }
 
-.blue{background:#dbeafe;color:#2563eb;}
-.red{background:#fee2e2;color:#dc2626;}
-.yellow{background:#fef3c7;color:#d97706;}
-.green{background:#dcfce7;color:#16a34a;}
-.purple{background:#ede9fe;color:#7c3aed;}
+.search-box{
+    height:44px;
+    width:260px;
+    padding:0 15px;
+    border:none;
+    border-radius:12px;
+    background:#f3f4f6;
+    outline:none;
+}
 
-/* TABLE */
-.table-panel{
-    background:white;
-    border-radius:16px;
-    padding:18px;
-    box-shadow:0 1px 4px rgba(0,0,0,.08);
+.search-box:focus{
+    box-shadow:0 0 0 3px rgba(239,68,68,.15);
+}
+
+.btn-export{
+    height:44px;
+    border:none;
+    padding:0 18px;
+    border-radius:12px;
+    background:#dc2626;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn-export:hover{
+    transform:translateY(-2px);
 }
 
 table{
@@ -192,178 +544,224 @@ table{
     border-collapse:collapse;
 }
 
-th{
-    text-align:left;
+thead th{
     background:#f9fafb;
-    padding:12px;
+    color:#374151;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    padding:16px;
 }
 
-td{
-    padding:12px;
-    border-top:1px solid #eee;
+tbody tr{
+    transition:.25s;
 }
 
-.badge{
-    padding:5px 10px;
-    border-radius:20px;
-    font-size:12px;
+tbody tr:hover{
+    background:#fafafa;
+}
+
+tbody td{
+    padding:18px 16px;
+    border-top:1px solid #f1f1f1;
+}
+
+/* SCORE */
+
+.score{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:52px;
+    height:32px;
+    border-radius:30px;
+    font-weight:700;
+    font-size:13px;
+}
+
+.score-green{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.score-yellow{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.score-red{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+/* STATUS */
+
+.status{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 14px;
+    border-radius:30px;
+    font-size:13px;
     font-weight:600;
 }
 
-.ok{background:#dcfce7;color:#166534;}
-.alert{background:#fee2e2;color:#991b1b;}
+.approved{
+    background:#dcfce7;
+    color:#166534;
+}
 
-</style>
-</head>
+.review{
+    background:#fef3c7;
+    color:#92400e;
+}
 
-<body>
+.blocked{
+    background:#fee2e2;
+    color:#991b1b;
+}
 
-<!-- SIDEBAR -->
-<div class="sidebar">
+/* AÇÕES */
+
+.action-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.action-buttons button{
+    width:38px;
+    height:38px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.btn-view{
+    background:#dbeafe;
+    color:#2563eb;
+}
+
+.btn-edit{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+.btn-delete{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.action-buttons button:hover{
+    transform:translateY(-2px);
+}
+
+/* RESPONSIVO */
+
+@media(max-width:1200px){
+
+    .table-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+    .table-actions{
+        width:100%;
+        flex-wrap:wrap;
+    }
+
+    .search-box{
+        width:100%;
+    }
+
+}
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:80px;
+    }
+
+    .main{
+        margin-left:80px;
+        width:calc(100% - 80px);
+    }
+
+    .menu a span{
+        display:none;
+    }
+
+}
+    <div class="sidebar">
 
     <div class="logo-box">
-        <img src="https://i.ibb.co/N6xvdtss/eirilar-logo-vermelho.png">
+
+        <img
+        src="https://i.ibb.co/N6xvdtss/eirilar-logo-vermelho.png"
+        style="max-width:190px;">
+
+        <div class="system-status">
+
+            <span class="status-dot"></span>
+            Sistema Operacional
+
+        </div>
+
     </div>
 
     <div class="menu">
 
-        <a href="#" class="active"><i class="fas fa-chart-line"></i>Dashboard</a>
-        <a href="#"><i class="fas fa-cart-shopping"></i>Pedidos</a>
-        <a href="#"><i class="fas fa-triangle-exclamation"></i>Alertas</a>
-        <a href="#"><i class="fas fa-laptop"></i>Dispositivos</a>
-        <a href="#"><i class="fas fa-ban"></i>IPs Bloqueados</a>
+        <a href="#" class="active">
+            <i class="fas fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
 
+        <a href="#">
+            <i class="fas fa-cart-shopping"></i>
+            <span>Pedidos</span>
+        </a>
+
+        <a href="#">
+            <i class="fas fa-triangle-exclamation"></i>
+            <span>Alertas</span>
+        </a>
+
+        <a href="#">
+            <i class="fas fa-mobile-screen"></i>
+            <span>Dispositivos</span>
+        </a>
+
+        <a href="#">
+            <i class="fas fa-ban"></i>
+            <span>IPs Bloqueados</span>
+        </a>
+
+        <a href="#">
+            <i class="fas fa-user-shield"></i>
+            <span>Blacklist</span>
+        </a>
+
+        <a href="#">
+            <i class="fas fa-file-lines"></i>
+            <span>Logs</span>
+        </a>
+
+        <a href="#">
+            <i class="fas fa-gear"></i>
+            <span>Configurações</span>
+        </a>
+
+    </div>
+<div class="footer-panel">
+
+    <div>
+        © 2026 Eirilar Protection
+    </div>
+
+    <div>
+        Anti-Fraude Engine v2.0
     </div>
 
 </div>
-
-<!-- MAIN -->
-<div class="main">
-
-    <!-- HEADER -->
-    <div class="header">
-
-        <p>Sistema de Proteção Anti-Fraude Eirilar</p>
-
-        <div class="header-right">
-
-            <select class="filter">
-                <option>Últimos 7 dias</option>
-            </select>
-
-            <div class="user-box">
-
-                <div class="avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-
-                <span class="username">
-                    {{ session['user'] }}
-                </span>
-
-                <a href="{{ url_for('logout') }}" class="logout">
-                    Sair
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- CARDS -->
-    <div class="cards">
-
-        <div class="card">
-            <div class="card-top">
-                <span class="card-title">Pedidos</span>
-                <div class="icon blue"><i class="fas fa-cart-shopping"></i></div>
-            </div>
-            <div class="card-value">{{ stats.orders }}</div>
-        </div>
-
-        <div class="card">
-            <div class="card-top">
-                <span class="card-title">Aprovados</span>
-                <div class="icon green"><i class="fas fa-check"></i></div>
-            </div>
-            <div class="card-value">{{ stats.approved }}</div>
-        </div>
-
-        <div class="card">
-            <div class="card-top">
-                <span class="card-title">Alertas</span>
-                <div class="icon yellow"><i class="fas fa-triangle-exclamation"></i></div>
-            </div>
-            <div class="card-value">{{ stats.alerts }}</div>
-        </div>
-
-        <div class="card">
-            <div class="card-top">
-                <span class="card-title">IPs Bloqueados</span>
-                <div class="icon red"><i class="fas fa-ban"></i></div>
-            </div>
-            <div class="card-value">{{ stats.blocked_ips }}</div>
-        </div>
-
-        <div class="card">
-            <div class="card-top">
-                <span class="card-title">Devices</span>
-                <div class="icon purple"><i class="fas fa-mobile-screen"></i></div>
-            </div>
-            <div class="card-value">{{ stats.blocked_devices }}</div>
-        </div>
-
-    </div>
-
-    <!-- TABLE -->
-    <div class="table-panel">
-
-        <h2>Últimos Pedidos</h2>
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>Pedido</th>
-                    <th>Cliente</th>
-                    <th>Valor</th>
-                    <th>Status</th>
-                    <th>Data</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-            {% for order in orders %}
-
-                <tr>
-                    <td>{{ order[1] }}</td>
-                    <td>{{ order[2] }}</td>
-                    <td>R$ {{ order[3] }}</td>
-
-                    <td>
-                        {% if order[4] == 'Aprovado' %}
-                            <span class="badge ok">Aprovado</span>
-                        {% elif order[4] == 'Suspeito' %}
-                            <span class="badge alert">Suspeito</span>
-                        {% else %}
-                            <span class="badge">{{ order[4] }}</span>
-                        {% endif %}
-                    </td>
-
-                    <td>{{ order[5] }}</td>
-                </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
 </div>
-
-</body>
-</html>
