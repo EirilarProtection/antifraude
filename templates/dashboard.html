@@ -3,225 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Eirilar Protection</title>
+<title>Eirilar Protection | Dashboard</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
+:root{
+    --bg:#0f1115;
+    --panel:#151922;
+    --panel2:#1b2130;
+    --text:#e6e6e6;
+    --muted:#9aa4b2;
+    --accent:#4f8cff;
+    --danger:#ff4d4d;
+    --success:#2ecc71;
+    --warning:#f1c40f;
+}
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
+    font-family:Segoe UI, Arial, sans-serif;
 }
 
 body{
-    background:#f5f7fb;
+    background:var(--bg);
+    color:var(--text);
+    display:flex;
 }
 
 /* SIDEBAR */
-
 .sidebar{
-    width:270px;
+    width:260px;
+    background:var(--panel);
     height:100vh;
+    padding:20px;
     position:fixed;
     left:0;
     top:0;
-    background:#fff;
-    border-right:1px solid #ececec;
-    overflow:auto;
 }
 
 .logo{
-    text-align:center;
-    padding:30px 20px;
-    border-bottom:1px solid #eee;
-}
-
-.logo img{
-    width:190px;
-}
-
-.system-online{
-    margin-top:15px;
-    color:#16a34a;
-    font-weight:600;
-    font-size:13px;
-}
-
-.menu{
-    padding:15px;
-}
-
-.menu a{
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:30px;
+    color:var(--accent);
     display:flex;
     align-items:center;
-    gap:12px;
-    padding:14px;
+    gap:10px;
+}
+
+.nav a{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px;
+    color:var(--muted);
     text-decoration:none;
-    color:#374151;
-    border-radius:12px;
-    margin-bottom:6px;
+    border-radius:8px;
+    margin-bottom:8px;
     transition:.2s;
-    font-weight:600;
 }
 
-.menu a:hover{
-    background:#f3f4f6;
-}
-
-.menu .active{
-    background:#fee2e2;
-    color:#dc2626;
+.nav a:hover{
+    background:var(--panel2);
+    color:var(--text);
 }
 
 /* MAIN */
-
 .main{
-    margin-left:270px;
+    margin-left:260px;
     padding:25px;
+    width:100%;
 }
 
-/* HEADER */
-
-.header{
-    background:white;
-    border-radius:20px;
-    padding:20px 25px;
+/* TOPBAR */
+.topbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    box-shadow:0 4px 20px rgba(0,0,0,.05);
+    margin-bottom:20px;
 }
 
-.header h1{
-    color:#111827;
-}
-
-.header p{
-    color:#6b7280;
-    margin-top:5px;
-}
-
-.user{
+.search{
+    background:var(--panel);
+    padding:10px 15px;
+    border-radius:8px;
+    width:300px;
     display:flex;
     align-items:center;
-    gap:15px;
+    gap:10px;
 }
 
-.avatar{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    background:#fee2e2;
-    color:#dc2626;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.logout{
-    background:#dc2626;
-    color:white;
-    text-decoration:none;
-    padding:10px 16px;
-    border-radius:10px;
-    font-weight:600;
+.search input{
+    background:transparent;
+    border:none;
+    outline:none;
+    color:var(--text);
+    width:100%;
 }
 
 /* CARDS */
-
 .cards{
-    margin-top:25px;
     display:grid;
     grid-template-columns:repeat(5,1fr);
-    gap:18px;
+    gap:15px;
+    margin-bottom:20px;
 }
 
 .card{
-    background:white;
-    border-radius:20px;
-    padding:20px;
-    box-shadow:0 4px 20px rgba(0,0,0,.05);
+    background:var(--panel);
+    padding:18px;
+    border-radius:12px;
 }
 
-.card-title{
-    color:#6b7280;
+.card h3{
     font-size:14px;
+    color:var(--muted);
 }
 
-.card-value{
-    font-size:34px;
-    font-weight:700;
-    margin-top:10px;
+.card p{
+    font-size:22px;
+    margin-top:5px;
+    font-weight:bold;
 }
 
-.card.green{
-    border-left:5px solid #16a34a;
-}
-
-.card.red{
-    border-left:5px solid #dc2626;
-}
-
-.card.yellow{
-    border-left:5px solid #d97706;
-}
-
-.card.blue{
-    border-left:5px solid #2563eb;
-}
-
-.card.purple{
-    border-left:5px solid #7c3aed;
-}
-
-/* ALERTAS */
-
-.alerts{
-    margin-top:25px;
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:18px;
-}
-
-.alert-box{
-    background:white;
-    border-radius:18px;
-    padding:20px;
-    box-shadow:0 4px 20px rgba(0,0,0,.05);
-}
-
-.alert-box h3{
-    margin-bottom:10px;
-}
-
-.success{
-    color:#16a34a;
-}
-
-.warning{
-    color:#d97706;
-}
-
-.danger{
-    color:#dc2626;
-}
-
-/* TABELA */
-
-.table-panel{
-    margin-top:25px;
-    background:white;
-    border-radius:20px;
-    padding:25px;
-    box-shadow:0 4px 20px rgba(0,0,0,.05);
-}
-
-.table-title{
-    margin-bottom:20px;
+/* TABLE */
+.table{
+    background:var(--panel);
+    border-radius:12px;
+    padding:15px;
+    overflow-x:auto;
 }
 
 table{
@@ -229,285 +142,145 @@ table{
     border-collapse:collapse;
 }
 
-th{
-    background:#f9fafb;
+th,td{
+    padding:12px;
     text-align:left;
-    padding:15px;
+    font-size:14px;
 }
 
-td{
-    padding:15px;
-    border-top:1px solid #eee;
+th{
+    color:var(--muted);
 }
 
-.badge{
-    padding:7px 12px;
+tr{
+    border-bottom:1px solid #222;
+}
+
+.status{
+    padding:5px 10px;
     border-radius:20px;
     font-size:12px;
-    font-weight:700;
 }
 
-.badge-green{
-    background:#dcfce7;
-    color:#166534;
+.success{background:rgba(46,204,113,.2); color:var(--success);}
+.danger{background:rgba(255,77,77,.2); color:var(--danger);}
+.warning{background:rgba(241,196,15,.2); color:var(--warning);}
+
+/* RESPONSIVO */
+@media(max-width:1000px){
+    .cards{
+        grid-template-columns:repeat(2,1fr);
+    }
+    .sidebar{
+        display:none;
+    }
+    .main{
+        margin-left:0;
+    }
 }
-
-.badge-red{
-    background:#fee2e2;
-    color:#991b1b;
-}
-
-.badge-yellow{
-    background:#fef3c7;
-    color:#92400e;
-}
-
-/* FOOTER */
-
-.footer{
-    margin-top:25px;
-    background:white;
-    border-radius:20px;
-    padding:20px;
-    display:flex;
-    justify-content:space-between;
-    color:#6b7280;
-    box-shadow:0 4px 20px rgba(0,0,0,.05);
-}
-
 </style>
 </head>
 
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
-
     <div class="logo">
-
-        <img src="https://i.ibb.co/N6xvdtss/eirilar-logo-vermelho.png">
-
-        <div class="system-online">
-            ● Sistema Operacional
-        </div>
-
+        <i class="fa-solid fa-shield"></i>
+        Eirilar
     </div>
 
-    <div class="menu">
-
-        <a href="#" class="active">
-            <i class="fas fa-chart-line"></i>
-            Dashboard
-        </a>
-
-        <a href="#">
-            <i class="fas fa-cart-shopping"></i>
-            Pedidos
-        </a>
-
-        <a href="#">
-            <i class="fas fa-triangle-exclamation"></i>
-            Alertas
-        </a>
-
-        <a href="#">
-            <i class="fas fa-mobile-screen"></i>
-            Dispositivos
-        </a>
-
-        <a href="#">
-            <i class="fas fa-ban"></i>
-            IPs Bloqueados
-        </a>
-
-        <a href="#">
-            <i class="fas fa-user-shield"></i>
-            Blacklist
-        </a>
-
-        <a href="#">
-            <i class="fas fa-file-lines"></i>
-            Logs
-        </a>
-
-        <a href="#">
-            <i class="fas fa-gear"></i>
-            Configurações
-        </a>
-
+    <div class="nav">
+        <a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="#"><i class="fa-solid fa-users"></i> Usuários</a>
+        <a href="#"><i class="fa-solid fa-ban"></i> Bloqueios</a>
+        <a href="#"><i class="fa-solid fa-triangle-exclamation"></i> Alertas</a>
+        <a href="#"><i class="fa-solid fa-gear"></i> Configurações</a>
     </div>
-
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
-    <div class="header">
+    <!-- TOP -->
+    <div class="topbar">
+        <h2>Dashboard</h2>
 
-        <div>
-            <h1>Central Anti-Fraude</h1>
-            <p>Monitoramento inteligente em tempo real</p>
+        <div class="search">
+            <i class="fa-solid fa-search"></i>
+            <input placeholder="Buscar IP, usuário, evento...">
         </div>
-
-        <div class="user">
-
-            <div class="avatar">
-                <i class="fas fa-user"></i>
-            </div>
-
-            <strong>{{ session['user'] }}</strong>
-
-            <a href="{{ url_for('logout') }}" class="logout">
-                Sair
-            </a>
-
-        </div>
-
     </div>
 
+    <!-- CARDS -->
     <div class="cards">
-
-        <div class="card blue">
-            <div class="card-title">Pedidos</div>
-            <div class="card-value">{{ stats.orders }}</div>
+        <div class="card">
+            <h3>Pedidos</h3>
+            <p>{{ stats.orders }}</p>
         </div>
 
-        <div class="card green">
-            <div class="card-title">Aprovados</div>
-            <div class="card-value">{{ stats.approved }}</div>
+        <div class="card">
+            <h3>Aprovados</h3>
+            <p>{{ stats.approved }}</p>
         </div>
 
-        <div class="card yellow">
-            <div class="card-title">Alertas</div>
-            <div class="card-value">{{ stats.alerts }}</div>
+        <div class="card">
+            <h3>Alertas</h3>
+            <p>{{ stats.alerts }}</p>
         </div>
 
-        <div class="card red">
-            <div class="card-title">IPs Bloqueados</div>
-            <div class="card-value">{{ stats.blocked_ips }}</div>
+        <div class="card">
+            <h3>IPs Bloqueados</h3>
+            <p>{{ stats.blocked_ips }}</p>
         </div>
 
-        <div class="card purple">
-            <div class="card-title">Devices</div>
-            <div class="card-value">{{ stats.blocked_devices }}</div>
+        <div class="card">
+            <h3>Devices Bloqueados</h3>
+            <p>{{ stats.blocked_devices }}</p>
         </div>
-
     </div>
 
-    <div class="alerts">
-
-        <div class="alert-box">
-            <h3 class="success">✓ Operação Normal</h3>
-            <p>Nenhuma ameaça crítica detectada.</p>
-        </div>
-
-        <div class="alert-box">
-            <h3 class="warning">⚠ Revisão Necessária</h3>
-            <p>Pedidos suspeitos aguardando análise.</p>
-        </div>
-
-        <div class="alert-box">
-            <h3 class="danger">⛔ Riscos Bloqueados</h3>
-            <p>IPs e dispositivos impedidos automaticamente.</p>
-        </div>
-
-    </div>
-
-    <div class="table-panel">
-
-        <h2 class="table-title">Últimos Pedidos</h2>
+    <!-- TABLE -->
+    <div class="table">
+        <h3 style="margin-bottom:10px;">Atividades Recentes</h3>
 
         <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuário</th>
+                    <th>IP</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
 
-           <thead>
-    <tr>
-        <th>Cliente</th>
-        <th>Valor</th>
-        <th>Status</th>
-        <th>IP</th>
-        <th>Dispositivo</th>
-        <th>Data</th>
-    </tr>
-</thead>
+            <tbody>
+                <tr>
+                    <td>#1023</td>
+                    <td>user_01</td>
+                    <td>192.168.0.1</td>
+                    <td><span class="status success">Aprovado</span></td>
+                    <td>10/06/2026</td>
+                </tr>
 
-<tbody>
+                <tr>
+                    <td>#1024</td>
+                    <td>user_02</td>
+                    <td>177.45.22.9</td>
+                    <td><span class="status danger">Bloqueado</span></td>
+                    <td>10/06/2026</td>
+                </tr>
 
-{% for order in orders %}
-
-<tr>
-
-    <td>{{ order[1] }}</td>
-
-    <td>
-        R$ {{ order[2] }}
-    </td>
-
-    <td>
-
-        {% if order[3] == 'Aprovado' %}
-            <span class="badge ok">Aprovado</span>
-
-        {% elif order[3] == 'Suspeito' %}
-            <span class="badge alert">Suspeito</span>
-
-        {% else %}
-            <span class="badge">
-                {{ order[3] }}
-            </span>
-        {% endif %}
-
-    </td>
-
-    <td>{{ order[4] }}</td>
-
-    <td>{{ order[5] }}</td>
-
-    <td>{{ order[6] }}</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-            {% for order in orders %}
-
-            <tr>
-
-                <td>{{ order[1] }}</td>
-                <td>{{ order[2] }}</td>
-                <td>R$ {{ order[3] }}</td>
-
-                <td>
-
-                {% if order[4] == 'Aprovado' %}
-                    <span class="badge badge-green">Aprovado</span>
-
-                {% elif order[4] == 'Suspeito' %}
-                    <span class="badge badge-red">Suspeito</span>
-
-                {% else %}
-                    <span class="badge badge-yellow">{{ order[4] }}</span>
-                {% endif %}
-
-                </td>
-
-                <td>{{ order[5] }}</td>
-
-            </tr>
-
-            {% endfor %}
-
+                <tr>
+                    <td>#1025</td>
+                    <td>user_03</td>
+                    <td>189.10.55.8</td>
+                    <td><span class="status warning">Suspeito</span></td>
+                    <td>10/06/2026</td>
+                </tr>
             </tbody>
-
         </table>
-
-    </div>
-
-    <div class="footer">
-
-        <span>© 2026 Eirilar Protection</span>
-
-        <span>Anti-Fraude Engine v2.0</span>
-
     </div>
 
 </div>
