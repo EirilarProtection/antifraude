@@ -1,198 +1,24 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Login | Painel Anti-Fraude</title>
-
-<style>
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
-    color: #1f2937;
-}
-
-.container {
-    display: flex;
-    height: 100vh;
-}
-
-/* LADO ESQUERDO */
-.left {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: #ffffff;
-    border-right: 1px solid #e5e7eb;
-    text-align: center;
-    padding: 20px;
-}
-
-.logo {
-    width: 220px;
-    margin-bottom: 20px;
-}
-
-.title {
-    font-size: 22px;
-    font-weight: bold;
-    color: #e53935;
-    margin-bottom: 10px;
-}
-
-.subtitle {
-    font-size: 13px;
-    color: #6b7280;
-    max-width: 260px;
-}
-
-/* LADO DIREITO */
-.right {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #f4f6f9;
-}
-
-.card {
-    width: 380px;
-    background: #ffffff;
-    padding: 40px;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.card-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #111827;
-}
-
-form {
-    width: 100%;
-}
-
-input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    background: #f9fafb;
-    color: #111827;
-    outline: none;
-    transition: 0.2s;
-}
-
-input:focus {
-    border: 1px solid #e53935;
-    background: #ffffff;
-}
-
-button {
-    width: 100%;
-    padding: 12px;
-    background: #e53935;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: 0.2s;
-}
-
-button:hover {
-    background: #c62828;
-}
-
-a {
-    color: #e53935;
-    text-decoration: none;
-    font-size: 13px;
-}
-
-.footer {
-    margin-top: 12px;
-    font-size: 12px;
-    color: #6b7280;
-    text-align: center;
-}
-
-.error {
-    color: #dc2626;
-    font-size: 13px;
-    margin-bottom: 10px;
-}
-
-</style>
+<title>Login</title>
 </head>
+<body style="background:#f4f6f9;font-family:Arial;display:flex;justify-content:center;align-items:center;height:100vh;">
 
-<body>
+<div style="background:white;padding:30px;border-radius:10px;width:300px;">
+<h2>Login</h2>
 
-<div class="container">
+{% if error %}
+<p style="color:red">{{ error }}</p>
+{% endif %}
 
-    <!-- ESQUERDA -->
-    <div class="left">
+<form method="POST">
+<input name="username" placeholder="Usuário" style="width:100%;padding:10px;margin:5px 0;">
+<input name="password" type="password" placeholder="Senha" style="width:100%;padding:10px;margin:5px 0;">
+<button style="width:100%;padding:10px;background:#e53935;color:white;border:none;">Entrar</button>
+</form>
 
-        <img class="logo" src="https://i.ibb.co/N6xvdtss/eirilar-logo-vermelho.png">
-
-        <div class="title">Painel Anti-Fraude</div>
-
-        <div class="subtitle">
-            Sistema interno de monitoramento e proteção de transações.
-        </div>
-
-    </div>
-
-    <!-- DIREITA -->
-    <div class="right">
-
-        <div class="card">
-
-            <div class="card-title">Acesso ao Sistema</div>
-
-            <!-- ERRO FLASK -->
-            {% if error %}
-                <div class="error">{{ error }}</div>
-            {% endif %}
-
-            <!-- FORM LOGIN -->
-            <form method="POST" action="{{ url_for('login') }}">
-
-                <input type="text" name="username" placeholder="Usuário" required>
-
-                <input type="password" name="password" placeholder="Senha" required>
-
-                <button type="submit">Entrar</button>
-
-            </form>
-
-            <div style="margin-top: 12px;">
-                <a href="{{ url_for('register') }}">Criar nova conta</a>
-            </div>
-
-            <div class="footer">
-                Acesso restrito à equipe interna
-            </div>
-
-        </div>
-
-    </div>
-
+<a href="/register">Criar conta</a>
 </div>
 
 </body>
