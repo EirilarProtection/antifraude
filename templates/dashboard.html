@@ -3,161 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eirilar Protection Dashboard</title>
+<title>Eirilar Protection</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
 
 :root{
-    --bg:#f5f7fb;
-    --panel:#ffffff;
-    --border:#e6e8ef;
-    --text:#111827;
-    --muted:#6b7280;
+    --bg:#0b1220;
+    --panel:#0f172a;
+    --panel2:#111a2e;
+    --text:#e5e7eb;
+    --muted:#94a3b8;
 
-    --blue:#2563eb;
-    --green:#16a34a;
-    --red:#dc2626;
-    --yellow:#d97706;
+    --red:#ef4444;
+    --green:#22c55e;
+    --yellow:#f59e0b;
+    --blue:#3b82f6;
 }
 
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Segoe UI, Arial, sans-serif;
+    font-family:Segoe UI, Arial;
 }
 
 body{
-    background:var(--bg);
+    background:radial-gradient(circle at top, #0f172a, #0b1220);
     color:var(--text);
     display:flex;
 }
 
 /* SIDEBAR */
 .sidebar{
-    width:260px;
+    width:270px;
     height:100vh;
-    background:var(--panel);
-    border-right:1px solid var(--border);
-    padding:20px;
     position:fixed;
-}
-
-.logo{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-bottom:25px;
+    background:rgba(15,23,42,0.7);
+    backdrop-filter: blur(12px);
+    border-right:1px solid rgba(255,255,255,0.05);
+    padding:20px;
 }
 
 .logo img{
     width:85px;
-    height:auto; /* 🔥 corrige distorção */
+    margin-bottom:10px;
 }
 
-.logo h1{
-    font-size:16px;
-    color:var(--text);
-}
-
-.logo span{
-    font-size:12px;
-    color:var(--muted);
-}
+.logo h1{font-size:16px;}
+.logo span{font-size:12px;color:var(--muted);}
 
 .nav a{
     display:flex;
-    align-items:center;
     gap:10px;
     padding:12px;
+    margin-top:8px;
     border-radius:10px;
     text-decoration:none;
     color:var(--muted);
-    margin-bottom:8px;
-    transition:.2s;
 }
 
 .nav a:hover{
-    background:#f3f4f6;
-    color:var(--text);
+    background:rgba(59,130,246,0.15);
+    color:#fff;
 }
 
 /* MAIN */
 .main{
-    margin-left:260px;
-    width:100%;
+    margin-left:270px;
     padding:25px;
+    width:100%;
 }
 
 /* TOP */
 .topbar{
     display:flex;
     justify-content:space-between;
-    align-items:center;
     margin-bottom:20px;
 }
 
 .search{
-    background:#fff;
-    border:1px solid var(--border);
+    background:rgba(255,255,255,0.05);
     padding:10px 12px;
-    border-radius:10px;
-    width:320px;
+    border-radius:12px;
+    width:340px;
     display:flex;
     gap:10px;
-    align-items:center;
 }
 
 .search input{
+    background:none;
     border:none;
     outline:none;
+    color:#fff;
     width:100%;
 }
 
 /* CARDS */
 .cards{
     display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:15px;
+    grid-template-columns:repeat(6,1fr);
+    gap:12px;
     margin-bottom:20px;
 }
 
 .card{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:16px;
+    background:linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.05);
+    padding:14px;
+    border-radius:14px;
 }
 
-.card h3{
-    font-size:13px;
-    color:var(--muted);
-}
+.card h3{font-size:12px;color:var(--muted);}
+.card p{font-size:20px;margin-top:5px;}
 
-.card p{
-    font-size:22px;
-    margin-top:5px;
-}
+.icon{font-size:18px;margin-bottom:6px;}
+.red{color:var(--red);}
+.green{color:var(--green);}
+.yellow{color:var(--yellow);}
+.blue{color:var(--blue);}
 
-/* ICON COLORS */
-.icon{
-    font-size:18px;
-    margin-bottom:8px;
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:2.2fr 1fr;
+    gap:18px;
 }
-
-.approved{color:var(--green);}
-.blocked{color:var(--red);}
-.alert{color:var(--yellow);}
-.info{color:var(--blue);}
 
 /* TABLE */
 .table{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:15px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.05);
+    border-radius:14px;
+    padding:18px;
 }
 
 table{
@@ -166,45 +145,52 @@ table{
 }
 
 th,td{
-    padding:12px;
-    text-align:left;
-    font-size:14px;
+    padding:10px;
+    font-size:13px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
 th{
     color:var(--muted);
-    border-bottom:1px solid var(--border);
+    text-transform:uppercase;
+    font-size:11px;
 }
 
-tr{
-    border-bottom:1px solid var(--border);
-}
-
-/* STATUS */
-.status{
-    padding:5px 10px;
+/* BADGES */
+.badge{
+    padding:4px 10px;
     border-radius:20px;
-    font-size:12px;
+    font-size:11px;
 }
 
-.s-ok{background:#dcfce7;color:var(--green);}
-.s-bad{background:#fee2e2;color:var(--red);}
-.s-warn{background:#fef3c7;color:var(--yellow);}
+.ok{background:rgba(34,197,94,0.15);color:var(--green);}
+.bad{background:rgba(239,68,68,0.15);color:var(--red);}
+.warn{background:rgba(245,158,11,0.15);color:var(--yellow);}
 
-/* BOTÃO BLOQUEAR */
-.btn-block{
-    background:var(--red);
-    color:#fff;
-    border:none;
-    padding:6px 10px;
+/* ALERTS */
+.alert-box{
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.05);
+    border-radius:14px;
+    padding:18px;
+}
+
+.alert{
+    padding:10px;
+    margin-bottom:10px;
+    border-left:3px solid var(--red);
+    background:rgba(255,255,255,0.02);
     border-radius:8px;
-    cursor:pointer;
     font-size:12px;
-    transition:.2s;
 }
 
-.btn-block:hover{
-    opacity:.85;
+/* SMALL LABEL */
+.tag{
+    font-size:10px;
+    padding:3px 8px;
+    border-radius:20px;
+    background:rgba(59,130,246,0.15);
+    color:var(--blue);
 }
 
 </style>
@@ -216,17 +202,19 @@ tr{
 <div class="sidebar">
 
     <div class="logo">
-        <!-- LOGO CORRETO SEM DISTORÇÃO -->
-        <img src="https://i.ibb.co/ZRNVYdnm/eirilar-logo-vermelho.png" alt="Eirilar Logo">
+        <img src="https://i.ibb.co/ZRNVYdnm/eirilar-logo-vermelho.png">
         <h1>Eirilar Protection</h1>
-        <span>Security Control Panel</span>
+        <span>Fraud Intelligence System</span>
     </div>
 
     <div class="nav">
-        <a href="#"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
-        <a href="#"><i class="fa-solid fa-shield"></i> Proteção</a>
-        <a href="#"><i class="fa-solid fa-ban"></i> Bloqueios</a>
-        <a href="#"><i class="fa-solid fa-gear"></i> Configurações</a>
+        <a href="#"><i class="fa fa-chart-line"></i> Dashboard</a>
+        <a href="#"><i class="fa fa-users"></i> Users</a>
+        <a href="#"><i class="fa fa-box"></i> Orders</a>
+        <a href="#"><i class="fa fa-shield"></i> Risk Center</a>
+        <a href="#"><i class="fa fa-file"></i> Logs</a>
+        <a href="#"><i class="fa fa-ban"></i> Blacklist</a>
+        <a href="#"><i class="fa fa-gear"></i> Rules</a>
     </div>
 
 </div>
@@ -238,8 +226,8 @@ tr{
         <h2>Dashboard</h2>
 
         <div class="search">
-            <i class="fa-solid fa-search"></i>
-            <input placeholder="Buscar IP, usuário...">
+            <i class="fa fa-search"></i>
+            <input placeholder="Search IP, user, device...">
         </div>
     </div>
 
@@ -247,82 +235,91 @@ tr{
     <div class="cards">
 
         <div class="card">
-            <div class="icon approved"><i class="fa-solid fa-circle-check"></i></div>
-            <h3>Aprovados</h3>
-            <p>{{ stats.approved }}</p>
+            <div class="icon blue"><i class="fa fa-users"></i></div>
+            <h3>Users</h3>
+            <p>{{ stats.users }}</p>
         </div>
 
         <div class="card">
-            <div class="icon blocked"><i class="fa-solid fa-ban"></i></div>
-            <h3>Bloqueados</h3>
-            <p>{{ stats.blocked_ips }}</p>
-        </div>
-
-        <div class="card">
-            <div class="icon alert"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <h3>Alertas</h3>
-            <p>{{ stats.alerts }}</p>
-        </div>
-
-        <div class="card">
-            <div class="icon info"><i class="fa-solid fa-users"></i></div>
-            <h3>Usuários</h3>
+            <div class="icon blue"><i class="fa fa-box"></i></div>
+            <h3>Orders</h3>
             <p>{{ stats.orders }}</p>
         </div>
 
         <div class="card">
-            <div class="icon blocked"><i class="fa-solid fa-desktop"></i></div>
-            <h3>Devices Bloqueados</h3>
-            <p>{{ stats.blocked_devices }}</p>
+            <div class="icon red"><i class="fa fa-triangle-exclamation"></i></div>
+            <h3>High Risk</h3>
+            <p>{{ stats.high_risk }}</p>
+        </div>
+
+        <div class="card">
+            <div class="icon red"><i class="fa fa-ban"></i></div>
+            <h3>Blocked</h3>
+            <p>{{ stats.blocked }}</p>
+        </div>
+
+        <div class="card">
+            <div class="icon yellow"><i class="fa fa-wifi"></i></div>
+            <h3>VPN</h3>
+            <p>{{ stats.vpn }}</p>
+        </div>
+
+        <div class="card">
+            <div class="icon red"><i class="fa fa-bell"></i></div>
+            <h3>Alerts</h3>
+            <p>{{ stats.alerts }}</p>
         </div>
 
     </div>
 
-    <!-- TABLE -->
-    <div class="table">
+    <div class="grid">
 
-        <h3 style="margin-bottom:10px;">Atividades recentes</h3>
+        <!-- USERS TABLE -->
+        <div class="table">
 
-        <table>
-            <thead>
+            <h3>High Risk Users <span class="tag">live data</span></h3><br>
+
+            <table>
                 <tr>
-                    <th>ID</th>
-                    <th>Usuário</th>
-                    <th>IP</th>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Score</th>
                     <th>Status</th>
-                    <th>Ação</th>
                 </tr>
-            </thead>
 
-            <tbody>
-
+                {% for u in users %}
                 <tr>
-                    <td>#1001</td>
-                    <td>user_01</td>
-                    <td>192.168.0.1</td>
-                    <td><span class="status s-ok">Aprovado</span></td>
-                    <td><button class="btn-block">Bloquear IP</button></td>
+                    <td>{{ u.full_name }}</td>
+                    <td>{{ u.city }}</td>
+                    <td>{{ u.risk_score }}</td>
+                    <td>
+                        {% if u.risk_score >= 70 %}
+                            <span class="badge bad">HIGH</span>
+                        {% elif u.risk_score >= 40 %}
+                            <span class="badge warn">MED</span>
+                        {% else %}
+                            <span class="badge ok">LOW</span>
+                        {% endif %}
+                    </td>
                 </tr>
+                {% endfor %}
+            </table>
 
-                <tr>
-                    <td>#1002</td>
-                    <td>user_02</td>
-                    <td>177.10.22.9</td>
-                    <td><span class="status s-bad">Bloqueado</span></td>
-                    <td><button class="btn-block">Bloquear IP</button></td>
-                </tr>
+        </div>
 
-                <tr>
-                    <td>#1003</td>
-                    <td>user_03</td>
-                    <td>189.55.12.8</td>
-                    <td><span class="status s-warn">Suspeito</span></td>
-                    <td><button class="btn-block">Bloquear IP</button></td>
-                </tr>
+        <!-- RISK CENTER -->
+        <div class="alert-box">
 
-            </tbody>
+            <h3>Risk Center</h3><br>
 
-        </table>
+            {% for a in alerts %}
+            <div class="alert">
+                <b>{{ a.action }}</b><br>
+                {{ a.details }}
+            </div>
+            {% endfor %}
+
+        </div>
 
     </div>
 
