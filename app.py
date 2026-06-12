@@ -1,59 +1,90 @@
 import os
-from flask import Flask
-from sqlalchemy import create_engine
+from flask import Flask, render_template, request, jsonify
+from sqlalchemy import create_engine, text
+from datetime import datetime
 
 app = Flask(__name__)
 
+# =========================
+# DATABASE RAILWAY
+# =========================
 DB_URL = os.getenv("DATABASE_URL")
 
 if not DB_URL:
     raise Exception("DATABASE_URL não configurada no Railway")
 
-if not DB_URL.startswith("postgresql://"):
-    raise Exception("DATABASE_URL inválida")
+# compatibilidade Railway
+if DB_URL.startswith("postgres://"):
+    DB_URL = DB_URL.replace("postgres://", "postgresql://")
 
 engine = create_engine(DB_URL, pool_pre_ping=True)
 
-print("Banco conectado com sucesso")
+# =========================
+# INIT DB (cria tabela se não existir)
+# =========================
+def init_db():
+    with engine.begin() as conn:
+        conn.execute(text("""
+        CREATE TABLE IF NOT EXISTS logs (
+            id SERIAL PRIMARY KEY,
+            ip TEXT,
+            user_agent TEXT,
+            path TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """))
 
-# ---------------- DASHBOARD ----------------
+init_db()
+
+
+# =========================
+# MIDDLEWARE ANTIFRAUDE SIMPLES
+# =========================
+@app.before_request
+def log_request():
+    try:
+        ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+        ua = request.headers.get("User-Agent")
+        path = request.path
+
+        with engine.begin() as conn:
+            conn.execute(text("""
+                INSERT INTO logs (ip, user_agent, path)
+                VALUES (:ip, :ua, :path)
+            """), {"ip": ip, "ua": ua, "path": path})
+
+    except Exception as e:
+        print("Erro log:", e)
+
+
+# =========================
+# DASHBOARD
+# =========================
 @app.route("/")
 def dashboard():
-
     with engine.connect() as conn:
+        logs = conn.execute(text("""
+            SELECT * FROM logs
+            ORDER BY id DESC
+            LIMIT 50
+        """)).fetchall()
 
-        users = conn.execute(text("SELECT * FROM users ORDER BY id DESC LIMIT 10")).mappings().all()
-
-        stats = {
-            "users": conn.execute(text("SELECT COUNT(*) FROM users")).scalar(),
-            "orders": conn.execute(text("SELECT COUNT(*) FROM orders")).scalar(),
-            "logs": conn.execute(text("SELECT COUNT(*) FROM audit_logs")).scalar(),
-            "login_history": conn.execute(text("SELECT COUNT(*) FROM login_history")).scalar(),
-            "notes": conn.execute(text("SELECT COUNT(*) FROM user_notes")).scalar(),
-
-            # extras
-            "high_risk": conn.execute(text("SELECT COUNT(*) FROM users WHERE risk_score >= 70")).scalar(),
-            "blocked": conn.execute(text("SELECT COUNT(*) FROM users WHERE account_status = 'blocked'")).scalar(),
-            "vpn": conn.execute(text("SELECT COUNT(*) FROM users WHERE vpn_detected = true")).scalar(),
-            "alerts": conn.execute(text("SELECT COUNT(*) FROM audit_logs")).scalar(),
-        }
-
-        alerts = conn.execute(text("""
-            SELECT action, details, created_at
-            FROM audit_logs
-            ORDER BY created_at DESC
-            LIMIT 5
-        """)).mappings().all()
-
-    return render_template(
-        "dashboard.html",
-        stats=stats,
-        users=users,
-        alerts=alerts
-    )
+    return render_template("dashboard.html", logs=logs)
 
 
-# ---------------- START ----------------
+# =========================
+# API STATUS
+# =========================
+@app.route("/api/status")
+def status():
+    return jsonify({
+        "status": "ok",
+        "time": str(datetime.utcnow())
+    })
+
+
+# =========================
+# RUN
+# =========================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=5000, debug=True)
