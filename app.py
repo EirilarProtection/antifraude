@@ -1,17 +1,20 @@
 import os
-from flask import Flask, render_template
-from sqlalchemy import create_engine, text
+from flask import Flask
+from sqlalchemy import create_engine
 
 app = Flask(__name__)
 
-# 🔐 DATABASE DO RAILWAY
 DB_URL = os.getenv("DATABASE_URL")
 
-# 🔧 correção obrigatória do postgres
-if DB_URL.startswith("postgresql://"):
-    DB_URL = DB_URL.replace("postgresql://", "postgresql+psycopg2://")
+if not DB_URL:
+    raise Exception("DATABASE_URL não configurada no Railway")
+
+if not DB_URL.startswith("postgresql://"):
+    raise Exception("DATABASE_URL inválida")
 
 engine = create_engine(DB_URL, pool_pre_ping=True)
+
+print("Banco conectado com sucesso")
 
 # ---------------- DASHBOARD ----------------
 @app.route("/")
