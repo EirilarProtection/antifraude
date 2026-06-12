@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 # 🔐 Railway usa variável de ambiente
-DB_URL = os.getenv("DATABASE_URL")
+DB_URL = os.getenv("postgresql://postgres:OfEYKNGiqqhUOhsNlwuYyxRzrMiiLsIj@acela.proxy.rlwy.net:22734/railway")
 
 def get_conn():
     return psycopg2.connect(DB_URL)
