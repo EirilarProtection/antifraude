@@ -1,80 +1,45 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Antifraude Dashboard</title>
-
-<style>
-body {
-    margin:0;
-    font-family: Arial;
-    background:#0f172a;
-    color:white;
-}
-
-.container {
-    padding:30px;
-}
-
-h1 {
-    color:#38bdf8;
-}
-
-.table {
-    width:100%;
-    border-collapse: collapse;
-    margin-top:20px;
-}
-
-.table th, .table td {
-    border:1px solid #334155;
-    padding:10px;
-    text-align:left;
-}
-
-.table th {
-    background:#1e293b;
-}
-
-.card {
-    background:#1e293b;
-    padding:15px;
-    border-radius:10px;
-    margin-bottom:20px;
-}
-</style>
-
+    <title>Antifraud Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-<div class="container">
 
-<h1>Antifraude System</h1>
+<h1>Security Dashboard</h1>
 
-<div class="card">
-    Logs em tempo real do sistema
+<div>
+    <h3>Users: <span id="users"></span></h3>
+    <h3>Logins: <span id="logins"></span></h3>
+    <h3>High Risk: <span id="risk"></span></h3>
 </div>
 
-<table class="table">
-    <tr>
-        <th>ID</th>
-        <th>IP</th>
-        <th>User-Agent</th>
-        <th>Rota</th>
-        <th>Data</th>
-    </tr>
+<hr>
 
-    {% for log in logs %}
-    <tr>
-        <td>{{ log.id }}</td>
-        <td>{{ log.ip }}</td>
-        <td>{{ log.user_agent }}</td>
-        <td>{{ log.path }}</td>
-        <td>{{ log.created_at }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<h2>Recent Logins</h2>
+<ul id="loginsList"></ul>
 
-</div>
+<script>
+fetch("/api/stats")
+.then(r => r.json())
+.then(d => {
+    document.getElementById("users").innerText = d.users;
+    document.getElementById("logins").innerText = d.logins;
+    document.getElementById("risk").innerText = d.high_risk;
+});
+
+fetch("/api/logins")
+.then(r => r.json())
+.then(data => {
+    const list = document.getElementById("loginsList");
+
+    data.forEach(l => {
+        const li = document.createElement("li");
+        li.innerText = `User ${l.user_id} | ${l.ip} | ${l.country} | ${l.browser}`;
+        list.appendChild(li);
+    });
+});
+</script>
+
 </body>
 </html>
