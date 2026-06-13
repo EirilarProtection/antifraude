@@ -1,21 +1,27 @@
 import os
-from flask import Flask, render_template
-from sqlalchemy import create_engine, text
+from flask import Flask, render_template, jsonify
+from sqlalchemy import create_engine
 
 app = Flask(__name__)
 
-# pegar variável do Railway
-DB_URL = os.environ.get("DATABASE_URL")
+# pega variável de ambiente
+DB_URL = os.getenv("DATABASE_URL")
 
-# validação segura (NUNCA deixa None quebrar o app)
+# Railway já fornece isso, mas às vezes o Gunicorn inicia antes do env carregar corretamente
 if not DB_URL:
-    raise Exception("DATABASE_URL não encontrada no ambiente do Railway")
+    DB_URL = os.getenv("POSTGRES_URL") or os.getenv("DATABASE_PUBLIC_URL")
 
-# Railway às vezes usa postgres:// -> corrigir para SQLAlchemy
-if DB_URL.startswith("postgres://"):
-    DB_URL = DB_URL.replace("postgres://", "postgresql://")
+# se ainda não existir, NÃO derruba o app
+if not DB_URL:
+    print("⚠️ DATABASE_URL não encontrada. Rodando sem banco.")
+    engine = None
+else:
+    # corrigir formato antigo
+    if DB_URL.startswith("postgres://"):
+        DB_URL = DB_URL.replace("postgres://", "postgresql://")
 
-engine = create_engine(DB_URL, pool_pre_ping=True)
+    engine = create_engine(DB_URL, pool_pre_ping=True)
+
 
 @app.route("/")
 def dashboard():
@@ -24,4 +30,20 @@ def dashboard():
 
 @app.route("/health")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "database": "connected" if engine else "missing"
+    }
+
+
+@app.route("/test-db")
+def test_db():
+    if not engine:
+        return jsonify({"error": "sem conexão com banco"}), 500
+
+    try:
+        with engine.connect() as conn:
+            conn.execute("SELECT 1")
+        return {"db": "ok"}
+    except Exception as e:
+        return {"db": "error", "detail": str(e)}
