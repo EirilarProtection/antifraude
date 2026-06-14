@@ -4,7 +4,10 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY")
+
+# 🔑 SECRET KEY (seguro + não quebra se Railway não estiver setado ainda)
+app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key_change_me")
+
 
 # ==================================================
 # HOME
@@ -96,7 +99,7 @@ def register():
 
         except Exception as e:
             print("ERRO REGISTER:", e)
-            return render_template("register.html", error=str(e))
+            return render_template("register.html", error="Erro ao criar conta")
 
     return render_template("register.html")
 
@@ -124,32 +127,37 @@ def login():
 
             user = cur.fetchone()
 
-           if user and user[2] == password:
+            # valida usuário
+            if user and user[2] == password:
 
-    session.permanent = True
-    session["user_id"] = user[0]
-    session["username"] = user[1]
+                # 🔐 session
+                session["user_id"] = user[0]
+                session["username"] = user[1]
 
-    cur.execute("""
-        INSERT INTO login_history (
-            user_id,
-            ip_address,
-            country,
-            browser,
-            operating_system,
-            login_date
-        )
-        VALUES (%s, %s, %s, %s, %s, NOW())
-    """, (
-        user[0],
-        request.remote_addr,
-        "BR",
-        request.headers.get("User-Agent"),
-        "Unknown"
-    ))
+                # log login (antifraude simples)
+                cur.execute("""
+                    INSERT INTO login_history (
+                        user_id,
+                        ip_address,
+                        country,
+                        browser,
+                        operating_system,
+                        login_date
+                    )
+                    VALUES (%s, %s, %s, %s, %s, NOW())
+                """, (
+                    user[0],
+                    request.remote_addr,
+                    "BR",
+                    request.headers.get("User-Agent"),
+                    "Unknown"
+                ))
 
-    conn.commit()
-    return redirect("/dashboard")
+                conn.commit()
+                cur.close()
+                conn.close()
+
+                return redirect("/dashboard")
 
             cur.close()
             conn.close()
@@ -158,7 +166,7 @@ def login():
 
         except Exception as e:
             print("ERRO LOGIN:", e)
-            return render_template("login.html", error=str(e))
+            return render_template("login.html", error="Erro interno no login")
 
     return render_template("login.html")
 
