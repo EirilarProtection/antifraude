@@ -26,70 +26,22 @@ def home():
 def register():
 
     if request.method == "POST":
-
         try:
+            print("🔵 REGISTER INICIO")
+
             username = request.form["username"]
-            first_name = request.form["first_name"]
-            last_name = request.form["last_name"]
             email = request.form["email"]
-            birthdate = request.form["birthdate"]
             password = request.form["password"]
 
-            full_name = f"{first_name} {last_name}"
+            print("DADOS RECEBIDOS OK")
 
             conn = get_conn()
             cur = conn.cursor()
 
-            # verifica duplicado
-            cur.execute("""
-                SELECT id FROM users
-                WHERE username=%s OR email=%s
-            """, (username, email))
+            print("CONEXAO OK")
 
-            if cur.fetchone():
-                return render_template("register.html", error="Usuário ou email já existe")
-
-            # insert user
-            cur.execute("""
-                INSERT INTO users (
-                    username,
-                    email,
-                    full_name,
-                    birthdate,
-                    password_hash,
-                    risk_score,
-                    risk_level,
-                    account_status,
-                    failed_logins,
-                    login_count,
-                    vpn_detected,
-                    trusted_user,
-                    fraud_attempts,
-                    email_verified,
-                    phone_verified,
-                    created_at
-                )
-                VALUES (
-                    %s,%s,%s,%s,%s,
-                    0,
-                    'Baixo',
-                    'Ativo',
-                    0,
-                    0,
-                    FALSE,
-                    FALSE,
-                    0,
-                    FALSE,
-                    FALSE,
-                    NOW()
-                )
-            """, (
-                username,
-                email,
-                full_name,
-                birthdate,
-                password
-            ))
+            cur.execute("SELECT 1")
+            print("QUERY OK")
 
             conn.commit()
             cur.close()
@@ -98,8 +50,8 @@ def register():
             return redirect("/login")
 
         except Exception as e:
-            print("ERRO REGISTER:", e)
-            return render_template("register.html", error="Erro ao criar conta")
+            print("🔥 ERRO REGISTER:", str(e))
+            return render_template("register.html", error=str(e))
 
     return render_template("register.html")
 
