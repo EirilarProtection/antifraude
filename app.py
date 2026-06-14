@@ -168,8 +168,9 @@ def login():
             return render_template("login.html", error="Login inválido")
 
         except Exception as e:
-            print("ERRO LOGIN:", e)
-            return render_template("login.html", error="Erro interno no login")
+except Exception as e:
+    print("🔥 ERRO REAL LOGIN:", str(e))
+    raise e
 
     return render_template("login.html")
 
