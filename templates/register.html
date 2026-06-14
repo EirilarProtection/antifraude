@@ -1,8 +1,137 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Eirilar Security - Cadastro</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#f5f6fa;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+}
+
+.card{
+    width:100%;
+    max-width:500px;
+    background:#fff;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 35px rgba(0,0,0,.08);
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo img{
+    width:220px;
+}
+
+h2{
+    text-align:center;
+    color:#c62828;
+    margin-bottom:25px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:15px;
+}
+
+input:focus{
+    border-color:#c62828;
+    outline:none;
+}
+
+button{
+    width:100%;
+    background:#c62828;
+    color:#fff;
+    border:none;
+    padding:14px;
+    border-radius:10px;
+    font-size:15px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#a71d1d;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+}
+
+.footer a{
+    text-decoration:none;
+    color:#c62828;
+    font-weight:600;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+```
+<div class="logo">
+    <img src="{{ url_for('static', filename='img/eirilar-logo.png') }}">
+</div>
+
+<h2>Criar Conta</h2>
+
 <form method="POST">
-    <h2>Register</h2>
-    <input name="email" placeholder="Email" required>
-    <input name="password" type="password" placeholder="Password" required>
-    <button type="submit">Register</button>
+
+    <input type="text" name="username" placeholder="Usuário" required>
+
+    <input type="text" name="first_name" placeholder="Nome" required>
+
+    <input type="text" name="last_name" placeholder="Sobrenome" required>
+
+    <input type="email" name="email" placeholder="E-mail" required>
+
+    <input type="date" name="birthdate" required>
+
+    <input type="password" name="password" placeholder="Senha" required>
+
+    <button type="submit">
+        Registrar
+    </button>
+
 </form>
 
-<a href="/login">Already have account</a>
+<div class="footer">
+    <a href="/login">Já possuo conta</a>
+</div>
+```
+
+</div>
+
+</body>
+</html>
