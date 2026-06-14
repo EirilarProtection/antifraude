@@ -130,7 +130,21 @@ def login():
                 session["user_id"] = user[0]
                 session["username"] = user[1]
 
+                # 🔥 incrementa login_count (IMPORTANTE pro dashboard)
+                cur.execute("""
+                    UPDATE users
+                    SET login_count = login_count + 1
+                    WHERE id = %s
+                """, (user[0],))
+
+                conn.commit()
+                cur.close()
+                conn.close()
+
                 return redirect("/dashboard")
+
+            cur.close()
+            conn.close()
 
             return render_template("login.html", error="Login inválido")
 
@@ -176,6 +190,40 @@ def stats():
         "logins": logins,
         "high_risk": risk
     })
+
+
+# ==================================================
+# API USERS
+# ==================================================
+@app.route("/api/users")
+def api_users():
+
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT id, username, email, risk_score, risk_level, account_status, login_count
+        FROM users
+        ORDER BY id DESC
+    """)
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return jsonify([
+        {
+            "id": r[0],
+            "username": r[1],
+            "email": r[2],
+            "risk_score": r[3],
+            "risk_level": r[4],
+            "status": r[5],
+            "login_count": r[6]
+        }
+        for r in rows
+    ])
 
 
 # ==================================================
