@@ -103,12 +103,25 @@ body {
     border-radius: 6px;
     cursor: pointer;
     margin: 2px;
+    font-size: 12px;
 }
 
 .block { background: #e74c3c; color: white; }
 .unblock { background: #2ecc71; color: white; }
 .details { background: #3498db; color: white; }
 .notify { background: #f39c12; color: white; }
+
+/* STATUS */
+.tag {
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: white;
+}
+
+.active { background: #2ecc71; }
+.blocked { background: #e74c3c; }
+.analysis { background: #f39c12; }
 
 .blocked-row {
     background: #ffe6e6;
@@ -163,6 +176,7 @@ body {
                 <th>Estado</th>
                 <th>País</th>
                 <th>Browser</th>
+                <th>Status</th>
                 <th>Data</th>
                 <th>Ações</th>
             </tr>
@@ -183,56 +197,39 @@ fetch("/api/stats")
     document.getElementById("risk").innerText = d.high_risk;
 });
 
+
 // ================= ACTIONS =================
-async function blockIP(id){
-    await fetch("/api/ip/block", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({id})
-    });
+async function blockUser(id){
+    await fetch(`/api/block_user/${id}`, { method:"POST" });
     location.reload();
 }
 
-async function unblockIP(id){
-    await fetch("/api/ip/unblock", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({id})
-    });
+async function unblockUser(id){
+    await fetch(`/api/unblock_user/${id}`, { method:"POST" });
     location.reload();
 }
 
 async function details(id){
-    const r = await fetch(`/api/ip/details/${id}`);
+    const r = await fetch(`/api/user/${id}`);
     const d = await r.json();
 
     alert(
-        `DETALHES IP\n\n` +
-        `User: ${d.user}\n` +
-        `IP: ${d.ip}\n` +
-        `City: ${d.city}\n` +
-        `State: ${d.state}\n` +
-        `Country: ${d.country}\n` +
-        `Browser: ${d.browser}\n` +
-        `OS: ${d.os}\n` +
-        `Blocked: ${d.blocked}`
+        `DETALHES USER\n\n` +
+        `User: ${d.username}\n` +
+        `Email: ${d.email}\n` +
+        `Risk: ${d.risk_score}\n` +
+        `Level: ${d.risk_level}\n` +
+        `Status: ${d.status}`
     );
 }
 
 async function notify(id){
-    const msg = prompt("Mensagem de alerta:");
-    if(!msg) return;
-
-    await fetch("/api/ip/notify", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({id, message: msg})
-    });
-
-    alert("Notificação salva!");
+    await fetch(`/api/notify_user/${id}`, { method:"POST" });
+    alert("Usuário notificado!");
 }
 
-// ================= LOAD IPS =================
+
+// ================= LOAD LOGINS =================
 fetch("/api/logins")
 .then(r => r.json())
 .then(data => {
@@ -242,26 +239,39 @@ fetch("/api/logins")
 
     data.forEach(ip => {
 
+        const statusClass =
+            ip.status === "Bloqueado" ? "blocked" :
+            ip.status === "Em Análise" ? "analysis" : "active";
+
+        const rowClass = ip.status === "Bloqueado" ? "blocked-row" : "";
+
         table.innerHTML += `
-        <tr class="${ip.blocked ? 'blocked-row' : ''}">
+        <tr class="${rowClass}">
             <td><b>${ip.user}</b></td>
             <td>${ip.ip}</td>
             <td>${ip.city || '-'}</td>
             <td>${ip.state || '-'}</td>
             <td>${ip.country}</td>
             <td>${ip.browser}</td>
+
+            <td><span class="tag ${statusClass}">
+                ${ip.status || 'Ativo'}
+            </span></td>
+
             <td>${ip.date}</td>
+
             <td>
-                <button class="btn block" onclick="blockIP(${ip.id})">Bloquear</button>
-                <button class="btn unblock" onclick="unblockIP(${ip.id})">Desbloquear</button>
-                <button class="btn details" onclick="details(${ip.id})">Detalhes</button>
-                <button class="btn notify" onclick="notify(${ip.id})">Notificar</button>
+                <button class="btn block" onclick="blockUser(${ip.user_id})">Bloquear</button>
+                <button class="btn unblock" onclick="unblockUser(${ip.user_id})">Desbloquear</button>
+                <button class="btn details" onclick="details(${ip.user_id})">Detalhes</button>
+                <button class="btn notify" onclick="notify(${ip.user_id})">Notificar</button>
             </td>
         </tr>
         `;
     });
 
 });
+
 </script>
 
 </body>
