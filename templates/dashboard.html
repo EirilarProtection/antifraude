@@ -2,10 +2,9 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Eirilar Security Dashboard</title>
+<title>Security Panel</title>
 
 <style>
-
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
@@ -43,7 +42,7 @@ body {
 
 .menu a:hover {
     background: #c62828;
-    color: white;
+    color: #fff;
 }
 
 /* MAIN */
@@ -58,7 +57,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: white;
+    background: #fff;
     padding: 15px;
     border-radius: 12px;
 }
@@ -72,7 +71,7 @@ body {
 }
 
 .card {
-    background: white;
+    background: #fff;
     padding: 20px;
     border-radius: 12px;
 }
@@ -81,7 +80,7 @@ body {
 .table {
     width: 100%;
     margin-top: 20px;
-    background: white;
+    background: #fff;
     border-radius: 12px;
     overflow: hidden;
 }
@@ -103,17 +102,23 @@ body {
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    margin: 2px;
 }
 
 .block { background: #e74c3c; color: white; }
 .unblock { background: #2ecc71; color: white; }
 .details { background: #3498db; color: white; }
+.notify { background: #f39c12; color: white; }
 
+.blocked-row {
+    background: #ffe6e6;
+}
 </style>
 </head>
 
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">
         <img src="https://i.ibb.co/ZRNVYdnm/eirilar-logo-vermelho.png">
@@ -126,8 +131,10 @@ body {
     </div>
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
+    <!-- TOP -->
     <div class="topbar">
         <h2>Security Panel</h2>
         <div>
@@ -145,7 +152,7 @@ body {
     </div>
 
     <!-- TABLE -->
-    <h3>IPs Detectados</h3>
+    <h3 style="margin-top:25px;">IPs Detectados</h3>
 
     <table class="table">
         <thead>
@@ -160,7 +167,6 @@ body {
                 <th>Ações</th>
             </tr>
         </thead>
-
         <tbody id="ipTable"></tbody>
     </table>
 
@@ -168,7 +174,7 @@ body {
 
 <script>
 
-// STATS
+// ================= STATS =================
 fetch("/api/stats")
 .then(r => r.json())
 .then(d => {
@@ -177,7 +183,56 @@ fetch("/api/stats")
     document.getElementById("risk").innerText = d.high_risk;
 });
 
-// LOGINS
+// ================= ACTIONS =================
+async function blockIP(id){
+    await fetch("/api/ip/block", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({id})
+    });
+    location.reload();
+}
+
+async function unblockIP(id){
+    await fetch("/api/ip/unblock", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({id})
+    });
+    location.reload();
+}
+
+async function details(id){
+    const r = await fetch(`/api/ip/details/${id}`);
+    const d = await r.json();
+
+    alert(
+        `DETALHES IP\n\n` +
+        `User: ${d.user}\n` +
+        `IP: ${d.ip}\n` +
+        `City: ${d.city}\n` +
+        `State: ${d.state}\n` +
+        `Country: ${d.country}\n` +
+        `Browser: ${d.browser}\n` +
+        `OS: ${d.os}\n` +
+        `Blocked: ${d.blocked}`
+    );
+}
+
+async function notify(id){
+    const msg = prompt("Mensagem de alerta:");
+    if(!msg) return;
+
+    await fetch("/api/ip/notify", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({id, message: msg})
+    });
+
+    alert("Notificação salva!");
+}
+
+// ================= LOAD IPS =================
 fetch("/api/logins")
 .then(r => r.json())
 .then(data => {
@@ -188,8 +243,8 @@ fetch("/api/logins")
     data.forEach(ip => {
 
         table.innerHTML += `
-        <tr>
-            <td><b>${ip.user || 'User'}</b></td>
+        <tr class="${ip.blocked ? 'blocked-row' : ''}">
+            <td><b>${ip.user}</b></td>
             <td>${ip.ip}</td>
             <td>${ip.city || '-'}</td>
             <td>${ip.state || '-'}</td>
@@ -197,19 +252,16 @@ fetch("/api/logins")
             <td>${ip.browser}</td>
             <td>${ip.date}</td>
             <td>
-                <button class="btn block">Bloquear</button>
-                <button class="btn unblock">Desbloquear</button>
-                <button class="btn details"
-                    onclick="alert('Detalhes do IP: ${ip.ip}\\nUser: ${ip.user}')">
-                    Detalhes
-                </button>
+                <button class="btn block" onclick="blockIP(${ip.id})">Bloquear</button>
+                <button class="btn unblock" onclick="unblockIP(${ip.id})">Desbloquear</button>
+                <button class="btn details" onclick="details(${ip.id})">Detalhes</button>
+                <button class="btn notify" onclick="notify(${ip.id})">Notificar</button>
             </td>
         </tr>
         `;
     });
 
 });
-
 </script>
 
 </body>
