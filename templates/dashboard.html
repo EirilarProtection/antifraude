@@ -131,7 +131,6 @@ body {
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">
         <img src="https://i.ibb.co/ZRNVYdnm/eirilar-logo-vermelho.png">
@@ -144,10 +143,8 @@ body {
     </div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
 
-    <!-- TOP -->
     <div class="topbar">
         <h2>Security Panel</h2>
         <div>
@@ -214,10 +211,10 @@ async function details(id){
     const d = await r.json();
 
     alert(
-        `DETALHES USER\n\n` +
+        `DETALHES COMPLETOS\n\n` +
         `User: ${d.username}\n` +
         `Email: ${d.email}\n` +
-        `Risk: ${d.risk_score}\n` +
+        `Risk Score: ${d.risk_score}\n` +
         `Level: ${d.risk_level}\n` +
         `Status: ${d.status}`
     );
@@ -225,7 +222,7 @@ async function details(id){
 
 async function notify(id){
     await fetch(`/api/notify_user/${id}`, { method:"POST" });
-    alert("Usuário notificado!");
+    alert("Notificação enviada!");
 }
 
 
@@ -239,11 +236,14 @@ fetch("/api/logins")
 
     data.forEach(ip => {
 
-        const statusClass =
-            ip.status === "Bloqueado" ? "blocked" :
-            ip.status === "Em Análise" ? "analysis" : "active";
+        let status = ip.status || "Ativo";
 
-        const rowClass = ip.status === "Bloqueado" ? "blocked-row" : "";
+        let statusClass =
+            status === "Bloqueado" ? "blocked" :
+            status === "Em Análise" ? "analysis" :
+            "active";
+
+        let rowClass = status === "Bloqueado" ? "blocked-row" : "";
 
         table.innerHTML += `
         <tr class="${rowClass}">
@@ -255,7 +255,7 @@ fetch("/api/logins")
             <td>${ip.browser}</td>
 
             <td><span class="tag ${statusClass}">
-                ${ip.status || 'Ativo'}
+                ${status}
             </span></td>
 
             <td>${ip.date}</td>
@@ -271,7 +271,6 @@ fetch("/api/logins")
     });
 
 });
-
 </script>
 
 </body>
