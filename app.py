@@ -124,34 +124,32 @@ def login():
 
             user = cur.fetchone()
 
-            if user and user[2] == password:
+           if user and user[2] == password:
 
-                session["user_id"] = user[0]
-                session["username"] = user[1]
+    session.permanent = True
+    session["user_id"] = user[0]
+    session["username"] = user[1]
 
-                cur.execute("""
-                    INSERT INTO login_history (
-                        user_id,
-                        ip_address,
-                        country,
-                        browser,
-                        operating_system,
-                        login_date
-                    )
-                    VALUES (%s, %s, %s, %s, %s, NOW())
-                """, (
-                    user[0],
-                    request.remote_addr,
-                    "BR",
-                    request.headers.get("User-Agent"),
-                    "Unknown"
-                ))
+    cur.execute("""
+        INSERT INTO login_history (
+            user_id,
+            ip_address,
+            country,
+            browser,
+            operating_system,
+            login_date
+        )
+        VALUES (%s, %s, %s, %s, %s, NOW())
+    """, (
+        user[0],
+        request.remote_addr,
+        "BR",
+        request.headers.get("User-Agent"),
+        "Unknown"
+    ))
 
-                conn.commit()
-                cur.close()
-                conn.close()
-
-                return redirect("/dashboard")
+    conn.commit()
+    return redirect("/dashboard")
 
             cur.close()
             conn.close()
