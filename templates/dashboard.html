@@ -126,6 +126,26 @@ body {
 .blocked-row {
     background: #ffe6e6;
 }
+
+/* MODAL */
+#modal {
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center;
+}
+
+#modalBox {
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    width:400px;
+}
 </style>
 </head>
 
@@ -153,7 +173,6 @@ body {
         </div>
     </div>
 
-    <!-- CARDS -->
     <div class="cards">
         <div class="card"><h2 id="users">0</h2><p>Usuários</p></div>
         <div class="card"><h2 id="logins">0</h2><p>Logins</p></div>
@@ -161,7 +180,6 @@ body {
         <div class="card"><h2>99%</h2><p>Uptime</p></div>
     </div>
 
-    <!-- TABLE -->
     <h3 style="margin-top:25px;">IPs Detectados</h3>
 
     <table class="table">
@@ -178,14 +196,25 @@ body {
                 <th>Ações</th>
             </tr>
         </thead>
+
         <tbody id="ipTable"></tbody>
     </table>
 
 </div>
 
+<!-- MODAL -->
+<div id="modal">
+    <div id="modalBox">
+        <h3>Detalhes do Usuário</h3>
+        <div id="modalContent"></div>
+        <br>
+        <button onclick="closeModal()">Fechar</button>
+    </div>
+</div>
+
 <script>
 
-// ================= STATS =================
+// STATS
 fetch("/api/stats")
 .then(r => r.json())
 .then(d => {
@@ -194,8 +223,7 @@ fetch("/api/stats")
     document.getElementById("risk").innerText = d.high_risk;
 });
 
-
-// ================= ACTIONS =================
+// ACTIONS
 async function blockUser(id){
     await fetch(`/api/block_user/${id}`, { method:"POST" });
     location.reload();
@@ -206,27 +234,32 @@ async function unblockUser(id){
     location.reload();
 }
 
-async function details(id){
-    const r = await fetch(`/api/user/${id}`);
-    const d = await r.json();
-
-    alert(
-        `DETALHES COMPLETOS\n\n` +
-        `User: ${d.username}\n` +
-        `Email: ${d.email}\n` +
-        `Risk Score: ${d.risk_score}\n` +
-        `Level: ${d.risk_level}\n` +
-        `Status: ${d.status}`
-    );
-}
-
 async function notify(id){
     await fetch(`/api/notify_user/${id}`, { method:"POST" });
     alert("Notificação enviada!");
 }
 
+// DETAILS (MODAL CORRIGIDO)
+async function details(id){
+    const r = await fetch(`/api/user/${id}`);
+    const d = await r.json();
 
-// ================= LOAD LOGINS =================
+    document.getElementById("modalContent").innerHTML = `
+        <p><b>Usuário:</b> ${d.username}</p>
+        <p><b>Email:</b> ${d.email}</p>
+        <p><b>Score:</b> ${d.risk_score}</p>
+        <p><b>Nível:</b> ${d.risk_level}</p>
+        <p><b>Status:</b> ${d.status}</p>
+    `;
+
+    document.getElementById("modal").style.display = "flex";
+}
+
+function closeModal(){
+    document.getElementById("modal").style.display = "none";
+}
+
+// LOAD TABLE
 fetch("/api/logins")
 .then(r => r.json())
 .then(data => {
@@ -254,23 +287,21 @@ fetch("/api/logins")
             <td>${ip.country}</td>
             <td>${ip.browser}</td>
 
-            <td><span class="tag ${statusClass}">
-                ${status}
-            </span></td>
+            <td><span class="tag ${statusClass}">${status}</span></td>
 
             <td>${ip.date}</td>
 
             <td>
-                <button class="btn block" onclick="blockUser(${ip.user_id})">Bloquear</button>
-                <button class="btn unblock" onclick="unblockUser(${ip.user_id})">Desbloquear</button>
-                <button class="btn details" onclick="details(${ip.user_id})">Detalhes</button>
-                <button class="btn notify" onclick="notify(${ip.user_id})">Notificar</button>
+                <button class="btn block" onclick="blockUser(${ip.id})">Bloquear</button>
+                <button class="btn unblock" onclick="unblockUser(${ip.id})">Desbloquear</button>
+                <button class="btn details" onclick="details(${ip.id})">Detalhes</button>
+                <button class="btn notify" onclick="notify(${ip.id})">Notificar</button>
             </td>
         </tr>
         `;
     });
-
 });
+
 </script>
 
 </body>
