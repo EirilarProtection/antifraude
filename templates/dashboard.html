@@ -104,7 +104,7 @@ body {
     color: #c62828;
 }
 
-/* TABLES */
+/* TABLE */
 .table {
     width: 100%;
     margin-top: 20px;
@@ -139,12 +139,9 @@ body {
     <div class="menu">
         <a href="#">Dashboard</a>
         <a href="#">Usuários</a>
-        <a href="#">Pedidos</a>
         <a href="#">Logins</a>
-        <a href="#">Blacklist</a>
         <a href="#">Fraude</a>
         <a href="#">Auditoria</a>
-        <a href="#">Notas</a>
     </div>
 
 </div>
@@ -154,14 +151,11 @@ body {
 
     <!-- TOP -->
     <div class="topbar">
-
         <h2>Dashboard</h2>
-
         <div class="userbox">
             <span>Olá, {{ username }}</span>
             <a class="logout" href="/logout">Sair</a>
         </div>
-
     </div>
 
     <!-- CARDS -->
@@ -173,8 +167,8 @@ body {
         </div>
 
         <div class="card">
-            <h3 id="orders">0</h3>
-            <p>Pedidos</p>
+            <h3 id="logins">0</h3>
+            <p>Logins</p>
         </div>
 
         <div class="card">
@@ -189,7 +183,7 @@ body {
 
     </div>
 
-    <!-- TABLE USERS -->
+    <!-- USERS TABLE -->
     <h3>Usuários</h3>
     <table class="table">
         <thead>
@@ -199,46 +193,43 @@ body {
                 <th>Email</th>
                 <th>Risco</th>
                 <th>Status</th>
-                <th>Login</th>
+                <th>Logins</th>
             </tr>
         </thead>
         <tbody id="usersTable"></tbody>
     </table>
 
-    <!-- TABLE ORDERS -->
-    <h3>Pedidos</h3>
+    <!-- LOGINS TABLE -->
+    <h3>Logins (IPs fictícios)</h3>
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Valor</th>
-                <th>Status</th>
-                <th>Fraude</th>
-                <th>Revisão</th>
+                <th>IP</th>
+                <th>Cidade</th>
+                <th>Estado</th>
+                <th>País</th>
+                <th>Browser</th>
+                <th>Data</th>
             </tr>
         </thead>
-        <tbody id="ordersTable"></tbody>
+        <tbody id="loginsTable"></tbody>
     </table>
 
 </div>
 
 <script>
 
-// STATS
-<script>
-
-// STATS (corrigido para teu backend atual)
+// ===================== STATS =====================
 fetch("/api/stats")
 .then(r => r.json())
 .then(d => {
-    document.getElementById("users").innerText = d.users;
-    document.getElementById("fraud").innerText = d.high_risk;
-    document.getElementById("orders").innerText = d.logins;
+    document.getElementById("users").innerText = d.users || 0;
+    document.getElementById("logins").innerText = d.logins || 0;
+    document.getElementById("fraud").innerText = d.high_risk || 0;
     document.getElementById("review").innerText = 0;
 });
 
-// USERS (vai funcionar depois que criar endpoint)
+// ===================== USERS =====================
 fetch("/api/users")
 .then(r => r.json())
 .then(data => {
@@ -247,28 +238,42 @@ fetch("/api/users")
     table.innerHTML = "";
 
     data.forEach(u => {
-
-        let row = `
+        table.innerHTML += `
         <tr>
             <td>${u.id}</td>
             <td>${u.username}</td>
             <td>${u.email}</td>
-            <td>${u.risk_level}</td>
-            <td>${u.account_status}</td>
-            <td>${u.login_count}</td>
+            <td>${u.risk_level || "-"}</td>
+            <td>${u.account_status || "-"}</td>
+            <td>${u.login_count || 0}</td>
         </tr>`;
-
-        table.innerHTML += row;
     });
 
-});
+})
+.catch(err => console.error("ERRO USERS:", err));
 
-// LOGINS (opcional se quiser usar depois)
+// ===================== LOGINS =====================
 fetch("/api/logins")
 .then(r => r.json())
 .then(data => {
-    console.log("LOGINS:", data);
-});
+
+    let table = document.getElementById("loginsTable");
+    table.innerHTML = "";
+
+    data.forEach(l => {
+        table.innerHTML += `
+        <tr>
+            <td>${l.ip}</td>
+            <td>${l.city || "-"}</td>
+            <td>${l.state || "-"}</td>
+            <td>${l.country || "-"}</td>
+            <td>${l.browser || "-"}</td>
+            <td>${l.date}</td>
+        </tr>`;
+    });
+
+})
+.catch(err => console.error("ERRO LOGINS:", err));
 
 </script>
 
