@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
 from database import get_conn
 from datetime import datetime
+import os
 
 app = Flask(__name__)
-app.secret_key = "CHANGE_THIS_SECRET"
+app.secret_key = os.getenv("SECRET_KEY")
 
 # ==================================================
 # HOME
