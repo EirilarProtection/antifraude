@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # 🔑 SECRET KEY (seguro + não quebra se Railway não estiver setado ainda)
-app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key_change_me")
+app.secret_key = os.getenv("SECRET_KEY", "dev_secret_123")
 
 
 # ==================================================
