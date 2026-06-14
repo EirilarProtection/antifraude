@@ -236,21 +236,38 @@ def logins():
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT user_id, ip_address, country, browser, login_date
-        FROM login_history
-        ORDER BY login_date DESC
-        LIMIT 20
+        SELECT 
+            l.id,
+            u.username,
+            l.ip_address,
+            l.city,
+            l.state,
+            l.country,
+            l.browser,
+            l.operating_system,
+            l.login_date
+        FROM login_history l
+        JOIN users u ON u.id = l.user_id
+        ORDER BY l.login_date DESC
+        LIMIT 50
     """)
 
     rows = cur.fetchall()
 
+    cur.close()
+    conn.close()
+
     return jsonify([
         {
-            "user_id": r[0],
-            "ip": r[1],
-            "country": r[2],
-            "browser": r[3],
-            "date": str(r[4])
+            "id": r[0],
+            "user": r[1],
+            "ip": r[2],
+            "city": r[3],
+            "state": r[4],
+            "country": r[5],
+            "browser": r[6],
+            "os": r[7],
+            "date": str(r[8])
         }
         for r in rows
     ])
