@@ -21,30 +21,6 @@ body {
     box-shadow: 2px 0 15px rgba(0,0,0,0.05);
 }
 
-.logo {
-    text-align: center;
-    padding: 20px;
-    border-bottom: 1px solid #eee;
-}
-
-.logo img {
-    width: 160px;
-}
-
-.menu a {
-    display: block;
-    padding: 12px;
-    margin: 6px;
-    text-decoration: none;
-    color: #333;
-    border-radius: 8px;
-}
-
-.menu a:hover {
-    background: #c62828;
-    color: #fff;
-}
-
 /* MAIN */
 .main {
     margin-left: 260px;
@@ -52,31 +28,6 @@ body {
     width: 100%;
 }
 
-/* TOPBAR */
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #fff;
-    padding: 15px;
-    border-radius: 12px;
-}
-
-/* CARDS */
-.cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.card {
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-}
-
-/* TABLE */
 .table {
     width: 100%;
     margin-top: 20px;
@@ -96,14 +47,13 @@ body {
     border-bottom: 1px solid #eee;
 }
 
-/* BUTTONS */
 .btn {
     padding: 6px 10px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    margin: 2px;
     font-size: 12px;
+    margin: 2px;
 }
 
 .block { background: #e74c3c; color: white; }
@@ -111,7 +61,6 @@ body {
 .details { background: #3498db; color: white; }
 .notify { background: #f39c12; color: white; }
 
-/* STATUS */
 .tag {
     padding: 4px 8px;
     border-radius: 20px;
@@ -128,83 +77,54 @@ body {
 }
 
 /* MODAL */
-#modal {
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.6);
+.modal {
+    display: none;
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.6);
     justify-content:center;
     align-items:center;
 }
 
-#modalBox {
-    background:white;
-    padding:20px;
-    border-radius:12px;
-    width:400px;
+.modal-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 420px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="sidebar">
-    <div class="logo">
-        <img src="https://i.ibb.co/ZRNVYdnm/eirilar-logo-vermelho.png">
-    </div>
-
-    <div class="menu">
-        <a href="#">Dashboard</a>
-        <a href="#">IPs</a>
-        <a href="#">Usuários</a>
-    </div>
-</div>
-
 <div class="main">
 
-    <div class="topbar">
-        <h2>Security Panel</h2>
-        <div>
-            <span>Olá, {{ username }}</span>
-            <a href="/logout">Sair</a>
-        </div>
-    </div>
+<h2>Security Panel</h2>
 
-    <div class="cards">
-        <div class="card"><h2 id="users">0</h2><p>Usuários</p></div>
-        <div class="card"><h2 id="logins">0</h2><p>Logins</p></div>
-        <div class="card"><h2 id="risk">0</h2><p>Risco Alto</p></div>
-        <div class="card"><h2>99%</h2><p>Uptime</p></div>
-    </div>
+<table class="table">
+<thead>
+<tr>
+<th>User</th>
+<th>IP</th>
+<th>City</th>
+<th>State</th>
+<th>Country</th>
+<th>Browser</th>
+<th>Status</th>
+<th>Date</th>
+<th>Ações</th>
+</tr>
+</thead>
 
-    <h3 style="margin-top:25px;">IPs Detectados</h3>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Usuário</th>
-                <th>IP</th>
-                <th>Cidade</th>
-                <th>Estado</th>
-                <th>País</th>
-                <th>Browser</th>
-                <th>Status</th>
-                <th>Data</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-
-        <tbody id="ipTable"></tbody>
-    </table>
+<tbody id="table"></tbody>
+</table>
 
 </div>
 
 <!-- MODAL -->
-<div id="modal">
-    <div id="modalBox">
+<div id="modal" class="modal">
+    <div class="modal-box">
         <h3>Detalhes do Usuário</h3>
         <div id="modalContent"></div>
         <br>
@@ -214,16 +134,26 @@ body {
 
 <script>
 
-// STATS
-fetch("/api/stats")
-.then(r => r.json())
-.then(d => {
-    document.getElementById("users").innerText = d.users;
-    document.getElementById("logins").innerText = d.logins;
-    document.getElementById("risk").innerText = d.high_risk;
-});
+// ================= MODAL =================
+function openModal(data){
+    document.getElementById("modalContent").innerHTML = `
+        <b>User:</b> ${data.username}<br>
+        <b>Email:</b> ${data.email}<br>
+        <b>Risk:</b> ${data.risk_score}<br>
+        <b>Level:</b> ${data.risk_level}<br>
+        <b>Status:</b> ${data.status}<br>
+        <b>Phone:</b> ${data.phone || '-'}<br>
+        <b>Address:</b> ${data.address || '-'}<br>
+        <b>Payment:</b> ${data.payment_method || '-'}
+    `;
+    document.getElementById("modal").style.display = "flex";
+}
 
-// ACTIONS
+function closeModal(){
+    document.getElementById("modal").style.display = "none";
+}
+
+// ================= ACTIONS =================
 async function blockUser(id){
     await fetch(`/api/block_user/${id}`, { method:"POST" });
     location.reload();
@@ -234,42 +164,28 @@ async function unblockUser(id){
     location.reload();
 }
 
-async function notify(id){
+async function notifyUser(id){
     await fetch(`/api/notify_user/${id}`, { method:"POST" });
-    alert("Notificação enviada!");
+    alert("Notificação enviada");
 }
 
-// DETAILS (MODAL CORRIGIDO)
 async function details(id){
     const r = await fetch(`/api/user/${id}`);
     const d = await r.json();
-
-    document.getElementById("modalContent").innerHTML = `
-        <p><b>Usuário:</b> ${d.username}</p>
-        <p><b>Email:</b> ${d.email}</p>
-        <p><b>Score:</b> ${d.risk_score}</p>
-        <p><b>Nível:</b> ${d.risk_level}</p>
-        <p><b>Status:</b> ${d.status}</p>
-    `;
-
-    document.getElementById("modal").style.display = "flex";
+    openModal(d);
 }
 
-function closeModal(){
-    document.getElementById("modal").style.display = "none";
-}
-
-// LOAD TABLE
+// ================= LOAD TABLE =================
 fetch("/api/logins")
 .then(r => r.json())
 .then(data => {
 
-    let table = document.getElementById("ipTable");
+    let table = document.getElementById("table");
     table.innerHTML = "";
 
-    data.forEach(ip => {
+    data.forEach(u => {
 
-        let status = ip.status || "Ativo";
+        let status = u.status || "Ativo";
 
         let statusClass =
             status === "Bloqueado" ? "blocked" :
@@ -280,22 +196,22 @@ fetch("/api/logins")
 
         table.innerHTML += `
         <tr class="${rowClass}">
-            <td><b>${ip.user}</b></td>
-            <td>${ip.ip}</td>
-            <td>${ip.city || '-'}</td>
-            <td>${ip.state || '-'}</td>
-            <td>${ip.country}</td>
-            <td>${ip.browser}</td>
+            <td>${u.user}</td>
+            <td>${u.ip}</td>
+            <td>${u.city}</td>
+            <td>${u.state}</td>
+            <td>${u.country}</td>
+            <td>${u.browser}</td>
 
             <td><span class="tag ${statusClass}">${status}</span></td>
 
-            <td>${ip.date}</td>
+            <td>${u.date}</td>
 
             <td>
-                <button class="btn block" onclick="blockUser(${ip.id})">Bloquear</button>
-                <button class="btn unblock" onclick="unblockUser(${ip.id})">Desbloquear</button>
-                <button class="btn details" onclick="details(${ip.id})">Detalhes</button>
-                <button class="btn notify" onclick="notify(${ip.id})">Notificar</button>
+                <button class="btn block" onclick="blockUser(${u.user_id})">Bloquear</button>
+                <button class="btn unblock" onclick="unblockUser(${u.user_id})">Desbloquear</button>
+                <button class="btn details" onclick="details(${u.user_id})">Detalhes</button>
+                <button class="btn notify" onclick="notifyUser(${u.user_id})">Notificar</button>
             </td>
         </tr>
         `;
