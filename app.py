@@ -20,63 +20,50 @@ def home():
 # ==================================================
 @app.route("/register", methods=["GET", "POST"])
 def register():
-
     if request.method == "POST":
-        try:
-            username = request.form["username"]
-            first_name = request.form["first_name"]
-            last_name = request.form["last_name"]
-            email = request.form["email"]
-            birthdate = request.form["birthdate"]
-            password = request.form["password"]
+        conn = get_conn()
+        cur = conn.cursor()
 
-            full_name = f"{first_name} {last_name}"
+        username = request.form["username"]
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        email = request.form["email"]
+        birthdate = request.form["birthdate"]
+        password = request.form["password"]
 
-            conn = get_conn()
-            cur = conn.cursor()
+        full_name = f"{first_name} {last_name}"
 
-            cur.execute("""
-                SELECT id FROM users
-                WHERE username=%s OR email=%s
-            """, (username, email))
+        cur.execute("""
+            SELECT id FROM users WHERE username=%s OR email=%s
+        """, (username, email))
 
-            if cur.fetchone():
-                return render_template("register.html", error="Usuário ou email já existe")
+        if cur.fetchone():
+            return render_template("register.html", error="Usuário já existe")
 
-            cur.execute("""
-                INSERT INTO users (
-                    username, email, full_name, birthdate,
-                    password_hash,
-                    risk_score, risk_level,
-                    account_status,
-                    failed_logins, login_count,
-                    vpn_detected, trusted_user,
-                    fraud_attempts,
-                    email_verified, phone_verified,
-                    created_at
-                )
-                VALUES (
-                    %s,%s,%s,%s,%s,
-                    0,'Baixo','Ativo',
-                    0,0,
-                    FALSE,FALSE,
-                    0,
-                    FALSE,FALSE,
-                    NOW()
-                )
-            """, (
-                username, email, full_name, birthdate, password
-            ))
+        cur.execute("""
+            INSERT INTO users (
+                username, email, full_name, birthdate,
+                password_hash,
+                risk_score, risk_level,
+                account_status,
+                phone, address, payment_method,
+                failed_logins, login_count,
+                created_at
+            )
+            VALUES (
+                %s,%s,%s,%s,%s,
+                0,'Baixo','Analise',
+                'Não informado','Não informado','PIX',
+                0,0,
+                NOW()
+            )
+        """, (username, email, full_name, birthdate, password))
 
-            conn.commit()
-            cur.close()
-            conn.close()
+        conn.commit()
+        cur.close()
+        conn.close()
 
-            return redirect("/login")
-
-        except Exception as e:
-            print("ERRO REGISTER:", e)
-            return render_template("register.html", error="Erro ao criar conta")
+        return redirect("/login")
 
     return render_template("register.html")
 
@@ -86,48 +73,38 @@ def register():
 # ==================================================
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
     if request.method == "POST":
-        try:
-            login_value = request.form["email"].strip()
-            password = request.form["password"].strip()
+        conn = get_conn()
+        cur = conn.cursor()
 
-            conn = get_conn()
-            cur = conn.cursor()
+        login_value = request.form["email"]
+        password = request.form["password"]
+
+        cur.execute("""
+            SELECT id, username, password_hash
+            FROM users
+            WHERE email=%s OR username=%s
+        """, (login_value, login_value))
+
+        user = cur.fetchone()
+
+        if user and user[2] == password:
+
+            session["user_id"] = user[0]
+            session["username"] = user[1]
 
             cur.execute("""
-                SELECT id, username, password_hash
-                FROM users
-                WHERE email=%s OR username=%s
-            """, (login_value, login_value))
+                UPDATE users SET login_count = login_count + 1
+                WHERE id=%s
+            """, (user[0],))
 
-            user = cur.fetchone()
-
-            if user and str(user[2]).strip() == str(password):
-
-                session["user_id"] = user[0]
-                session["username"] = user[1]
-
-                cur.execute("""
-                    UPDATE users
-                    SET login_count = login_count + 1
-                    WHERE id = %s
-                """, (user[0],))
-
-                conn.commit()
-                cur.close()
-                conn.close()
-
-                return redirect("/dashboard")
-
+            conn.commit()
             cur.close()
             conn.close()
 
-            return render_template("login.html", error="Login inválido")
+            return redirect("/dashboard")
 
-        except Exception as e:
-            print("ERRO LOGIN:", e)
-            return render_template("login.html", error="Erro interno")
+        return render_template("login.html", error="Login inválido")
 
     return render_template("login.html")
 
@@ -148,7 +125,6 @@ def dashboard():
 # ==================================================
 @app.route("/api/stats")
 def stats():
-
     conn = get_conn()
     cur = conn.cursor()
 
@@ -173,19 +149,17 @@ def stats():
 # ==================================================
 @app.route("/api/users")
 def api_users():
-
     conn = get_conn()
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT id, username, email, risk_score, risk_level, account_status, login_count
+        SELECT id, username, email, risk_score, risk_level,
+               account_status, login_count
         FROM users
         ORDER BY id DESC
     """)
 
     rows = cur.fetchall()
-    cur.close()
-    conn.close()
 
     return jsonify([
         {
@@ -206,13 +180,13 @@ def api_users():
 # ==================================================
 @app.route("/api/logins")
 def logins():
-
     conn = get_conn()
     cur = conn.cursor()
 
     cur.execute("""
         SELECT 
             l.id,
+            u.id,
             u.username,
             l.ip_address,
             l.city,
@@ -228,108 +202,44 @@ def logins():
     """)
 
     rows = cur.fetchall()
-    cur.close()
-    conn.close()
 
     return jsonify([
         {
             "id": r[0],
-            "user": r[1],
-            "ip": r[2],
-            "city": r[3],
-            "state": r[4],
-            "country": r[5],
-            "browser": r[6],
-            "os": r[7],
-            "date": str(r[8])
+            "user_id": r[1],
+            "user": r[2],
+            "ip": r[3],
+            "city": r[4],
+            "state": r[5],
+            "country": r[6],
+            "browser": r[7],
+            "os": r[8],
+            "date": str(r[9])
         }
         for r in rows
     ])
 
 
 # ==================================================
-# BLOCK USER
-# ==================================================
-@app.route("/api/block_user/<int:user_id>", methods=["POST"])
-def block_user(user_id):
-
-    conn = get_conn()
-    cur = conn.cursor()
-
-    cur.execute("""
-        UPDATE users
-        SET account_status = 'Bloqueado'
-        WHERE id = %s
-    """, (user_id,))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return jsonify({"status": "blocked"})
-
-
-# ==================================================
-# UNBLOCK USER
-# ==================================================
-@app.route("/api/unblock_user/<int:user_id>", methods=["POST"])
-def unblock_user(user_id):
-
-    conn = get_conn()
-    cur = conn.cursor()
-
-    cur.execute("""
-        UPDATE users
-        SET account_status = 'Ativo'
-        WHERE id = %s
-    """, (user_id,))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return jsonify({"status": "unblocked"})
-
-
-# ==================================================
-# NOTIFY USER
-# ==================================================
-@app.route("/api/notify_user/<int:user_id>", methods=["POST"])
-def notify_user(user_id):
-
-    conn = get_conn()
-    cur = conn.cursor()
-
-    cur.execute("""
-        INSERT INTO notifications (user_id, message)
-        VALUES (%s, %s)
-    """, (user_id, "Você recebeu uma notificação do sistema."))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return jsonify({"status": "notified"})
-
-
-# ==================================================
-# USER DETAILS
+# DETAILS (🔥 COMPLETO)
 # ==================================================
 @app.route("/api/user/<int:user_id>")
 def user_details(user_id):
-
     conn = get_conn()
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT id, username, email, risk_score, risk_level, account_status
+        SELECT id, username, email, risk_score, risk_level,
+               account_status, phone, address, payment_method,
+               login_count
         FROM users
-        WHERE id = %s
+        WHERE id=%s
     """, (user_id,))
 
     u = cur.fetchone()
-    cur.close()
-    conn.close()
+
+    if not u:
+        return jsonify({"error": "not found"}), 404
 
     return jsonify({
         "id": u[0],
@@ -337,8 +247,55 @@ def user_details(user_id):
         "email": u[2],
         "risk_score": u[3],
         "risk_level": u[4],
-        "status": u[5]
+        "status": u[5],
+        "phone": u[6],
+        "address": u[7],
+        "payment_method": u[8],
+        "login_count": u[9]
     })
+
+
+# ==================================================
+# BLOCK / UNBLOCK
+# ==================================================
+@app.route("/api/block_user/<int:user_id>", methods=["POST"])
+def block(user_id):
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("UPDATE users SET account_status='Bloqueado' WHERE id=%s", (user_id,))
+    conn.commit()
+
+    return jsonify({"status": "blocked"})
+
+
+@app.route("/api/unblock_user/<int:user_id>", methods=["POST"])
+def unblock(user_id):
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("UPDATE users SET account_status='Ativo' WHERE id=%s", (user_id,))
+    conn.commit()
+
+    return jsonify({"status": "unblocked"})
+
+
+# ==================================================
+# NOTIFY
+# ==================================================
+@app.route("/api/notify_user/<int:user_id>", methods=["POST"])
+def notify(user_id):
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO notifications (user_id, message)
+        VALUES (%s, %s)
+    """, (user_id, "Notificação do sistema"))
+
+    conn.commit()
+
+    return jsonify({"status": "sent"})
 
 
 # ==================================================
@@ -350,8 +307,5 @@ def logout():
     return redirect("/login")
 
 
-# ==================================================
-# START
-# ==================================================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
