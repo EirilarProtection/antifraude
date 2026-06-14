@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 
 <head>
@@ -91,6 +90,17 @@ button:hover{
     font-weight:600;
 }
 
+/* 🔥 ERROR BOX */
+.error {
+    background: #ffebee;
+    color: #c62828;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 600;
+}
+
 </style>
 
 </head>
@@ -104,6 +114,13 @@ button:hover{
 </div>
 
 <h2>Criar Conta</h2>
+
+<!-- 🔥 ERRO DO BACKEND -->
+{% if error %}
+<div class="error">
+    {{ error }}
+</div>
+{% endif %}
 
 <form method="POST">
 
