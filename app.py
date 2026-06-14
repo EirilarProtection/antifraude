@@ -5,7 +5,6 @@ import os
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev_secret_123")
 
-
 # ==================================================
 # HOME
 # ==================================================
@@ -138,7 +137,6 @@ def login():
 # ==================================================
 @app.route("/dashboard")
 def dashboard():
-
     if "user_id" not in session:
         return redirect("/login")
 
@@ -171,7 +169,7 @@ def stats():
 
 
 # ==================================================
-# USERS
+# USERS LIST
 # ==================================================
 @app.route("/api/users")
 def api_users():
@@ -186,6 +184,8 @@ def api_users():
     """)
 
     rows = cur.fetchall()
+    cur.close()
+    conn.close()
 
     return jsonify([
         {
@@ -228,6 +228,8 @@ def logins():
     """)
 
     rows = cur.fetchall()
+    cur.close()
+    conn.close()
 
     return jsonify([
         {
@@ -261,6 +263,9 @@ def block_user(user_id):
     """, (user_id,))
 
     conn.commit()
+    cur.close()
+    conn.close()
+
     return jsonify({"status": "blocked"})
 
 
@@ -280,6 +285,9 @@ def unblock_user(user_id):
     """, (user_id,))
 
     conn.commit()
+    cur.close()
+    conn.close()
+
     return jsonify({"status": "unblocked"})
 
 
@@ -298,6 +306,9 @@ def notify_user(user_id):
     """, (user_id, "Você recebeu uma notificação do sistema."))
 
     conn.commit()
+    cur.close()
+    conn.close()
+
     return jsonify({"status": "notified"})
 
 
@@ -317,6 +328,8 @@ def user_details(user_id):
     """, (user_id,))
 
     u = cur.fetchone()
+    cur.close()
+    conn.close()
 
     return jsonify({
         "id": u[0],
