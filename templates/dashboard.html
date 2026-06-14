@@ -242,25 +242,32 @@ fetch("/api/stats")
 });
 
 // LOGINS
+<script>
+
 fetch("/api/logins")
 .then(r => r.json())
 .then(data => {
 
     let table = document.getElementById("ipTable");
+    table.innerHTML = "";
 
     data.forEach(ip => {
 
         table.innerHTML += `
         <tr>
+            <td><b>${ip.user}</b></td>
             <td>${ip.ip}</td>
-            <td>${ip.city || '-'}</td>
-            <td>${ip.state || '-'}</td>
+            <td>${ip.city ?? 'Desconhecido'}</td>
+            <td>${ip.state ?? 'SP'}</td>
             <td>${ip.country}</td>
             <td>${ip.browser}</td>
             <td>${ip.date}</td>
             <td>
                 <button class="btn block">Bloquear</button>
                 <button class="btn unblock">Desbloquear</button>
+                <button class="btn" style="background:#3498db;color:white;">
+                    Detalhes
+                </button>
             </td>
         </tr>
         `;
