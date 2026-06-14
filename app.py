@@ -167,12 +167,11 @@ def login():
 
             return render_template("login.html", error="Login inválido")
 
-        except Exception as e:
 except Exception as e:
-    print("🔥 ERRO REAL LOGIN:", str(e))
-    raise e
+    print("🔥 ERRO LOGIN:", str(e))
+    return render_template("login.html", error=str(e))
 
-    return render_template("login.html")
+return render_template("login.html")
 
 
 # ==================================================
