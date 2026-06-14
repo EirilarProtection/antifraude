@@ -1,11 +1,8 @@
 from flask import Flask, render_template, request, redirect, session, jsonify
 from database import get_conn
-from datetime import datetime
 import os
 
 app = Flask(__name__)
-
-# 🔑 SECRET KEY (seguro + não quebra se Railway não estiver setado ainda)
 app.secret_key = os.getenv("SECRET_KEY", "dev_secret_123")
 
 
@@ -39,7 +36,6 @@ def register():
             conn = get_conn()
             cur = conn.cursor()
 
-            # verifica duplicado
             cur.execute("""
                 SELECT id FROM users
                 WHERE username=%s OR email=%s
@@ -48,46 +44,29 @@ def register():
             if cur.fetchone():
                 return render_template("register.html", error="Usuário ou email já existe")
 
-            # insert user
             cur.execute("""
                 INSERT INTO users (
-                    username,
-                    email,
-                    full_name,
-                    birthdate,
+                    username, email, full_name, birthdate,
                     password_hash,
-                    risk_score,
-                    risk_level,
+                    risk_score, risk_level,
                     account_status,
-                    failed_logins,
-                    login_count,
-                    vpn_detected,
-                    trusted_user,
+                    failed_logins, login_count,
+                    vpn_detected, trusted_user,
                     fraud_attempts,
-                    email_verified,
-                    phone_verified,
+                    email_verified, phone_verified,
                     created_at
                 )
                 VALUES (
                     %s,%s,%s,%s,%s,
+                    0,'Baixo','Ativo',
+                    0,0,
+                    FALSE,FALSE,
                     0,
-                    'Baixo',
-                    'Ativo',
-                    0,
-                    0,
-                    FALSE,
-                    FALSE,
-                    0,
-                    FALSE,
-                    FALSE,
+                    FALSE,FALSE,
                     NOW()
                 )
             """, (
-                username,
-                email,
-                full_name,
-                birthdate,
-                password
+                username, email, full_name, birthdate, password
             ))
 
             conn.commit()
@@ -130,7 +109,6 @@ def login():
                 session["user_id"] = user[0]
                 session["username"] = user[1]
 
-                # 🔥 incrementa login_count (IMPORTANTE pro dashboard)
                 cur.execute("""
                     UPDATE users
                     SET login_count = login_count + 1
@@ -168,7 +146,7 @@ def dashboard():
 
 
 # ==================================================
-# API STATS
+# STATS
 # ==================================================
 @app.route("/api/stats")
 def stats():
@@ -193,7 +171,7 @@ def stats():
 
 
 # ==================================================
-# API USERS
+# USERS
 # ==================================================
 @app.route("/api/users")
 def api_users():
@@ -208,9 +186,6 @@ def api_users():
     """)
 
     rows = cur.fetchall()
-
-    cur.close()
-    conn.close()
 
     return jsonify([
         {
@@ -227,7 +202,7 @@ def api_users():
 
 
 # ==================================================
-# API LOGINS
+# LOGINS (IPS + USERS)
 # ==================================================
 @app.route("/api/logins")
 def logins():
@@ -254,9 +229,6 @@ def logins():
 
     rows = cur.fetchall()
 
-    cur.close()
-    conn.close()
-
     return jsonify([
         {
             "id": r[0],
@@ -271,6 +243,89 @@ def logins():
         }
         for r in rows
     ])
+
+
+# ==================================================
+# BLOCK USER
+# ==================================================
+@app.route("/api/block_user/<int:user_id>", methods=["POST"])
+def block_user(user_id):
+
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE users
+        SET account_status = 'Bloqueado'
+        WHERE id = %s
+    """, (user_id,))
+
+    conn.commit()
+    return jsonify({"status": "blocked"})
+
+
+# ==================================================
+# UNBLOCK USER
+# ==================================================
+@app.route("/api/unblock_user/<int:user_id>", methods=["POST"])
+def unblock_user(user_id):
+
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE users
+        SET account_status = 'Ativo'
+        WHERE id = %s
+    """, (user_id,))
+
+    conn.commit()
+    return jsonify({"status": "unblocked"})
+
+
+# ==================================================
+# NOTIFY USER
+# ==================================================
+@app.route("/api/notify_user/<int:user_id>", methods=["POST"])
+def notify_user(user_id):
+
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO notifications (user_id, message)
+        VALUES (%s, %s)
+    """, (user_id, "Você recebeu uma notificação do sistema."))
+
+    conn.commit()
+    return jsonify({"status": "notified"})
+
+
+# ==================================================
+# USER DETAILS
+# ==================================================
+@app.route("/api/user/<int:user_id>")
+def user_details(user_id):
+
+    conn = get_conn()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT id, username, email, risk_score, risk_level, account_status
+        FROM users
+        WHERE id = %s
+    """, (user_id,))
+
+    u = cur.fetchone()
+
+    return jsonify({
+        "id": u[0],
+        "username": u[1],
+        "email": u[2],
+        "risk_score": u[3],
+        "risk_level": u[4],
+        "status": u[5]
+    })
 
 
 # ==================================================
