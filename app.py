@@ -123,7 +123,9 @@ def register():
             cur.close()
             conn.close()
 
-    return render_template("register.html")
+except Exception as e:
+    print("ERRO REGISTER:", e)
+    return render_template("register.html", error=str(e))
 
 
 # ==================================================
