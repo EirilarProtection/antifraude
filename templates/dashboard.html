@@ -226,61 +226,48 @@ body {
 <script>
 
 // STATS
+<script>
+
+// STATS (corrigido para teu backend atual)
 fetch("/api/stats")
 .then(r => r.json())
 .then(d => {
     document.getElementById("users").innerText = d.users;
-    document.getElementById("orders").innerText = d.orders;
-    document.getElementById("fraud").innerText = d.fraud_orders;
-    document.getElementById("review").innerText = d.review_orders;
+    document.getElementById("fraud").innerText = d.high_risk;
+    document.getElementById("orders").innerText = d.logins;
+    document.getElementById("review").innerText = 0;
 });
 
-// USERS
+// USERS (vai funcionar depois que criar endpoint)
 fetch("/api/users")
 .then(r => r.json())
 .then(data => {
 
     let table = document.getElementById("usersTable");
+    table.innerHTML = "";
 
     data.forEach(u => {
 
-        let row = `<tr>
+        let row = `
+        <tr>
             <td>${u.id}</td>
             <td>${u.username}</td>
             <td>${u.email}</td>
             <td>${u.risk_level}</td>
-            <td>${u.status}</td>
+            <td>${u.account_status}</td>
             <td>${u.login_count}</td>
         </tr>`;
 
         table.innerHTML += row;
-
     });
 
 });
 
-// ORDERS
-fetch("/api/orders")
+// LOGINS (opcional se quiser usar depois)
+fetch("/api/logins")
 .then(r => r.json())
 .then(data => {
-
-    let table = document.getElementById("ordersTable");
-
-    data.forEach(o => {
-
-        let row = `<tr>
-            <td>${o.id}</td>
-            <td>${o.client}</td>
-            <td>R$ ${o.amount}</td>
-            <td>${o.status}</td>
-            <td>${o.fraud}</td>
-            <td>${o.review}</td>
-        </tr>`;
-
-        table.innerHTML += row;
-
-    });
-
+    console.log("LOGINS:", data);
 });
 
 </script>
