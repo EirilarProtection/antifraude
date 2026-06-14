@@ -143,127 +143,24 @@ def login():
         cur = conn.cursor()
 
         try:
-
-            cur.execute(
-                """
-                SELECT
-                    id,
-                    username,
-                    password_hash,
-                    account_status,
-                    failed_logins
-                FROM users
-                WHERE
-                    email = %s
-                    OR username = %s
-                """,
-                (
-                    login_value,
-                    login_value
-                )
-            )
+            cur.execute("""
+                SELECT id, username FROM users
+                WHERE (email=%s OR username=%s)
+                AND password_hash=%s
+            """, (login_value, login_value, password))
 
             user = cur.fetchone()
 
-            if not user:
+            if user:
+                session["user_id"] = user[0]
+                session["username"] = user[1]
+                return redirect("/dashboard")
 
-                return render_template(
-                    "login.html",
-                    error="Usuário não encontrado."
-                )
+            return render_template("login.html", error="Login inválido")
 
-            user_id = user[0]
-            username = user[1]
-            db_password = user[2]
-            account_status = user[3]
-
-            if account_status == "Bloqueado":
-
-                return render_template(
-                    "login.html",
-                    error="Conta bloqueada."
-                )
-
-            if password != db_password:
-
-                cur.execute(
-                    """
-                    UPDATE users
-                    SET failed_logins =
-                        COALESCE(failed_logins,0) + 1
-                    WHERE id = %s
-                    """,
-                    (user_id,)
-                )
-
-                conn.commit()
-
-                return render_template(
-                    "login.html",
-                    error="Senha incorreta."
-                )
-
-            # Login OK
-            cur.execute(
-                """
-                UPDATE users
-                SET
-                    last_login = NOW(),
-                    login_count = COALESCE(login_count,0)+1,
-                    failed_logins = 0,
-                    last_ip = %s,
-                    browser = %s,
-                    operating_system = %s
-                WHERE id = %s
-                """,
-                (
-                    request.remote_addr,
-                    request.user_agent.browser or "Unknown",
-                    request.user_agent.platform or "Unknown",
-                    user_id
-                )
-            )
-
-            # Histórico de login
-            cur.execute(
-                """
-                INSERT INTO login_history
-                (
-                    user_id,
-                    ip_address,
-                    city,
-                    state,
-                    country,
-                    browser,
-                    operating_system,
-                    login_date
-                )
-                VALUES
-                (
-                    %s,
-                    %s,
-                    '',
-                    '',
-                    'Brasil',
-                    %s,
-                    %s,
-                    NOW()
-                )
-                """,
-                (
-                    user_id,
-                    request.remote_addr,
-                    request.user_agent.browser or "Unknown",
-                    request.user_agent.platform or "Unknown"
-                )
-            )
-
-            conn.commit()
-
-            session["user_id"] = user_id
-            session["username"] = username
-
-            return redirect("/dashboard")
+        except Exception as e:
+            print("ERRO LOGIN:", e)
+            return render_template("login.html", error=str(e))
 
         finally:
             cur.close()
