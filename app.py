@@ -115,21 +115,19 @@ def login():
             conn = get_conn()
             cur = conn.cursor()
 
-            # login por email ou username
             cur.execute("""
-                SELECT id, username
+                SELECT id, username, password_hash
                 FROM users
-                WHERE (email=%s OR username=%s)
-                AND password_hash=%s
-            """, (login_value, login_value, password))
+                WHERE email=%s OR username=%s
+            """, (login_value, login_value))
 
             user = cur.fetchone()
 
-            if user:
+            if user and user[2] == password:
+
                 session["user_id"] = user[0]
                 session["username"] = user[1]
 
-                # registra login
                 cur.execute("""
                     INSERT INTO login_history (
                         user_id,
@@ -149,11 +147,13 @@ def login():
                 ))
 
                 conn.commit()
-
                 cur.close()
                 conn.close()
 
                 return redirect("/dashboard")
+
+            cur.close()
+            conn.close()
 
             return render_template("login.html", error="Login inválido")
 
