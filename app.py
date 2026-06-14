@@ -114,7 +114,7 @@ def login():
 
         try:
             login_value = request.form["email"].strip()
-            password = request.form["password"]
+            password = request.form["password"].strip()
 
             conn = get_conn()
             cur = conn.cursor()
@@ -127,14 +127,17 @@ def login():
 
             user = cur.fetchone()
 
-            # valida usuário
-            if user and user[2] == password:
+            # DEBUG (pode remover depois)
+            print("LOGIN:", login_value)
+            print("USER:", user)
 
-                # 🔐 session
+            # validação segura (texto puro)
+            if user and str(user[2]).strip() == str(password).strip():
+
                 session["user_id"] = user[0]
                 session["username"] = user[1]
 
-                # log login (antifraude simples)
+                # log antifraude
                 cur.execute("""
                     INSERT INTO login_history (
                         user_id,
