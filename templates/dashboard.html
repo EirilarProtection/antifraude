@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <title>Eirilar Security Dashboard</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
 
 body {
@@ -18,7 +16,7 @@ body {
 /* SIDEBAR */
 .sidebar {
     width: 260px;
-    background: #ffffff;
+    background: #fff;
     height: 100vh;
     position: fixed;
     box-shadow: 2px 0 15px rgba(0,0,0,0.05);
@@ -34,18 +32,13 @@ body {
     width: 160px;
 }
 
-.menu {
-    padding: 15px;
-}
-
 .menu a {
     display: block;
     padding: 12px;
-    margin: 6px 0;
+    margin: 6px;
     text-decoration: none;
     color: #333;
     border-radius: 8px;
-    transition: 0.2s;
 }
 
 .menu a:hover {
@@ -66,17 +59,8 @@ body {
     justify-content: space-between;
     align-items: center;
     background: white;
-    padding: 15px 20px;
+    padding: 15px;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.logout {
-    background: #c62828;
-    color: white;
-    padding: 8px 14px;
-    border-radius: 8px;
-    text-decoration: none;
 }
 
 /* CARDS */
@@ -91,33 +75,7 @@ body {
     background: white;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
-
-.card h2 {
-    margin: 0;
-    color: #c62828;
-}
-
-/* STATUS BAR */
-.status-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.status {
-    flex: 1;
-    padding: 15px;
-    border-radius: 12px;
-    color: white;
-    font-weight: bold;
-}
-
-.aprovado { background: #2ecc71; }
-.analise { background: #f39c12; }
-.bloqueado { background: #e74c3c; }
-.score { background: #3498db; }
 
 /* TABLE */
 .table {
@@ -126,14 +84,12 @@ body {
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .table th {
     background: #c62828;
     color: white;
     padding: 12px;
-    text-align: left;
 }
 
 .table td {
@@ -141,33 +97,23 @@ body {
     border-bottom: 1px solid #eee;
 }
 
-/* TAGS */
-.tag {
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    color: white;
-}
-
-.online { background: #2ecc71; }
-.offline { background: #e74c3c; }
-
+/* BUTTONS */
 .btn {
     padding: 6px 10px;
-    border-radius: 6px;
     border: none;
+    border-radius: 6px;
     cursor: pointer;
 }
 
 .block { background: #e74c3c; color: white; }
 .unblock { background: #2ecc71; color: white; }
+.details { background: #3498db; color: white; }
 
 </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">
         <img src="https://i.ibb.co/ZRNVYdnm/eirilar-logo-vermelho.png">
@@ -177,28 +123,17 @@ body {
         <a href="#">Dashboard</a>
         <a href="#">IPs</a>
         <a href="#">Usuários</a>
-        <a href="#">Fraude</a>
-        <a href="#">Auditoria</a>
     </div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
 
     <div class="topbar">
         <h2>Security Panel</h2>
         <div>
             <span>Olá, {{ username }}</span>
-            <a class="logout" href="/logout">Sair</a>
+            <a href="/logout">Sair</a>
         </div>
-    </div>
-
-    <!-- STATUS -->
-    <div class="status-row">
-        <div class="status aprovado">Aprovados: 120</div>
-        <div class="status analise">Em Análise: 35</div>
-        <div class="status bloqueado">Bloqueados: 12</div>
-        <div class="status score">Score Médio: 78</div>
     </div>
 
     <!-- CARDS -->
@@ -209,24 +144,25 @@ body {
         <div class="card"><h2>99%</h2><p>Uptime</p></div>
     </div>
 
-    <!-- IP TABLE -->
-    <h3 style="margin-top:30px;">IPs Detectados</h3>
+    <!-- TABLE -->
+    <h3>IPs Detectados</h3>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Usuário</th>
-            <th>IP</th>
-            <th>Cidade</th>
-            <th>Estado</th>
-            <th>País</th>
-            <th>Browser</th>
-            <th>Data</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody id="ipTable"></tbody>
-</table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Usuário</th>
+                <th>IP</th>
+                <th>Cidade</th>
+                <th>Estado</th>
+                <th>País</th>
+                <th>Browser</th>
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+
+        <tbody id="ipTable"></tbody>
+    </table>
 
 </div>
 
@@ -242,8 +178,6 @@ fetch("/api/stats")
 });
 
 // LOGINS
-<script>
-
 fetch("/api/logins")
 .then(r => r.json())
 .then(data => {
@@ -255,17 +189,18 @@ fetch("/api/logins")
 
         table.innerHTML += `
         <tr>
-            <td><b>${ip.user}</b></td>
+            <td><b>${ip.user || 'User'}</b></td>
             <td>${ip.ip}</td>
-            <td>${ip.city ?? 'Desconhecido'}</td>
-            <td>${ip.state ?? 'SP'}</td>
+            <td>${ip.city || '-'}</td>
+            <td>${ip.state || '-'}</td>
             <td>${ip.country}</td>
             <td>${ip.browser}</td>
             <td>${ip.date}</td>
             <td>
                 <button class="btn block">Bloquear</button>
                 <button class="btn unblock">Desbloquear</button>
-                <button class="btn" style="background:#3498db;color:white;">
+                <button class="btn details"
+                    onclick="alert('Detalhes do IP: ${ip.ip}\\nUser: ${ip.user}')">
                     Detalhes
                 </button>
             </td>
