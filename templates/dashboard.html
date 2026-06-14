@@ -1,44 +1,288 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Antifraud Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<title>Eirilar Security Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f5f6fa;
+    display: flex;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: #ffffff;
+    height: 100vh;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    position: fixed;
+}
+
+.logo {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.logo img {
+    width: 180px;
+}
+
+.menu {
+    padding: 20px;
+}
+
+.menu a {
+    display: block;
+    padding: 12px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.menu a:hover {
+    background: #c62828;
+    color: #fff;
+}
+
+/* MAIN */
+.main {
+    margin-left: 260px;
+    padding: 20px;
+    width: 100%;
+}
+
+/* TOPBAR */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.userbox {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logout {
+    background: #c62828;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.card h3 {
+    margin: 0;
+    color: #c62828;
+}
+
+/* TABLES */
+.table {
+    width: 100%;
+    margin-top: 20px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th, .table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.table th {
+    background: #c62828;
+    color: #fff;
+}
+
+</style>
 </head>
+
 <body>
 
-<h1>Security Dashboard</h1>
+<!-- SIDEBAR -->
+<div class="sidebar">
 
-<div>
-    <h3>Users: <span id="users"></span></h3>
-    <h3>Logins: <span id="logins"></span></h3>
-    <h3>High Risk: <span id="risk"></span></h3>
+    <div class="logo">
+        <img src="https://i.ibb.co/ZRNVYdnm/eirilar-logo-vermelho.png">
+    </div>
+
+    <div class="menu">
+        <a href="#">Dashboard</a>
+        <a href="#">Usuários</a>
+        <a href="#">Pedidos</a>
+        <a href="#">Logins</a>
+        <a href="#">Blacklist</a>
+        <a href="#">Fraude</a>
+        <a href="#">Auditoria</a>
+        <a href="#">Notas</a>
+    </div>
+
 </div>
 
-<hr>
+<!-- MAIN -->
+<div class="main">
 
-<h2>Recent Logins</h2>
-<ul id="loginsList"></ul>
+    <!-- TOP -->
+    <div class="topbar">
+
+        <h2>Dashboard</h2>
+
+        <div class="userbox">
+            <span>Olá, {{ username }}</span>
+            <a class="logout" href="/logout">Sair</a>
+        </div>
+
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards">
+
+        <div class="card">
+            <h3 id="users">0</h3>
+            <p>Usuários</p>
+        </div>
+
+        <div class="card">
+            <h3 id="orders">0</h3>
+            <p>Pedidos</p>
+        </div>
+
+        <div class="card">
+            <h3 id="fraud">0</h3>
+            <p>Fraudes</p>
+        </div>
+
+        <div class="card">
+            <h3 id="review">0</h3>
+            <p>Revisão</p>
+        </div>
+
+    </div>
+
+    <!-- TABLE USERS -->
+    <h3>Usuários</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Risco</th>
+                <th>Status</th>
+                <th>Login</th>
+            </tr>
+        </thead>
+        <tbody id="usersTable"></tbody>
+    </table>
+
+    <!-- TABLE ORDERS -->
+    <h3>Pedidos</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Valor</th>
+                <th>Status</th>
+                <th>Fraude</th>
+                <th>Revisão</th>
+            </tr>
+        </thead>
+        <tbody id="ordersTable"></tbody>
+    </table>
+
+</div>
 
 <script>
+
+// STATS
 fetch("/api/stats")
 .then(r => r.json())
 .then(d => {
     document.getElementById("users").innerText = d.users;
-    document.getElementById("logins").innerText = d.logins;
-    document.getElementById("risk").innerText = d.high_risk;
+    document.getElementById("orders").innerText = d.orders;
+    document.getElementById("fraud").innerText = d.fraud_orders;
+    document.getElementById("review").innerText = d.review_orders;
 });
 
-fetch("/api/logins")
+// USERS
+fetch("/api/users")
 .then(r => r.json())
 .then(data => {
-    const list = document.getElementById("loginsList");
 
-    data.forEach(l => {
-        const li = document.createElement("li");
-        li.innerText = `User ${l.user_id} | ${l.ip} | ${l.country} | ${l.browser}`;
-        list.appendChild(li);
+    let table = document.getElementById("usersTable");
+
+    data.forEach(u => {
+
+        let row = `<tr>
+            <td>${u.id}</td>
+            <td>${u.username}</td>
+            <td>${u.email}</td>
+            <td>${u.risk_level}</td>
+            <td>${u.status}</td>
+            <td>${u.login_count}</td>
+        </tr>`;
+
+        table.innerHTML += row;
+
     });
+
 });
+
+// ORDERS
+fetch("/api/orders")
+.then(r => r.json())
+.then(data => {
+
+    let table = document.getElementById("ordersTable");
+
+    data.forEach(o => {
+
+        let row = `<tr>
+            <td>${o.id}</td>
+            <td>${o.client}</td>
+            <td>R$ ${o.amount}</td>
+            <td>${o.status}</td>
+            <td>${o.fraud}</td>
+            <td>${o.review}</td>
+        </tr>`;
+
+        table.innerHTML += row;
+
+    });
+
+});
+
 </script>
 
 </body>
