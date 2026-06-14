@@ -10,8 +10,8 @@
 
 body {
     margin: 0;
-    font-family: Arial;
-    background: #f5f6fa;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6fb;
     display: flex;
 }
 
@@ -20,8 +20,8 @@ body {
     width: 260px;
     background: #ffffff;
     height: 100vh;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
     position: fixed;
+    box-shadow: 2px 0 15px rgba(0,0,0,0.05);
 }
 
 .logo {
@@ -31,31 +31,32 @@ body {
 }
 
 .logo img {
-    width: 180px;
+    width: 160px;
 }
 
 .menu {
-    padding: 20px;
+    padding: 15px;
 }
 
 .menu a {
     display: block;
     padding: 12px;
-    color: #333;
+    margin: 6px 0;
     text-decoration: none;
+    color: #333;
     border-radius: 8px;
-    margin-bottom: 8px;
+    transition: 0.2s;
 }
 
 .menu a:hover {
     background: #c62828;
-    color: #fff;
+    color: white;
 }
 
 /* MAIN */
 .main {
     margin-left: 260px;
-    padding: 20px;
+    padding: 25px;
     width: 100%;
 }
 
@@ -64,22 +65,16 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
+    background: white;
     padding: 15px 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.userbox {
-    display: flex;
-    align-items: center;
-    gap: 15px;
 }
 
 .logout {
     background: #c62828;
-    color: #fff;
-    padding: 8px 12px;
+    color: white;
+    padding: 8px 14px;
     border-radius: 8px;
     text-decoration: none;
 }
@@ -93,36 +88,79 @@ body {
 }
 
 .card {
-    background: #fff;
+    background: white;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-.card h3 {
+.card h2 {
     margin: 0;
     color: #c62828;
 }
+
+/* STATUS BAR */
+.status-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.status {
+    flex: 1;
+    padding: 15px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+}
+
+.aprovado { background: #2ecc71; }
+.analise { background: #f39c12; }
+.bloqueado { background: #e74c3c; }
+.score { background: #3498db; }
 
 /* TABLE */
 .table {
     width: 100%;
     margin-top: 20px;
-    background: #fff;
-    border-radius: 10px;
+    background: white;
+    border-radius: 12px;
     overflow: hidden;
-}
-
-.table th, .table td {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .table th {
     background: #c62828;
-    color: #fff;
+    color: white;
+    padding: 12px;
+    text-align: left;
 }
+
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+/* TAGS */
+.tag {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: white;
+}
+
+.online { background: #2ecc71; }
+.offline { background: #e74c3c; }
+
+.btn {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.block { background: #e74c3c; color: white; }
+.unblock { background: #2ecc71; color: white; }
 
 </style>
 </head>
@@ -131,76 +169,49 @@ body {
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-
     <div class="logo">
         <img src="https://i.ibb.co/ZRNVYdnm/eirilar-logo-vermelho.png">
     </div>
 
     <div class="menu">
         <a href="#">Dashboard</a>
+        <a href="#">IPs</a>
         <a href="#">Usuários</a>
-        <a href="#">Logins</a>
         <a href="#">Fraude</a>
         <a href="#">Auditoria</a>
     </div>
-
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-    <!-- TOP -->
     <div class="topbar">
-        <h2>Dashboard</h2>
-        <div class="userbox">
+        <h2>Security Panel</h2>
+        <div>
             <span>Olá, {{ username }}</span>
             <a class="logout" href="/logout">Sair</a>
         </div>
     </div>
 
-    <!-- CARDS -->
-    <div class="cards">
-
-        <div class="card">
-            <h3 id="users">0</h3>
-            <p>Usuários</p>
-        </div>
-
-        <div class="card">
-            <h3 id="logins">0</h3>
-            <p>Logins</p>
-        </div>
-
-        <div class="card">
-            <h3 id="fraud">0</h3>
-            <p>Fraudes</p>
-        </div>
-
-        <div class="card">
-            <h3 id="review">0</h3>
-            <p>Revisão</p>
-        </div>
-
+    <!-- STATUS -->
+    <div class="status-row">
+        <div class="status aprovado">Aprovados: 120</div>
+        <div class="status analise">Em Análise: 35</div>
+        <div class="status bloqueado">Bloqueados: 12</div>
+        <div class="status score">Score Médio: 78</div>
     </div>
 
-    <!-- USERS TABLE -->
-    <h3>Usuários</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Risco</th>
-                <th>Status</th>
-                <th>Logins</th>
-            </tr>
-        </thead>
-        <tbody id="usersTable"></tbody>
-    </table>
+    <!-- CARDS -->
+    <div class="cards">
+        <div class="card"><h2 id="users">0</h2><p>Usuários</p></div>
+        <div class="card"><h2 id="logins">0</h2><p>Logins</p></div>
+        <div class="card"><h2 id="risk">0</h2><p>Risco Alto</p></div>
+        <div class="card"><h2>99%</h2><p>Uptime</p></div>
+    </div>
 
-    <!-- LOGINS TABLE -->
-    <h3>Logins (IPs fictícios)</h3>
+    <!-- IP TABLE -->
+    <h3 style="margin-top:30px;">IPs Detectados</h3>
+
     <table class="table">
         <thead>
             <tr>
@@ -210,70 +221,51 @@ body {
                 <th>País</th>
                 <th>Browser</th>
                 <th>Data</th>
+                <th>Ação</th>
             </tr>
         </thead>
-        <tbody id="loginsTable"></tbody>
+        <tbody id="ipTable"></tbody>
     </table>
 
 </div>
 
 <script>
 
-// ===================== STATS =====================
+// STATS
 fetch("/api/stats")
 .then(r => r.json())
 .then(d => {
-    document.getElementById("users").innerText = d.users || 0;
-    document.getElementById("logins").innerText = d.logins || 0;
-    document.getElementById("fraud").innerText = d.high_risk || 0;
-    document.getElementById("review").innerText = 0;
+    document.getElementById("users").innerText = d.users;
+    document.getElementById("logins").innerText = d.logins;
+    document.getElementById("risk").innerText = d.high_risk;
 });
 
-// ===================== USERS =====================
-fetch("/api/users")
-.then(r => r.json())
-.then(data => {
-
-    let table = document.getElementById("usersTable");
-    table.innerHTML = "";
-
-    data.forEach(u => {
-        table.innerHTML += `
-        <tr>
-            <td>${u.id}</td>
-            <td>${u.username}</td>
-            <td>${u.email}</td>
-            <td>${u.risk_level || "-"}</td>
-            <td>${u.account_status || "-"}</td>
-            <td>${u.login_count || 0}</td>
-        </tr>`;
-    });
-
-})
-.catch(err => console.error("ERRO USERS:", err));
-
-// ===================== LOGINS =====================
+// LOGINS
 fetch("/api/logins")
 .then(r => r.json())
 .then(data => {
 
-    let table = document.getElementById("loginsTable");
-    table.innerHTML = "";
+    let table = document.getElementById("ipTable");
 
-    data.forEach(l => {
+    data.forEach(ip => {
+
         table.innerHTML += `
         <tr>
-            <td>${l.ip}</td>
-            <td>${l.city || "-"}</td>
-            <td>${l.state || "-"}</td>
-            <td>${l.country || "-"}</td>
-            <td>${l.browser || "-"}</td>
-            <td>${l.date}</td>
-        </tr>`;
+            <td>${ip.ip}</td>
+            <td>${ip.city || '-'}</td>
+            <td>${ip.state || '-'}</td>
+            <td>${ip.country}</td>
+            <td>${ip.browser}</td>
+            <td>${ip.date}</td>
+            <td>
+                <button class="btn block">Bloquear</button>
+                <button class="btn unblock">Desbloquear</button>
+            </td>
+        </tr>
+        `;
     });
 
-})
-.catch(err => console.error("ERRO LOGINS:", err));
+});
 
 </script>
 
