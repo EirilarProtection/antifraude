@@ -1369,130 +1369,78 @@ Fechar
 
 <script>
 
+<script>
 
 function browserIcon(browser){
 
 browser = browser || "";
 
-
 if(browser.includes("Chrome"))
-
-return
-
-'<i class="fa-brands fa-chrome"></i> Chrome';
-
+return '<i class="fa-brands fa-chrome"></i> Chrome';
 
 if(browser.includes("Firefox"))
-
-return
-
-'<i class="fa-brands fa-firefox-browser"></i> Firefox';
-
+return '<i class="fa-brands fa-firefox-browser"></i> Firefox';
 
 if(browser.includes("Edge"))
+return '<i class="fa-brands fa-edge"></i> Edge';
 
-return
-
-'<i class="fa-brands fa-edge"></i> Edge';
-
-
-return
-
-'<i class="fa-brands fa-safari"></i> Safari';
-
+return '<i class="fa-brands fa-safari"></i> Safari';
 }
-
-
 
 function closeModal(){
-
 document.getElementById("modal").style.display="none";
-
 }
-
-
 
 async function details(id){
 
 const r = await fetch(`/api/user/${id}`);
-
 const d = await r.json();
 
-
 document.getElementById("modalContent").innerHTML = `
-
-<b>Usuário:</b> ${d.username}<br><br>
-
-<b>Email:</b> ${d.email}<br><br>
-
-<b>Risco:</b> ${d.risk_score}<br><br>
-
-<b>Nível:</b> ${d.risk_level}<br><br>
-
-<b>Status:</b> ${d.status}<br><br>
-
+<b>Usuário:</b> ${d.username || '-'}<br><br>
+<b>Email:</b> ${d.email || '-'}<br><br>
+<b>Risco:</b> ${d.risk_score || 0}<br><br>
+<b>Nível:</b> ${d.risk_level || '-'}<br><br>
+<b>Status:</b> ${d.account_status || '-'}<br><br>
 <b>Telefone:</b> ${d.phone || '-'}<br><br>
-
 <b>Endereço:</b> ${d.address || '-'}<br><br>
-
 <b>Pagamento:</b> ${d.payment_method || '-'}
-
 `;
 
-
 document.getElementById("modal").style.display="flex";
-
 }
-
-
 
 async function blockUser(id){
 
 await fetch(`/api/block_user/${id}`,{
-
 method:"POST"
-
 });
 
 location.reload();
-
 }
-
-
 
 async function unblockUser(id){
 
 await fetch(`/api/unblock_user/${id}`,{
-
 method:"POST"
-
 });
 
 location.reload();
-
 }
-
-
 
 async function notifyUser(id){
 
 await fetch(`/api/notify_user/${id}`,{
-
 method:"POST"
-
 });
 
 alert("Notificação enviada");
-
 }
 
-
-
 fetch("/api/logins")
-
 .then(r=>r.json())
-
 .then(data=>{
+
 function getFlag(countryCode){
   if(!countryCode) return "🌍";
 
@@ -1505,47 +1453,29 @@ function getFlag(countryCode){
 
 let html = "";
 
-
 data.forEach(u=>{
 
-
 html += `
-
 <tr>
-
 
 <td>
 
 <div class="user-box">
 
 <div class="avatar red">
-
-${u.user[0]}
-
+${(u.username || "U")[0]}
 </div>
 
 <div>
 
 <b>
-
-${u.user}
-
+${u.username || "Sem nome"}
 </b>
 
 <br>
 
-<span
-
-style="
-
-color:#8c99b0;
-
-font-size:13px;
-
-">
-
+<span style="color:#8c99b0;font-size:13px;">
 ${u.email || ''}
-
 </span>
 
 </div>
@@ -1554,112 +1484,53 @@ ${u.email || ''}
 
 </td>
 
-
-
-<td>
-
-${u.ip}
-
-</td>
-
-
+<td>${u.ip_address || '-'}</td>
 
 <td>
-
 <span class="flag">${getFlag(u.country)}</span>
-${u.city}
-
+${u.city || '-'}
 </td>
 
-
-
 <td>
-
 ${browserIcon(u.browser)}
-
 </td>
-
-
 
 <td>
-
 <div class="status">
-
-${u.status || "Ativo"}
-
+${u.account_status || "Ativo"}
 </div>
-
 </td>
-
-
 
 <td>
 
 <div class="actions">
 
+<button class="action-btn block"
+onclick="blockUser(${u.id})">🛡</button>
 
-<button
+<button class="action-btn unblock"
+onclick="unblockUser(${u.id})">🔓</button>
 
-class="action-btn block"
+<button class="action-btn details"
+onclick="details(${u.id})">👁</button>
 
-onclick="blockUser(${u.user_id})">
-
-🛡
-
-</button>
-
-
-
-<button
-
-class="action-btn unblock"
-
-onclick="unblockUser(${u.user_id})">
-
-🔓
-
-</button>
-
-
-
-<button
-
-class="action-btn details"
-
-onclick="details(${u.user_id})">
-
-👁
-
-</button>
-
-
-
-<button
-
-class="action-btn notify"
-
-onclick="notifyUser(${u.user_id})">
-
-🔔
-
-</button>
-
+<button class="action-btn notify"
+onclick="notifyUser(${u.id})">🔔</button>
 
 </div>
 
 </td>
 
-
 </tr>
-
 `;
 
 });
 
-
 document.getElementById("tableBody").innerHTML = html;
 
 });
+
+</script>  
 
 </script>
 
