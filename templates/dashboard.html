@@ -1362,168 +1362,138 @@ Fechar
 
 <script>
 
-<script>
+function logout(){
+  window.location.href = "/login";
+}
 
 function browserIcon(browser){
+  browser = browser || "";
 
-browser = browser || "";
+  if(browser.includes("Chrome"))
+    return '<i class="fa-brands fa-chrome"></i> Chrome';
 
-if(browser.includes("Chrome"))
-return '<i class="fa-brands fa-chrome"></i> Chrome';
+  if(browser.includes("Firefox"))
+    return '<i class="fa-brands fa-firefox-browser"></i> Firefox';
 
-if(browser.includes("Firefox"))
-return '<i class="fa-brands fa-firefox-browser"></i> Firefox';
+  if(browser.includes("Edge"))
+    return '<i class="fa-brands fa-edge"></i> Edge';
 
-if(browser.includes("Edge"))
-return '<i class="fa-brands fa-edge"></i> Edge';
-
-return '<i class="fa-brands fa-safari"></i> Safari';
+  return '<i class="fa-brands fa-safari"></i> Safari';
 }
 
 function closeModal(){
-document.getElementById("modal").style.display="none";
+  document.getElementById("modal").style.display = "none";
 }
 
 async function details(id){
 
-const r = await fetch(`/api/user/${id}`);
-const d = await r.json();
+  const r = await fetch(`/api/user/${id}`);
+  const d = await r.json();
 
-document.getElementById("modalContent").innerHTML = `
-<b>Usuário:</b> ${d.username || '-'}<br><br>
-<b>Email:</b> ${d.email || '-'}<br><br>
-<b>Risco:</b> ${d.risk_score || 0}<br><br>
-<b>Nível:</b> ${d.risk_level || '-'}<br><br>
-<b>Status:</b> ${d.account_status || '-'}<br><br>
-<b>Telefone:</b> ${d.phone || '-'}<br><br>
-<b>Endereço:</b> ${d.address || '-'}<br><br>
-<b>Pagamento:</b> ${d.payment_method || '-'}
-`;
+  document.getElementById("modalContent").innerHTML = `
+    <b>Usuário:</b> ${d.username || '-'}<br><br>
+    <b>Email:</b> ${d.email || '-'}<br><br>
+    <b>Risco:</b> ${d.risk_score || 0}<br><br>
+    <b>Nível:</b> ${d.risk_level || '-'}<br><br>
+    <b>Status:</b> ${d.account_status || '-'}<br><br>
+    <b>Telefone:</b> ${d.phone || '-'}<br><br>
+    <b>Endereço:</b> ${d.address || '-'}<br><br>
+    <b>Pagamento:</b> ${d.payment_method || '-'}
+  `;
 
-document.getElementById("modal").style.display="flex";
+  document.getElementById("modal").style.display = "flex";
 }
 
 async function blockUser(id){
-
-await fetch(`/api/block_user/${id}`,{
-method:"POST"
-});
-
-location.reload();
+  await fetch(`/api/block_user/${id}`, { method: "POST" });
+  location.reload();
 }
 
 async function unblockUser(id){
-
-await fetch(`/api/unblock_user/${id}`,{
-method:"POST"
-});
-
-location.reload();
+  await fetch(`/api/unblock_user/${id}`, { method: "POST" });
+  location.reload();
 }
 
 async function notifyUser(id){
-
-await fetch(`/api/notify_user/${id}`,{
-method:"POST"
-});
-
-alert("Notificação enviada");
+  await fetch(`/api/notify_user/${id}`, { method: "POST" });
+  alert("Notificação enviada");
 }
 
+// CARREGAR LOGINS
 fetch("/api/logins")
-.then(r=>r.json())
-.then(data=>{
+.then(r => r.json())
+.then(data => {
 
-function getFlag(countryCode){
-  if(!countryCode) return "🌍";
+  function getFlag(countryCode){
+    if(!countryCode) return "🌍";
 
-  return countryCode
-    .toUpperCase()
-    .replace(/./g, char =>
-      String.fromCodePoint(127397 + char.charCodeAt())
-    );
-}
+    return countryCode
+      .toUpperCase()
+      .replace(/./g, char =>
+        String.fromCodePoint(127397 + char.charCodeAt())
+      );
+  }
 
-let html = "";
+  let html = "";
 
-data.forEach(u=>{
+  data.forEach(u => {
 
-html += `
-<tr>
+    html += `
+      <tr>
 
-<td>
+        <td>
+          <div class="user-box">
+            <div class="avatar red">
+              ${(u.username || "U")[0]}
+            </div>
+            <div>
+              <b>${u.username || "Sem nome"}</b><br>
+              <span style="color:#8c99b0;font-size:13px;">
+                ${u.email || ''}
+              </span>
+            </div>
+          </div>
+        </td>
 
-<div class="user-box">
+        <td>${u.ip_address || u.ip || '-'}</td>
 
-<div class="avatar red">
-${(u.username || "U")[0]}
-</div>
+        <td>
+          <span class="flag">${getFlag(u.country)}</span>
+          ${u.city || '-'}
+        </td>
 
-<div>
+        <td>${browserIcon(u.browser)}</td>
 
-<b>
-${u.username || "Sem nome"}
-</b>
+        <td>
+          <div class="status">
+            ${u.account_status || u.status || "Ativo"}
+          </div>
+        </td>
 
-<br>
+        <td>
+          <div class="actions">
 
-<span style="color:#8c99b0;font-size:13px;">
-${u.email || ''}
-</span>
+            <button class="action-btn block"
+              onclick="blockUser(${u.id})">🛡</button>
 
-</div>
+            <button class="action-btn unblock"
+              onclick="unblockUser(${u.id})">🔓</button>
 
-</div>
+            <button class="action-btn details"
+              onclick="details(${u.id})">👁</button>
 
-</td>
+            <button class="action-btn notify"
+              onclick="notifyUser(${u.id})">🔔</button>
 
-<td>${u.ip_address || '-'}</td>
+          </div>
+        </td>
 
-<td>
-<span class="flag">${getFlag(u.country)}</span>
-${u.city || '-'}
-</td>
+      </tr>
+    `;
+  });
 
-<td>
-${browserIcon(u.browser)}
-</td>
-
-<td>
-<div class="status">
-${u.account_status || "Ativo"}
-</div>
-</td>
-
-<td>
-
-<div class="actions">
-
-<button class="action-btn block"
-onclick="blockUser(${u.id})">🛡</button>
-
-<button class="action-btn unblock"
-onclick="unblockUser(${u.id})">🔓</button>
-
-<button class="action-btn details"
-onclick="details(${u.id})">👁</button>
-
-<button class="action-btn notify"
-onclick="notifyUser(${u.id})">🔔</button>
-
-</div>
-
-</td>
-
-</tr>
-`;
-
+  document.getElementById("tableBody").innerHTML = html;
 });
-
-document.getElementById("tableBody").innerHTML = html;
-
-});
-
-</script>  
 
 </script>
 
