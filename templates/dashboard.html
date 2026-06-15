@@ -1,112 +1,1096 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eirilar Premium Dashboard</title>
+
+<title>Eirilar AntiFraude Enterprise</title>
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-body{background:#f5f6f8;font-family:Segoe UI,sans-serif}
-.sidebar{position:fixed;left:0;top:0;width:280px;height:100vh;background:#fff;border-right:1px solid #e5e5e5;padding:20px}
-.logo{text-align:center;margin-bottom:20px}
-.logo img{width:170px}
-.menu a{display:flex;justify-content:space-between;padding:14px 18px;margin-bottom:8px;border-radius:12px;text-decoration:none;color:#333}
-.menu a.active,.menu a:hover{background:#e31b23;color:#fff}
-.content{margin-left:300px;padding:25px}
-.cardx{background:#fff;border-radius:18px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.metric{font-size:36px;font-weight:700}
-.small{color:#777}
-.table td,.table th{font-size:14px}
-</style>
+
 </head>
+
 <body>
 
+<!-- SIDEBAR -->
+
 <div class="sidebar">
-<div class="logo">
-<img src="https://i.ibb.co/XrCbLdJR/eirilar-logo-vermelho.png">
+
+    <div class="logo-area">
+
+        <img
+        src="https://i.ibb.co/XrCbLdJR/eirilar-logo-vermelho.png"
+        class="logo">
+
+    </div>
+
+    <div class="menu-title">
+        MENU PRINCIPAL
+    </div>
+
+    <a class="menu-item active">
+        <i class="fa-solid fa-chart-line"></i>
+        Dashboard
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-users"></i>
+        Usuários
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-credit-card"></i>
+        Transações
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Eventos de Fraude
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-shield"></i>
+        Regras
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-laptop"></i>
+        Dispositivos
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-location-dot"></i>
+        Geolocalização
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-ban"></i>
+        Blacklist
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-bell"></i>
+        Alertas
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-file-lines"></i>
+        Relatórios
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-gears"></i>
+        Configurações
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        Logs
+    </a>
+
+    <a class="menu-item">
+        <i class="fa-solid fa-user-lock"></i>
+        Sessões
+    </a>
+
 </div>
 
-<div class="menu">
-<a class="active"><span><i class="fa fa-home"></i> Dashboard</span></a>
-<a><span><i class="fa fa-chart-line"></i> Análises</span></a>
-<a><span><i class="fa fa-credit-card"></i> Transações</span></a>
-<a><span><i class="fa fa-shield"></i> Regras</span></a>
-<a><span><i class="fa fa-ban"></i> Listas Negras</span></a>
-<a><span><i class="fa fa-laptop"></i> Dispositivos</span></a>
-<a><span><i class="fa fa-bell"></i> Alertas</span></a>
-<a><span><i class="fa fa-file"></i> Relatórios</span></a>
-<a><span><i class="fa fa-gear"></i> Configurações</span></a>
-</div>
+<!-- CONTENT -->
+
+<div class="main-content">
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+        <div class="search-box">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+            type="text"
+            placeholder="Pesquisar usuário, pedido, IP ou dispositivo">
+
+        </div>
+
+        <div class="top-actions">
+
+            <button class="notification-btn">
+
+                <i class="fa-solid fa-bell"></i>
+
+                <span class="notification-count">
+                    12
+                </span>
+
+            </button>
+
+            <div class="admin-profile">
+
+                <img
+                src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+                <div>
+
+                    <strong>
+                        Administrador
+                    </strong>
+
+                    <small>
+                        Ambiente Produção
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PAGE HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>
+                Dashboard Antifraude
+            </h1>
+
+            <p>
+                Monitoramento em tempo real
+            </p>
+
+        </div>
+
+        <button class="btn btn-danger">
+
+            <i class="fa-solid fa-download"></i>
+
+            Exportar Relatório
+
+        </button>
+
+    </div>
+
+    <!-- KPI CARDS -->
+
+    <div class="row g-4">
+
+        <div class="col-lg-3">
+
+            <div class="kpi-card">
+
+                <div class="kpi-icon red">
+
+                    <i class="fa-solid fa-users"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="kpi-label">
+                        Usuários
+                    </div>
+
+                    <div class="kpi-value"
+                    id="totalUsers">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="kpi-card">
+
+                <div class="kpi-icon blue">
+
+                    <i class="fa-solid fa-credit-card"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="kpi-label">
+                        Transações
+                    </div>
+
+                    <div class="kpi-value"
+                    id="totalOrders">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="kpi-card">
+
+                <div class="kpi-icon orange">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="kpi-label">
+                        Fraudes
+                    </div>
+
+                    <div class="kpi-value"
+                    id="totalFrauds">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="kpi-card">
+
+                <div class="kpi-icon green">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                </div>
+
+                <div>
+
+                    <div class="kpi-label">
+                        Score Médio
+                    </div>
+
+                    <div class="kpi-value"
+                    id="avgRisk">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- GRÁFICOS -->
+
+    <div class="row mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="dashboard-card">
+
+                <h5>
+                    Transações x Fraudes
+                </h5>
+
+                <canvas id="transactionsChart"></canvas>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="dashboard-card">
+
+                <h5>
+                    Distribuição de Risco
+                </h5>
+
+                <canvas id="riskChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ALERTAS -->
+
+    <div class="dashboard-card mt-4">
+
+        <h5>
+            Alertas em Tempo Real
+        </h5>
+
+        <div id="alertsContainer">
+
+        </div>
+
+    </div>
+
+    <!-- TABELA -->
+
+    <div class="dashboard-card mt-4">
+
+        <h5>
+            Últimas Transações
+        </h5>
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Cliente</th>
+
+                    <th>Valor</th>
+
+                    <th>País</th>
+
+                    <th>Score</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="ordersTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
 
-<div class="content">
-<h2><b>Dashboard</b></h2>
-<p class="text-muted">Visão geral do sistema antifraude em tempo real</p>
-
-<div class="row g-3 mb-4">
-<div class="col-md-3"><div class="cardx"><div>Transações</div><div class="metric">1.234.567</div></div></div>
-<div class="col-md-3"><div class="cardx"><div>Fraudes</div><div class="metric">2.456</div></div></div>
-<div class="col-md-3"><div class="cardx"><div>Taxa Fraude</div><div class="metric">0,19%</div></div></div>
-<div class="col-md-3"><div class="cardx"><div>Economia</div><div class="metric">R$ 3,4M</div></div></div>
-</div>
-
-<div class="row g-3">
-<div class="col-lg-8">
-<div class="cardx">
-<canvas id="lineChart"></canvas>
-</div>
-</div>
-<div class="col-lg-4">
-<div class="cardx">
-<h5>Alertas Recentes</h5>
-<ul>
-<li>Tentativa de fraude em cartão</li>
-<li>Múltiplas tentativas de login</li>
-<li>Dispositivo não reconhecido</li>
-<li>Geolocalização suspeita</li>
-</ul>
-</div>
-</div>
-</div>
-
-<div class="row g-3 mt-2">
-<div class="col-lg-8">
-<div class="cardx">
-<h5>Transações Recentes</h5>
-<table class="table">
-<thead><tr><th>ID</th><th>Cliente</th><th>Valor</th><th>Risco</th></tr></thead>
-<tbody>
-<tr><td>#TX1</td><td>João</td><td>R$1250</td><td>ALTO</td></tr>
-<tr><td>#TX2</td><td>Maria</td><td>R$320</td><td>BAIXO</td></tr>
-</tbody>
-</table>
-</div>
-</div>
-
-<div class="col-lg-4">
-<div class="cardx">
-<h5>Top Motivos de Fraude</h5>
-<p>Cartão roubado</p>
-<div class="progress mb-2"><div class="progress-bar bg-danger" style="width:80%"></div></div>
-<p>Uso de terceiros</p>
-<div class="progress mb-2"><div class="progress-bar bg-danger" style="width:65%"></div></div>
-</div>
-</div>
-</div>
-
-</div>
-
-<script>
-new Chart(document.getElementById('lineChart'),{
-type:'line',
-data:{
-labels:['21/05','22/05','23/05','24/05','25/05','26/05','27/05'],
-datasets:[{label:'Transações',data:[100,150,145,220,180,95,110]}]
-}
-});
-</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 
 </body>
 </html>
+
+/* =========================
+   RESET
+========================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#f4f6f9;
+font-family:'Segoe UI',sans-serif;
+overflow-x:hidden;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:280px;
+height:100vh;
+background:#ffffff;
+border-right:1px solid #ececec;
+padding:25px;
+overflow-y:auto;
+z-index:999;
+}
+
+.logo-area{
+text-align:center;
+margin-bottom:30px;
+}
+
+.logo{
+width:180px;
+}
+
+.menu-title{
+font-size:12px;
+font-weight:700;
+color:#999;
+letter-spacing:1px;
+margin-bottom:15px;
+}
+
+.menu-item{
+display:flex;
+align-items:center;
+gap:14px;
+padding:14px 18px;
+border-radius:14px;
+margin-bottom:8px;
+text-decoration:none;
+font-weight:600;
+color:#444;
+transition:.3s;
+cursor:pointer;
+}
+
+.menu-item i{
+width:20px;
+text-align:center;
+}
+
+.menu-item:hover{
+background:#d71920;
+color:#fff;
+transform:translateX(5px);
+}
+
+.menu-item.active{
+background:#d71920;
+color:#fff;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.main-content{
+margin-left:300px;
+padding:30px;
+}
+
+/* =========================
+   TOPBAR
+========================= */
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.search-box{
+background:#fff;
+width:500px;
+padding:14px 20px;
+border-radius:18px;
+box-shadow:0 3px 15px rgba(0,0,0,.05);
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.search-box input{
+border:none;
+outline:none;
+width:100%;
+font-size:14px;
+}
+
+.top-actions{
+display:flex;
+align-items:center;
+gap:20px;
+}
+
+/* =========================
+   NOTIFICAÇÃO
+========================= */
+
+.notification-btn{
+position:relative;
+border:none;
+background:#fff;
+width:55px;
+height:55px;
+border-radius:50%;
+font-size:20px;
+box-shadow:0 3px 15px rgba(0,0,0,.06);
+cursor:pointer;
+}
+
+.notification-count{
+position:absolute;
+top:5px;
+right:5px;
+background:#d71920;
+color:#fff;
+width:20px;
+height:20px;
+border-radius:50%;
+font-size:11px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* =========================
+   ADMIN
+========================= */
+
+.admin-profile{
+display:flex;
+align-items:center;
+gap:12px;
+background:#fff;
+padding:10px 15px;
+border-radius:18px;
+box-shadow:0 3px 15px rgba(0,0,0,.05);
+}
+
+.admin-profile img{
+width:45px;
+height:45px;
+border-radius:50%;
+}
+
+.admin-profile small{
+display:block;
+color:#999;
+}
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.page-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.page-header h1{
+font-size:32px;
+font-weight:700;
+margin-bottom:5px;
+}
+
+.page-header p{
+color:#888;
+margin:0;
+}
+
+/* =========================
+   KPI
+========================= */
+
+.kpi-card{
+background:#fff;
+padding:22px;
+border-radius:22px;
+display:flex;
+align-items:center;
+gap:18px;
+box-shadow:0 5px 18px rgba(0,0,0,.05);
+transition:.3s;
+height:120px;
+}
+
+.kpi-card:hover{
+transform:translateY(-4px);
+}
+
+.kpi-icon{
+width:60px;
+height:60px;
+border-radius:18px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+color:#fff;
+}
+
+.red{
+background:#d71920;
+}
+
+.blue{
+background:#0d6efd;
+}
+
+.orange{
+background:#ff9800;
+}
+
+.green{
+background:#00b894;
+}
+
+.kpi-label{
+font-size:13px;
+color:#777;
+margin-bottom:5px;
+}
+
+.kpi-value{
+font-size:30px;
+font-weight:700;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.dashboard-card{
+background:#fff;
+padding:25px;
+border-radius:22px;
+box-shadow:0 5px 18px rgba(0,0,0,.05);
+margin-bottom:20px;
+}
+
+.dashboard-card h5{
+font-weight:700;
+margin-bottom:20px;
+}
+
+/* =========================
+   CHART
+========================= */
+
+canvas{
+max-width:100%;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table{
+margin-top:15px;
+}
+
+.table thead{
+background:#fafafa;
+}
+
+.table th{
+font-size:13px;
+font-weight:700;
+color:#555;
+padding:15px;
+}
+
+.table td{
+padding:15px;
+vertical-align:middle;
+font-size:14px;
+}
+
+.table tbody tr:hover{
+background:#fafafa;
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.badge-success{
+background:#00b894;
+color:#fff;
+padding:6px 12px;
+border-radius:50px;
+}
+
+.badge-danger{
+background:#d71920;
+color:#fff;
+padding:6px 12px;
+border-radius:50px;
+}
+
+.badge-warning{
+background:#ff9800;
+color:#fff;
+padding:6px 12px;
+border-radius:50px;
+}
+
+/* =========================
+   ALERTAS
+========================= */
+
+.alert-item{
+display:flex;
+align-items:center;
+gap:12px;
+padding:14px;
+border-radius:14px;
+margin-bottom:12px;
+font-weight:600;
+}
+
+.alert-high{
+background:#ffe5e5;
+color:#d71920;
+}
+
+.alert-medium{
+background:#fff4d6;
+color:#ff9800;
+}
+
+.alert-low{
+background:#e5fff1;
+color:#00b894;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar{
+width:8px;
+}
+
+::-webkit-scrollbar-track{
+background:#f1f1f1;
+}
+
+::-webkit-scrollbar-thumb{
+background:#d71920;
+border-radius:50px;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media(max-width:1200px){
+
+.main-content{
+margin-left:0;
+}
+
+.sidebar{
+display:none;
+}
+
+.search-box{
+width:100%;
+}
+
+.topbar{
+flex-direction:column;
+gap:15px;
+}
+
+.page-header{
+flex-direction:column;
+align-items:flex-start;
+gap:15px;
+}
+
+}
+
+// =====================================
+// EIRILAR ANTIFRAUDE DASHBOARD
+// =====================================
+
+let transactionsChart;
+let riskChart;
+
+// =====================================
+// INICIALIZAÇÃO
+// =====================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    loadDashboard();
+
+    loadOrders();
+
+    loadAlerts();
+
+    createCharts();
+
+    setInterval(loadDashboard, 10000);
+
+    setInterval(loadAlerts, 10000);
+
+});
+
+// =====================================
+// DASHBOARD
+// =====================================
+
+async function loadDashboard(){
+
+    try{
+
+        const response = await fetch("/api/dashboard");
+
+        const data = await response.json();
+
+        document.getElementById("totalUsers").innerText =
+            formatNumber(data.total_users || 0);
+
+        document.getElementById("totalOrders").innerText =
+            formatNumber(data.total_orders || 0);
+
+        document.getElementById("totalFrauds").innerText =
+            formatNumber(data.total_frauds || 0);
+
+        document.getElementById("avgRisk").innerText =
+            data.avg_risk || 0;
+
+        updateCharts(data);
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// ORDERS
+// =====================================
+
+async function loadOrders(){
+
+    try{
+
+        const response =
+            await fetch("/api/orders");
+
+        const orders =
+            await response.json();
+
+        const tbody =
+            document.getElementById("ordersTable");
+
+        tbody.innerHTML = "";
+
+        orders.forEach(order=>{
+
+            let riskClass = "badge-success";
+
+            if(order.risk_score >= 70)
+                riskClass = "badge-danger";
+
+            else if(order.risk_score >= 40)
+                riskClass = "badge-warning";
+
+            tbody.innerHTML += `
+
+            <tr>
+
+                <td>#${order.id}</td>
+
+                <td>${order.client_name}</td>
+
+                <td>R$ ${order.amount}</td>
+
+                <td>${order.country}</td>
+
+                <td>
+
+                    <span class="${riskClass}">
+                        ${order.risk_score}
+                    </span>
+
+                </td>
+
+                <td>${order.status}</td>
+
+            </tr>
+
+            `;
+
+        });
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// ALERTAS
+// =====================================
+
+async function loadAlerts(){
+
+    try{
+
+        const response =
+            await fetch("/api/alerts");
+
+        const alerts =
+            await response.json();
+
+        const container =
+            document.getElementById("alertsContainer");
+
+        container.innerHTML = "";
+
+        alerts.forEach(alert=>{
+
+            let css = "alert-low";
+
+            if(alert.severity === "HIGH")
+                css = "alert-high";
+
+            if(alert.severity === "MEDIUM")
+                css = "alert-medium";
+
+            container.innerHTML += `
+
+            <div class="alert-item ${css}">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                ${alert.title}
+
+            </div>
+
+            `;
+
+        });
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+// =====================================
+// CHARTS
+// =====================================
+
+function createCharts(){
+
+    const ctx1 =
+        document.getElementById("transactionsChart");
+
+    transactionsChart =
+        new Chart(ctx1,{
+
+            type:"line",
+
+            data:{
+                labels:[],
+                datasets:[
+                {
+                    label:"Transações",
+                    data:[],
+                    borderWidth:3,
+                    tension:.4
+                },
+                {
+                    label:"Fraudes",
+                    data:[],
+                    borderWidth:3,
+                    tension:.4
+                }]
+            },
+
+            options:{
+                responsive:true
+            }
+
+        });
+
+    const ctx2 =
+        document.getElementById("riskChart");
+
+    riskChart =
+        new Chart(ctx2,{
+
+            type:"doughnut",
+
+            data:{
+                labels:[
+                    "Baixo",
+                    "Médio",
+                    "Alto"
+                ],
+
+                datasets:[
+                {
+                    data:[0,0,0]
+                }]
+            }
+
+        });
+
+}
+
+// =====================================
+// UPDATE CHARTS
+// =====================================
+
+function updateCharts(data){
+
+    if(data.daily_labels){
+
+        transactionsChart.data.labels =
+            data.daily_labels;
+
+        transactionsChart.data.datasets[0].data =
+            data.daily_orders;
+
+        transactionsChart.data.datasets[1].data =
+            data.daily_frauds;
+
+        transactionsChart.update();
+
+    }
+
+    if(data.risk_distribution){
+
+        riskChart.data.datasets[0].data = [
+
+            data.risk_distribution.low,
+
+            data.risk_distribution.medium,
+
+            data.risk_distribution.high
+
+        ];
+
+        riskChart.update();
+
+    }
+
+}
+
+// =====================================
+// FORMAT
+// =====================================
+
+function formatNumber(number){
+
+    return new Intl.NumberFormat(
+        'pt-BR'
+    ).format(number);
+
+}
+
