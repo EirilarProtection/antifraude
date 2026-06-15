@@ -1,6 +1,6 @@
-import express from "express";
-import pg from "pg";
-import cors from "cors";
+const express = require("express");
+const cors = require("cors");
+const { Pool } = require("pg");
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -9,8 +9,8 @@ const port = process.env.PORT || 8080;
 app.use(cors());
 app.use(express.json());
 
-// conexão PostgreSQL (Railway usa DATABASE_URL)
-const db = new pg.Pool({
+// conexão banco Railway
+const db = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
@@ -18,20 +18,19 @@ const db = new pg.Pool({
 });
 
 // --------------------
-// ROTA PRINCIPAL
+// ROTA HOME
 // --------------------
 app.get("/", (req, res) => {
   res.send("🚀 Antifraude API rodando com sucesso");
 });
 
 // --------------------
-// LISTA LOGINS (dashboard)
+// LOGINS
 // --------------------
 app.get("/api/logins", async (req, res) => {
   try {
     const result = await db.query(`
-      SELECT id, username, email, ip_address, country, city,
-             browser, account_status
+      SELECT *
       FROM users
       ORDER BY id DESC
     `);
@@ -44,7 +43,7 @@ app.get("/api/logins", async (req, res) => {
 });
 
 // --------------------
-// USUÁRIO POR ID
+// USER BY ID
 // --------------------
 app.get("/api/user/:id", async (req, res) => {
   try {
@@ -63,7 +62,7 @@ app.get("/api/user/:id", async (req, res) => {
 });
 
 // --------------------
-// BLOQUEAR USUÁRIO
+// BLOQUEAR
 // --------------------
 app.post("/api/block_user/:id", async (req, res) => {
   try {
@@ -85,7 +84,7 @@ app.post("/api/block_user/:id", async (req, res) => {
 });
 
 // --------------------
-// DESBLOQUEAR USUÁRIO
+// DESBLOQUEAR
 // --------------------
 app.post("/api/unblock_user/:id", async (req, res) => {
   try {
@@ -107,13 +106,13 @@ app.post("/api/unblock_user/:id", async (req, res) => {
 });
 
 // --------------------
-// NOTIFICAR (mock simples)
+// NOTIFY (mock)
 // --------------------
 app.post("/api/notify_user/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    console.log(`📢 Notificação enviada para usuário ${id}`);
+    console.log("Notificação enviada para usuário:", id);
 
     res.json({ success: true });
   } catch (err) {
@@ -126,5 +125,5 @@ app.post("/api/notify_user/:id", async (req, res) => {
 // START SERVER
 // --------------------
 app.listen(port, () => {
-  console.log(`API rodando na porta ${port}`);
+  console.log("API rodando na porta", port);
 });
