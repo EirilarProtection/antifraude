@@ -1493,7 +1493,15 @@ fetch("/api/logins")
 .then(r=>r.json())
 
 .then(data=>{
+function getFlag(countryCode){
+  if(!countryCode) return "🌍";
 
+  return countryCode
+    .toUpperCase()
+    .replace(/./g, char =>
+      String.fromCodePoint(127397 + char.charCodeAt())
+    );
+}
 
 let html = "";
 
