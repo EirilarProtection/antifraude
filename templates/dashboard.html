@@ -1,119 +1,1157 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>Eirilar Security Dashboard</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
+<!-- GOOGLE FONT -->
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+
+<!-- FONT AWESOME -->
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Segoe UI;background:#f4f6fb;display:flex}
+
+*{
+
+margin:0;
+padding:0;
+
+box-sizing:border-box;
+
+font-family:'Poppins',sans-serif;
+
+}
+
+body{
+
+background:#f4f6fb;
+
+display:flex;
+
+overflow-x:hidden;
+
+}
+
+
+/* SIDEBAR */
+
 .sidebar{
-width:260px;height:100vh;position:fixed;
-background:linear-gradient(180deg,#112244,#1d3565);
-color:white;padding:25px
+
+width:270px;
+
+height:100vh;
+
+position:fixed;
+
+left:0;
+top:0;
+
+background:
+
+linear-gradient(
+180deg,
+#07172f,
+#0c244c
+);
+
+padding:25px;
+
+display:flex;
+
+flex-direction:column;
+
+box-shadow:
+
+10px 0 40px rgba(0,0,0,.08);
+
 }
-.logo{text-align:center;margin-bottom:30px}
-.logo img{max-width:140px}
+
+
+/* LOGO */
+
+.logo{
+
+text-align:center;
+
+margin-bottom:40px;
+
+}
+
+
+.logo img{
+
+width:190px;
+
+}
+
+
+/* MENU */
+
+.menu{
+
+display:flex;
+
+flex-direction:column;
+
+gap:10px;
+
+}
+
+
 .menu a{
-display:block;color:white;text-decoration:none;
-padding:14px;border-radius:12px;margin-bottom:8px
+
+text-decoration:none;
+
+color:white;
+
+padding:17px 20px;
+
+border-radius:18px;
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+font-size:15px;
+
+font-weight:500;
+
+transition:.3s;
+
+cursor:pointer;
+
 }
-.menu a:hover{background:rgba(255,255,255,.1)}
-.main{margin-left:260px;padding:30px;width:100%}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+
+
+.menu a:hover{
+
+background:
+rgba(255,255,255,.05);
+
+}
+
+
+.menu .active{
+
+background:
+
+linear-gradient(
+90deg,
+#ff3145,
+#df1834
+);
+
+box-shadow:
+
+0 10px 25px rgba(255,40,40,.25);
+
+}
+
+
+.dot{
+
+margin-left:auto;
+
+width:10px;
+height:10px;
+
+background:red;
+
+border-radius:50%;
+
+}
+
+
+/* SISTEMA PROTEGIDO */
+
+.secure-box{
+
+margin-top:auto;
+
+padding:25px;
+
+border-radius:25px;
+
+background:
+
+rgba(255,255,255,.05);
+
+border:
+
+1px solid rgba(255,255,255,.08);
+
+text-align:center;
+
+}
+
+
+.secure-icon{
+
+width:65px;
+height:65px;
+
+border-radius:50%;
+
+background:
+
+rgba(255,50,50,.12);
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+margin:auto;
+
+margin-bottom:18px;
+
+font-size:28px;
+
+color:#ff3145;
+
+}
+
+
+.secure-box h3{
+
+color:white;
+
+margin-bottom:10px;
+
+}
+
+
+.secure-box p{
+
+color:#c4cfe4;
+
+font-size:14px;
+
+margin-bottom:18px;
+
+}
+
+
+.system-status{
+
+background:#133620;
+
+color:#36df79;
+
+padding:10px 18px;
+
+border-radius:40px;
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+font-size:13px;
+
+}
+
+
+/* SAIR */
+
+.logout{
+
+margin-top:20px;
+
+padding-top:20px;
+
+border-top:
+
+1px solid rgba(255,255,255,.08);
+
+}
+
+
+.logout a{
+
+text-decoration:none;
+
+color:white;
+
+padding:15px;
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+border-radius:15px;
+
+transition:.3s;
+
+}
+
+
+.logout a:hover{
+
+background:
+
+rgba(255,255,255,.05);
+
+}
+
+
+/* MAIN */
+
+.main{
+
+margin-left:270px;
+
+width:100%;
+
+padding:30px;
+
+}
+
+
+/* HEADER */
+
+.header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:35px;
+
+}
+
+
+.header h1{
+
+font-size:34px;
+
+color:#1b2845;
+
+}
+
+
+.header p{
+
+margin-top:8px;
+
+color:#8d9cb7;
+
+}
+
+
+/* HEADER RIGHT */
+
+.header-right{
+
+display:flex;
+
+align-items:center;
+
+gap:20px;
+
+}
+
+  /* PESQUISA */
+
+.search-box{
+
+background:white;
+
+padding:15px 20px;
+
+border-radius:20px;
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+box-shadow:
+
+0 10px 30px rgba(0,0,0,.05);
+
+}
+
+
+.search-box input{
+
+border:none;
+
+outline:none;
+
+width:220px;
+
+font-size:15px;
+
+}
+
+
+/* NOTIFICAÇÕES */
+
+.notification{
+
+width:58px;
+height:58px;
+
+background:white;
+
+border-radius:20px;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+position:relative;
+
+box-shadow:
+
+0 10px 30px rgba(0,0,0,.05);
+
+}
+
+
+.notification span{
+
+position:absolute;
+
+top:-5px;
+right:-5px;
+
+width:22px;
+height:22px;
+
+background:#ff3145;
+
+border-radius:50%;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+color:white;
+
+font-size:12px;
+
+}
+
+
+/* ADMIN */
+
+.admin-box{
+
+background:white;
+
+padding:10px 20px;
+
+border-radius:20px;
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+box-shadow:
+
+0 10px 30px rgba(0,0,0,.05);
+
+}
+
+
+.admin-avatar{
+
+width:50px;
+height:50px;
+
+border-radius:50%;
+
+background:
+
+linear-gradient(
+135deg,
+#ff3145,
+#d71335
+);
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+color:white;
+
+font-weight:600;
+
+}
+
+
+/* CARDS */
+
+.cards{
+
+display:grid;
+
+grid-template-columns:
+
+repeat(4,1fr);
+
+gap:25px;
+
+margin-bottom:35px;
+
+}
+
+
 .card{
-padding:20px;border-radius:20px;color:white;
-box-shadow:0 10px 25px rgba(0,0,0,.1)
+
+padding:28px;
+
+border-radius:28px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+color:white;
+
+box-shadow:
+
+0 20px 40px rgba(0,0,0,.08);
+
 }
-.red{background:#ef4444}
-.blue{background:#3b82f6}
-.orange{background:#f59e0b}
-.green{background:#22c55e}
-.table{
-margin-top:25px;background:white;border-radius:20px;
-overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.08)
+
+
+.red{
+
+background:
+
+linear-gradient(
+135deg,
+#ff4258,
+#e31f3b
+);
+
 }
-table{width:100%;border-collapse:collapse}
-th{
-background:#14284d;color:white;padding:16px
+
+
+.blue{
+
+background:
+
+linear-gradient(
+135deg,
+#5ca9ff,
+#1a79ff
+);
+
 }
-td{padding:16px;border-bottom:1px solid #eee}
-.btn{
-border:none;padding:10px;border-radius:10px;
-cursor:pointer;color:white
+
+
+.orange{
+
+background:
+
+linear-gradient(
+135deg,
+#ffb94d,
+#ff8b1e
+);
+
 }
-.block{background:#ef4444}
-.unblock{background:#22c55e}
-.details{background:#3b82f6}
-.notify{background:#f59e0b}
+
+
+.green{
+
+background:
+
+linear-gradient(
+135deg,
+#3cdf88,
+#14b965
+);
+
+}
+
+
+.circle-icon{
+
+width:72px;
+height:72px;
+
+border-radius:50%;
+
+background:
+
+rgba(255,255,255,.15);
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+font-size:28px;
+
+}
+
+
+.card h2{
+
+font-size:35px;
+
+margin:10px 0;
+
+}
+
 </style>
+
 </head>
+
 <body>
 
+
 <div class="sidebar">
+
 <div class="logo">
-<img src="https://i.ibb.co/XrCbLdJR/eirilar-logo-vermelho.png">
+
+<img
+src="https://i.ibb.co/XrCbLdJR/eirilar-logo-vermelho.png">
+
 </div>
 
+
 <div class="menu">
-<a href="#"><i class="fa fa-chart-line"></i> Dashboard</a>
-<a href="#"><i class="fa fa-users"></i> Usuários</a>
-<a href="#"><i class="fa fa-shield-halved"></i> Segurança</a>
-<a href="#"><i class="fa fa-bell"></i> Notificações</a>
-<a href="#"><i class="fa fa-gear"></i> Configurações</a>
+
+<a class="active">
+
+<i class="fa-solid fa-chart-line"></i>
+
+Dashboard
+
+</a>
+
+
+<a>
+
+<i class="fa-regular fa-user"></i>
+
+Usuários
+
+</a>
+
+
+<a>
+
+<i class="fa-solid fa-arrow-right-to-bracket"></i>
+
+Logins
+
+<div class="dot"></div>
+
+</a>
+
+
+<a>
+
+<i class="fa-solid fa-shield-halved"></i>
+
+Riscos
+
+</a>
+
+
+<a>
+
+<i class="fa-regular fa-bell"></i>
+
+Notificações
+
+</a>
+
+
+<a>
+
+<i class="fa-regular fa-file-lines"></i>
+
+Relatórios
+
+</a>
+
+
+<a>
+
+<i class="fa-solid fa-gear"></i>
+
+Configurações
+
+</a>
+
+
+<a>
+
+<i class="fa-regular fa-circle-question"></i>
+
+Suporte
+
+</a>
+
 </div>
+
+
+<div class="secure-box">
+
+<div class="secure-icon">
+
+<i class="fa-solid fa-shield"></i>
+
 </div>
+
+<h3>
+
+Sistema Protegido
+
+</h3>
+
+<p>
+
+Monitoramento ativo 24 horas
+
+</p>
+
+
+<div class="system-status">
+
+<i class="fa-solid fa-circle"></i>
+
+Todos os sistemas seguros
+
+</div>
+
+</div>
+
+
+<div class="logout">
+
+<a>
+
+<i class="fa-solid fa-arrow-right-from-bracket"></i>
+
+Sair
+
+</a>
+
+</div>
+
+</div>
+
 
 <div class="main">
 
-<div class="cards">
-<div class="card red"><h2>1.542</h2>Usuários Totais</div>
-<div class="card blue"><h2>327</h2>IPs Ativos</div>
-<div class="card orange"><h2>21</h2>Acessos Suspeitos</div>
-<div class="card green"><h2>14</h2>Bloqueados</div>
+<div class="header">
+
+<div>
+
+<h1>
+
+Painel de Segurança
+
+</h1>
+
+<p>
+
+Monitoramento em tempo real dos acessos
+
+</p>
+
 </div>
 
-<div class="table">
+
+<div class="header-right">
+
+<div class="search-box">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+<input
+type="text"
+placeholder="Pesquisar usuário ou IP">
+
+</div>
+
+
+<div class="notification">
+
+<i class="fa-regular fa-bell"></i>
+
+<span>
+
+3
+
+</span>
+
+</div>
+
+
+<div class="admin-box">
+
+<div class="admin-avatar">
+
+A
+
+</div>
+
+<div>
+
+<h3>
+
+Admin
+
+</h3>
+
+<p>
+
+Administrador
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="cards">
+
+
+<div class="card red">
+
+<div>
+
+<h4>Usuários Totais</h4>
+
+<h2>1542</h2>
+
+<span>+12% este mês</span>
+
+</div>
+
+<div class="circle-icon">
+
+<i class="fa-solid fa-users"></i>
+
+</div>
+
+</div>
+
+
+
+<div class="card blue">
+
+<div>
+
+<h4>IPs Ativos</h4>
+
+<h2>327</h2>
+
+<span>+5% hoje</span>
+
+</div>
+
+<div class="circle-icon">
+
+<i class="fa-solid fa-globe"></i>
+
+</div>
+
+</div>
+
+  <div class="card orange">
+
+<div>
+
+<h4>Acessos Suspeitos</h4>
+
+<h2>21</h2>
+
+<span>3 novos alertas</span>
+
+</div>
+
+<div class="circle-icon">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+</div>
+
+</div>
+
+
+<div class="card green">
+
+<div>
+
+<h4>Bloqueados</h4>
+
+<h2>14</h2>
+
+<span>2 hoje</span>
+
+</div>
+
+<div class="circle-icon">
+
+<i class="fa-solid fa-lock"></i>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- TABELA -->
+
+<div class="table-container">
+
+<h2>Logs de Acesso</h2>
+
 <table>
+
 <thead>
+
 <tr>
+
 <th>Usuário</th>
 <th>IP</th>
+<th>Localização</th>
 <th>Navegador</th>
 <th>Status</th>
 <th>Ações</th>
+
 </tr>
+
 </thead>
-<tbody id="table"></tbody>
+
+<tbody id="table">
+
+</tbody>
+
 </table>
-</div>
 
 </div>
+
+
+</div>
+
 
 <script>
+
+function browserIcon(browser){
+
+if(browser.includes("Chrome"))
+return "fa-brands fa-chrome";
+
+if(browser.includes("Firefox"))
+return "fa-brands fa-firefox";
+
+if(browser.includes("Edge"))
+return "fa-brands fa-edge";
+
+return "fa-brands fa-safari";
+
+}
+
+
 fetch("/api/logins")
+
 .then(r=>r.json())
+
 .then(data=>{
-let html='';
+
+let html="";
+
 data.forEach(u=>{
-html+=`
+
+html += `
+
 <tr>
-<td>${u.user}</td>
-<td>${u.ip}</td>
-<td>${u.browser}</td>
-<td>${u.status||'Ativo'}</td>
+
 <td>
-<button class="btn block">Bloquear</button>
-<button class="btn unblock">Desbloquear</button>
-<button class="btn details">Detalhes</button>
-<button class="btn notify">Notificar</button>
+
+<b>${u.user}</b>
+
 </td>
-</tr>`
-})
-document.getElementById("table").innerHTML=html
-})
+
+<td>
+
+${u.ip}
+
+</td>
+
+<td>
+
+🇧🇷 ${u.city}
+
+</td>
+
+<td>
+
+<i class="${browserIcon(u.browser)}"></i>
+
+${u.browser}
+
+</td>
+
+<td>
+
+<span style="
+background:#dff7e7;
+color:#16b364;
+padding:8px 14px;
+border-radius:20px;
+">
+
+${u.status || "Ativo"}
+
+</span>
+
+</td>
+
+<td>
+
+<button onclick="blockUser(${u.user_id})">
+
+🛡
+
+</button>
+
+<button onclick="unblockUser(${u.user_id})">
+
+🔓
+
+</button>
+
+<button onclick="details(${u.user_id})">
+
+👁
+
+</button>
+
+<button onclick="notifyUser(${u.user_id})">
+
+🔔
+
+</button>
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+document.getElementById("table").innerHTML = html;
+
+});
+
+
+async function blockUser(id){
+
+await fetch(`/api/block_user/${id}`,{
+
+method:"POST"
+
+});
+
+location.reload();
+
+}
+
+
+async function unblockUser(id){
+
+await fetch(`/api/unblock_user/${id}`,{
+
+method:"POST"
+
+});
+
+location.reload();
+
+}
+
+
+async function notifyUser(id){
+
+await fetch(`/api/notify_user/${id}`,{
+
+method:"POST"
+
+});
+
+alert("Notificação enviada");
+
+}
+
+
+async function details(id){
+
+const r = await fetch(`/api/user/${id}`);
+
+const d = await r.json();
+
+alert(
+
+"Usuário: "+d.username+
+
+"\nEmail: "+d.email+
+
+"\nRisco: "+d.risk_score+
+
+"\nStatus: "+d.status
+
+);
+
+}
+
 </script>
 
 </body>
+
 </html>
