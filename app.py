@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, session, jsonify
-from database import get_conn
-import os
+from flask import Flask, render_template, jsonify
+from database import get_logins, update_status, get_user_by_id, init_db
 
 app = Flask(__name__)
+
+init_db()
 app.secret_key = os.getenv("SECRET_KEY", "dev_secret_123")
 
 # ==================================================
