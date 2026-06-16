@@ -2,129 +2,252 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard</title>
+<title>Anti-Fraud Dashboard</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0b1220;
-  color: white;
+body{
+margin:0;
+font-family:Arial;
+background:#f5f6fa;
+color:#111;
 }
 
 /* SIDEBAR */
-.sidebar {
-  position: fixed;
-  width: 220px;
-  height: 100%;
-  background: #0f172a;
-  padding: 20px;
+.sidebar{
+position:fixed;
+width:240px;
+height:100%;
+background:#ffffff;
+border-right:1px solid #e5e5e5;
+padding:20px;
 }
 
-.sidebar a {
-  display: block;
-  color: white;
-  text-decoration: none;
-  margin: 12px 0;
+.sidebar img{
+width:140px;
+display:block;
+margin:0 auto 30px auto;
+}
+
+.menu a{
+display:block;
+padding:12px;
+margin:5px 0;
+color:#333;
+text-decoration:none;
+border-radius:8px;
+font-size:14px;
+}
+
+.menu a:hover{
+background:#f1f1f1;
+}
+
+.menu .active{
+background:#ffe5e5;
+color:#d60000;
+font-weight:bold;
 }
 
 /* MAIN */
-.main {
-  margin-left: 240px;
-  padding: 20px;
+.main{
+margin-left:260px;
+padding:20px;
+}
+
+/* TOP */
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.search{
+padding:10px;
+width:300px;
+border:1px solid #ddd;
+border-radius:8px;
 }
 
 /* CARDS */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
+.cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-top:20px;
 }
 
-.card {
-  background: #111827;
-  padding: 20px;
-  border-radius: 12px;
+.card{
+background:#fff;
+padding:20px;
+border-radius:12px;
+border:1px solid #eee;
+}
+
+.card h3{
+margin:0;
+font-size:14px;
+color:#666;
+}
+
+.card p{
+font-size:22px;
+margin-top:10px;
+font-weight:bold;
+}
+
+/* PANELS */
+.panel{
+margin-top:20px;
+background:#fff;
+padding:20px;
+border-radius:12px;
+border:1px solid #eee;
 }
 
 /* TABLE */
-.panel {
-  margin-top: 20px;
-  background: #111827;
-  padding: 20px;
-  border-radius: 12px;
+table{
+width:100%;
+border-collapse:collapse;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+th,td{
+padding:12px;
+border-bottom:1px solid #eee;
+text-align:left;
+font-size:14px;
 }
 
-th, td {
-  padding: 10px;
-  border-bottom: 1px solid #1f2937;
+/* BUTTONS */
+.btn{
+padding:6px 10px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:12px;
+}
+
+.btn-view{background:#e8f0ff;color:#1d4ed8;}
+.btn-block{background:#ffe5e5;color:#d60000;}
+.btn-unblock{background:#e6ffed;color:#16a34a;}
+
+/* RIGHT WIDGET */
+.right-box{
+margin-top:20px;
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:15px;
+}
+
+.box{
+background:#fff;
+padding:20px;
+border-radius:12px;
+border:1px solid #eee;
+}
+
+.alert{
+padding:10px;
+border-left:4px solid red;
+background:#fff5f5;
+margin-bottom:10px;
+font-size:13px;
 }
 </style>
-
 </head>
 
 <body>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
-  <h2>ANTI FRAUDE</h2>
-  <a href="/dashboard">Dashboard</a>
-  <a href="/logout">Sair</a>
+  <img src="https://i.ibb.co/XrCbLdJR/eirilar-logo-vermelho.png">
+
+  <div class="menu">
+    <a class="active" href="#">Dashboard</a>
+    <a href="#">Usuários</a>
+    <a href="#">Orders</a>
+    <a href="#">Fraud Alerts</a>
+    <a href="#">Risk Scores</a>
+    <a href="#">Dispositivos</a>
+    <a href="#">Geo Tracking</a>
+    <a href="#">Blacklist</a>
+    <a href="#">Blocked IPs</a>
+    <a href="#">Blocked Cards</a>
+    <a href="#">Atividade</a>
+    <a href="#">Login History</a>
+    <a href="#">Audit Logs</a>
+    <a href="#">API Logs</a>
+    <a href="#">Active Sessions</a>
+    <a href="#">User Notes</a>
+    <a href="#">Password Resets</a>
+    <a href="#">System Settings</a>
+  </div>
 </div>
 
+<!-- MAIN -->
 <div class="main">
 
-  <h1>Dashboard</h1>
+  <div class="topbar">
+    <h2>Dashboard</h2>
+    <input class="search" placeholder="Buscar...">
+  </div>
 
+  <!-- CARDS -->
   <div class="cards">
+    <div class="card"><h3>USUÁRIOS</h3><p>{{ users }}</p></div>
+    <div class="card"><h3>ORDERS</h3><p>{{ orders }}</p></div>
+    <div class="card"><h3>FRAUD ALERTS</h3><p>{{ frauds }}</p></div>
+    <div class="card"><h3>RISK SCORE</h3><p>72%</p></div>
+  </div>
 
-    <div class="card">
-      <h3>Usuários</h3>
-      <p>{{ users }}</p>
+  <!-- CHART + ALERTS -->
+  <div class="right-box">
+
+    <div class="box">
+      <h3>Visão Geral</h3>
+      <p style="color:#888;">(aqui depois colocamos gráfico Chart.js)</p>
     </div>
 
-    <div class="card">
-      <h3>Orders</h3>
-      <p>{{ orders }}</p>
-    </div>
+    <div class="box">
+      <h3>Alertas Recentes</h3>
 
-    <div class="card">
-      <h3>Fraudes</h3>
-      <p>{{ frauds }}</p>
-    </div>
+      <div class="alert">Login suspeito detectado</div>
+      <div class="alert">IP bloqueado automaticamente</div>
+      <div class="alert">Transação de risco alto</div>
 
-    <div class="card">
-      <h3>Alertas</h3>
-      <p>{{ alerts }}</p>
     </div>
 
   </div>
 
+  <!-- USERS TABLE -->
   <div class="panel">
-
-    <h2>Últimos eventos</h2>
+    <h3>Usuários</h3>
 
     <table>
       <tr>
         <th>ID</th>
+        <th>Email</th>
         <th>Status</th>
-        <th>Valor</th>
+        <th>Ações</th>
       </tr>
 
-      {% for o in last_orders %}
+      {% for u in users_list %}
       <tr>
-        <td>{{ o[0] }}</td>
-        <td>{{ o[1] }}</td>
-        <td>{{ o[2] }}</td>
+        <td>{{ u[0] }}</td>
+        <td>{{ u[1] }}</td>
+        <td>{{ u[2] }}</td>
+        <td>
+
+          <button class="btn btn-view" onclick="alert('Detalhes do usuário {{u[0]}}')">Ver</button>
+
+          <button class="btn btn-block" onclick="alert('Usuário bloqueado {{u[0]}}')">Bloquear</button>
+
+          <button class="btn btn-unblock" onclick="alert('Usuário desbloqueado {{u[0]}}')">Desbloquear</button>
+
+        </td>
       </tr>
       {% endfor %}
 
     </table>
-
   </div>
 
 </div>
