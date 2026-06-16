@@ -3,28 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <title>Dashboard</title>
-<link rel="stylesheet" href="/static/dashboard.css">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0b1220;
+  color: white;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  width: 220px;
+  height: 100%;
+  background: #0f172a;
+  padding: 20px;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  margin: 12px 0;
+}
+
+/* MAIN */
+.main {
+  margin-left: 240px;
+  padding: 20px;
+}
+
+/* CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.card {
+  background: #111827;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+/* TABLE */
+.panel {
+  margin-top: 20px;
+  background: #111827;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #1f2937;
+}
+</style>
+
 </head>
 
 <body>
 
 <div class="sidebar">
-  <div class="logo">ANTI FRAUDE</div>
-
-  <a href="/dashboard">🏠 Dashboard</a>
-  <a href="#">👤 Usuários</a>
-  <a href="#">📦 Orders</a>
-  <a href="#">⚠️ Fraudes</a>
-  <a href="/logout">🚪 Sair</a>
+  <h2>ANTI FRAUDE</h2>
+  <a href="/dashboard">Dashboard</a>
+  <a href="/logout">Sair</a>
 </div>
 
 <div class="main">
 
-  <div class="topbar">
-    <h1>Dashboard</h1>
-  </div>
-    
-    <div class="cards">
+  <h1>Dashboard</h1>
+
+  <div class="cards">
 
     <div class="card">
       <h3>Usuários</h3>
@@ -48,7 +104,7 @@
 
   </div>
 
-      <div class="panel">
+  <div class="panel">
 
     <h2>Últimos eventos</h2>
 
@@ -66,98 +122,10 @@
         <td>{{ o[2] }}</td>
       </tr>
       {% endfor %}
+
     </table>
 
   </div>
-
-body {
-margin:0;
-font-family:Arial;
-background:#0b1220;
-color:white;
-}
-
-/* SIDEBAR */
-.sidebar {
-position:fixed;
-width:220px;
-height:100%;
-background:#0f172a;
-padding:20px;
-}
-
-.logo {
-font-size:18px;
-font-weight:bold;
-margin-bottom:20px;
-}
-
-.sidebar a {
-display:block;
-color:white;
-text-decoration:none;
-margin:12px 0;
-opacity:0.8;
-}
-
-.sidebar a:hover {
-opacity:1;
-}
-
-/* MAIN */
-.main {
-margin-left:240px;
-padding:20px;
-}
-
-/* TOPBAR */
-.topbar {
-margin-bottom:20px;
-}
-
-/* CARDS */
-.cards {
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:15px;
-}
-
-.card {
-background:#111827;
-padding:20px;
-border-radius:12px;
-}
-
-.card h3 {
-margin:0;
-font-size:14px;
-opacity:0.7;
-}
-
-.card p {
-font-size:22px;
-margin-top:10px;
-}
-
-/* PANEL */
-.panel {
-margin-top:20px;
-background:#111827;
-padding:20px;
-border-radius:12px;
-}
-
-/* TABLE */
-table {
-width:100%;
-border-collapse:collapse;
-margin-top:10px;
-}
-
-th, td {
-padding:10px;
-border-bottom:1px solid #1f2937;
-}
 
 </div>
 
