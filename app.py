@@ -1,88 +1,57 @@
-from flask import Flask, render_template, request, redirect, session, jsonify
-from database import *
-
-import os
+from flask import Flask, render_template, session, redirect
+from database import get_conn
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "dev_secret")
+app.secret_key = "dev_secret_123"
 
-# =========================
-# HOME
-# =========================
+
 @app.route("/")
 def home():
-    if "user_id" in session:
-        return redirect("/dashboard")
-    return redirect("/login")
+    return redirect("/dashboard")
 
-# =========================
-# LOGIN (simples)
-# =========================
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        session["user_id"] = 1
-        return redirect("/dashboard")
-    return render_template("login.html")
 
-# =========================
-# REGISTER
-# =========================
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    if request.method == "POST":
-        return redirect("/login")
-    return render_template("register.html")
-
-# =========================
-# LOGOUT
-# =========================
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/login")
-
-# =========================
-# DASHBOARD PAGE
-# =========================
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
 
-# =========================
-# API DASHBOARD STATS
-# =========================
-@app.route("/api/dashboard")
-def api_dashboard():
-    return jsonify(get_dashboard_stats())
+    if "user_id" not in session:
+        return redirect("/login")
 
-# =========================
-# USERS
-# =========================
-@app.route("/api/users")
-def api_users():
-    return jsonify(get_users())
+    conn = get_conn()
+    cur = conn.cursor()
 
-# =========================
-# ORDERS (usa login_history se não existir orders)
-# =========================
-@app.route("/api/orders")
-def api_orders():
-    return jsonify(get_orders())
+    # KPIs
+    cur.execute("SELECT COUNT(*) FROM users")
+    users_count = cur.fetchone()[0]
 
-# =========================
-# FRAUD EVENTS
-# =========================
-@app.route("/api/fraud-events")
-def api_fraud_events():
-    return jsonify(get_fraud_events())
+    cur.execute("SELECT COUNT(*) FROM orders")
+    orders_count = cur.fetchone()[0]
 
-# =========================
-# ALERTS
-# =========================
-@app.route("/api/alerts")
-def api_alerts():
-    return jsonify(get_alerts())
+    cur.execute("SELECT COUNT(*) FROM fraud_events")
+    fraud_count = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT(*) FROM notifications")
+    alerts_count = cur.fetchone()[0]
+
+    # Últimos pedidos
+    cur.execute("""
+        SELECT id, user_id, total_amount, status
+        FROM orders
+        ORDER BY id DESC
+        LIMIT 10
+    """)
+    orders = cur.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "dashboard.html",
+        users_count=users_count,
+        orders_count=orders_count,
+        fraud_count=fraud_count,
+        alerts_count=alerts_count,
+        orders=orders
+    )
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 8080)))
+    app.run(debug=True)
