@@ -15,7 +15,7 @@ def home():
 
 
 # ==================================================
-# LOGIN (simples)
+# LOGIN
 # ==================================================
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -27,8 +27,8 @@ def login():
         cur = conn.cursor()
 
         cur.execute("""
-            SELECT id, email 
-            FROM users 
+            SELECT id, email
+            FROM users
             WHERE email=%s AND password=%s
         """, (email, password))
 
@@ -47,15 +47,6 @@ def login():
 
 
 # ==================================================
-# LOGOUT
-# ==================================================
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/login")
-
-
-# ==================================================
 # DASHBOARD
 # ==================================================
 @app.route("/dashboard")
@@ -66,10 +57,7 @@ def dashboard():
     conn = get_conn()
     cur = conn.cursor()
 
-    # =========================
-    # CARDS (KPIs)
-    # =========================
-
+    # KPIs
     cur.execute("SELECT COUNT(*) FROM users")
     users = cur.fetchone()[0]
 
@@ -79,9 +67,7 @@ def dashboard():
     cur.execute("SELECT COUNT(*) FROM fraud_events")
     frauds = cur.fetchone()[0]
 
-    # =========================
-    # LISTA DE USUÁRIOS
-    # =========================
+    # USERS LIST
     cur.execute("""
         SELECT id, email, status
         FROM users
@@ -103,42 +89,12 @@ def dashboard():
 
 
 # ==================================================
-# AÇÕES (exemplo simples)
+# LOGOUT
 # ==================================================
-@app.route("/block_user/<int:user_id>")
-def block_user(user_id):
-    conn = get_conn()
-    cur = conn.cursor()
-
-    cur.execute("""
-        UPDATE users
-        SET status='blocked'
-        WHERE id=%s
-    """, (user_id,))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return redirect("/dashboard")
-
-
-@app.route("/unblock_user/<int:user_id>")
-def unblock_user(user_id):
-    conn = get_conn()
-    cur = conn.cursor()
-
-    cur.execute("""
-        UPDATE users
-        SET status='active'
-        WHERE id=%s
-    """, (user_id,))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return redirect("/dashboard")
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 
 
 # ==================================================
