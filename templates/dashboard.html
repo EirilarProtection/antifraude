@@ -2,130 +2,179 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Antifraude</title>
+<title>AntiFraud SaaS</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #0f1115;
-    color: white;
-    display: flex;
+:root{
+    --bg:#0a0f1a;
+    --panel:#0f172a;
+    --panel2:#111c33;
+    --border:#1f2a44;
+    --text:#cbd5e1;
+    --muted:#94a3b8;
+    --green:#22c55e;
+    --red:#ef4444;
 }
 
-/* SIDEBAR */
-.sidebar {
-    width: 240px;
-    height: 100vh;
-    background: #151922;
-    position: fixed;
-    padding: 20px;
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter, Arial;
 }
 
-.sidebar h2 {
-    color: #00ffcc;
-    margin-bottom: 30px;
+body{
+    background:var(--bg);
+    color:var(--text);
+    display:flex;
 }
 
-.sidebar a {
-    display: block;
-    color: #bbb;
-    padding: 12px;
-    text-decoration: none;
-    border-radius: 8px;
+/* SIDEBAR SAAS STYLE */
+.sidebar{
+    width:240px;
+    height:100vh;
+    background:var(--panel);
+    border-right:1px solid var(--border);
+    padding:18px;
+    position:fixed;
 }
 
-.sidebar a:hover {
-    background: #00ffcc;
-    color: black;
+.brand{
+    font-size:14px;
+    color:var(--green);
+    margin-bottom:25px;
+    letter-spacing:1px;
+    font-weight:600;
+}
+
+.menu a{
+    display:flex;
+    padding:10px 12px;
+    margin-bottom:6px;
+    text-decoration:none;
+    color:var(--muted);
+    font-size:13px;
+    border-radius:8px;
+    transition:.2s;
+}
+
+.menu a:hover{
+    background:var(--panel2);
+    color:#fff;
+}
+
+.menu a.active{
+    background:#0b1b2e;
+    color:var(--green);
+    border:1px solid var(--border);
 }
 
 /* MAIN */
-.main {
-    margin-left: 240px;
-    width: 100%;
+.main{
+    margin-left:240px;
+    width:100%;
 }
 
 /* TOPBAR */
-.topbar {
-    height: 60px;
-    background: #151922;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    border-bottom: 1px solid #222;
+.topbar{
+    height:58px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    background:var(--panel);
+    border-bottom:1px solid var(--border);
 }
 
-.topbar h3 {
-    color: #00ffcc;
+.title{
+    font-size:14px;
+    color:var(--green);
 }
 
-/* CARDS */
-.cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
-    padding: 20px;
+.user{
+    font-size:12px;
+    color:var(--muted);
 }
 
-.card {
-    background: #151922;
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid #222;
+/* KPI CARDS (IGUAL SaaS GRID) */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:14px;
+    padding:18px;
 }
 
-.card h4 {
-    color: #aaa;
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    padding:16px;
+    border-radius:10px;
 }
 
-.card p {
-    font-size: 24px;
-    color: #00ffcc;
+.card h4{
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:1px;
 }
 
-/* TABLE */
-.table-container {
-    padding: 20px;
+.card p{
+    margin-top:10px;
+    font-size:22px;
+    color:var(--green);
+    font-weight:600;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #151922;
-    border-radius: 10px;
-    overflow: hidden;
+/* TABLE AREA */
+.content{
+    padding:0 18px 18px 18px;
 }
 
-th, td {
-    padding: 12px;
-    border-bottom: 1px solid #222;
+.table-box{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
 }
 
-th {
-    color: #00ffcc;
-    background: #11151c;
+table{
+    width:100%;
+    border-collapse:collapse;
 }
 
-tr:hover {
-    background: #1b2130;
+th, td{
+    padding:12px;
+    font-size:13px;
+    border-bottom:1px solid var(--border);
 }
 
-.status {
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 12px;
+th{
+    background:#0b1220;
+    color:var(--green);
+    font-size:11px;
+    text-align:left;
+    letter-spacing:1px;
 }
 
-.safe {
-    background: #1f6f3f;
-    color: #00ff99;
+tr:hover{
+    background:#0b1220;
 }
 
-.fraud {
-    background: #6f1f1f;
-    color: #ff4d4d;
+/* STATUS */
+.tag{
+    padding:4px 8px;
+    border-radius:6px;
+    font-size:11px;
+}
+
+.safe{
+    background:rgba(34,197,94,.15);
+    color:var(--green);
+}
+
+.fraud{
+    background:rgba(239,68,68,.15);
+    color:var(--red);
 }
 </style>
 
@@ -135,13 +184,16 @@ tr:hover {
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-    <h2>ANTI-FRAUDE</h2>
-    <a href="/dashboard">Dashboard</a>
-    <a href="#">Usuários</a>
-    <a href="#">Pedidos</a>
-    <a href="#">Fraudes</a>
-    <a href="#">Alertas</a>
-    <a href="#">Configurações</a>
+    <div class="brand">ANTI-FRAUD SYSTEM</div>
+
+    <div class="menu">
+        <a class="active" href="/dashboard">Dashboard</a>
+        <a href="#">Users</a>
+        <a href="#">Orders</a>
+        <a href="#">Fraud Detection</a>
+        <a href="#">Alerts</a>
+        <a href="#">Settings</a>
+    </div>
 </div>
 
 <!-- MAIN -->
@@ -149,67 +201,71 @@ tr:hover {
 
     <!-- TOPBAR -->
     <div class="topbar">
-        <h3>Dashboard</h3>
-        <span>Admin</span>
+        <div class="title">Dashboard Overview</div>
+        <div class="user">Admin Panel</div>
     </div>
 
     <!-- CARDS -->
-    <div class="cards">
+    <div class="grid">
 
         <div class="card">
-            <h4>Usuários</h4>
+            <h4>USERS</h4>
             <p>{{ users_count }}</p>
         </div>
 
         <div class="card">
-            <h4>Pedidos</h4>
+            <h4>ORDERS</h4>
             <p>{{ orders_count }}</p>
         </div>
 
         <div class="card">
-            <h4>Fraudes</h4>
+            <h4>FRAUD EVENTS</h4>
             <p>{{ fraud_count }}</p>
         </div>
 
         <div class="card">
-            <h4>Alertas</h4>
+            <h4>ALERTS</h4>
             <p>{{ alerts_count }}</p>
         </div>
 
     </div>
 
     <!-- TABLE -->
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>User</th>
-                    <th>Pedido</th>
-                    <th>Valor</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
+    <div class="content">
+        <div class="table-box">
 
-            <tbody>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>USER</th>
+                        <th>ORDER</th>
+                        <th>VALUE</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+
+                <tbody>
                 {% for order in orders %}
-                <tr>
-                    <td>{{ order[0] }}</td>
-                    <td>{{ order[1] }}</td>
-                    <td>#{{ order[0] }}</td>
-                    <td>R$ {{ order[2] }}</td>
-                    <td>
-                        {% if order[3] == 'fraud' %}
-                            <span class="status fraud">Fraude</span>
-                        {% else %}
-                            <span class="status safe">Seguro</span>
-                        {% endif %}
-                    </td>
-                </tr>
+                    <tr>
+                        <td>{{ order[0] }}</td>
+                        <td>{{ order[1] }}</td>
+                        <td>#{{ order[0] }}</td>
+                        <td>R$ {{ order[2] }}</td>
+                        <td>
+                            {% if order[3] == 'fraud' %}
+                                <span class="tag fraud">FRAUD</span>
+                            {% else %}
+                                <span class="tag safe">SAFE</span>
+                            {% endif %}
+                        </td>
+                    </tr>
                 {% endfor %}
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
+
+        </div>
     </div>
 
 </div>
