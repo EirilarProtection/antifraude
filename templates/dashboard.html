@@ -9,7 +9,6 @@ body{
 margin:0;
 font-family:Arial;
 background:#f5f6fa;
-color:#111;
 }
 
 /* SIDEBAR */
@@ -17,36 +16,23 @@ color:#111;
 position:fixed;
 width:240px;
 height:100%;
-background:#ffffff;
+background:#fff;
 border-right:1px solid #e5e5e5;
 padding:20px;
 }
 
-.sidebar img{
-width:140px;
-display:block;
-margin:0 auto 30px auto;
-}
-
 .menu a{
 display:block;
-padding:12px;
+padding:10px;
 margin:5px 0;
-color:#333;
 text-decoration:none;
-border-radius:8px;
+color:#333;
+border-radius:6px;
 font-size:14px;
 }
 
-.menu a:hover{
-background:#f1f1f1;
-}
-
-.menu .active{
-background:#ffe5e5;
-color:#d60000;
-font-weight:bold;
-}
+.menu a:hover{background:#f1f1f1;}
+.menu .active{background:#ffe5e5;color:red;font-weight:bold;}
 
 /* MAIN */
 .main{
@@ -54,7 +40,6 @@ margin-left:260px;
 padding:20px;
 }
 
-/* TOP */
 .topbar{
 display:flex;
 justify-content:space-between;
@@ -83,41 +68,22 @@ border-radius:12px;
 border:1px solid #eee;
 }
 
-.card h3{
-margin:0;
-font-size:14px;
-color:#666;
-}
-
-.card p{
-font-size:22px;
-margin-top:10px;
-font-weight:bold;
-}
-
-/* PANELS */
-.panel{
-margin-top:20px;
-background:#fff;
-padding:20px;
-border-radius:12px;
-border:1px solid #eee;
-}
+.card h3{font-size:13px;color:#666;margin:0;}
+.card p{font-size:22px;font-weight:bold;margin-top:10px;}
 
 /* TABLE */
 table{
 width:100%;
 border-collapse:collapse;
+background:#fff;
 }
 
 th,td{
 padding:12px;
 border-bottom:1px solid #eee;
-text-align:left;
 font-size:14px;
 }
 
-/* BUTTONS */
 .btn{
 padding:6px 10px;
 border:none;
@@ -130,15 +96,8 @@ font-size:12px;
 .btn-block{background:#ffe5e5;color:#d60000;}
 .btn-unblock{background:#e6ffed;color:#16a34a;}
 
-/* RIGHT WIDGET */
-.right-box{
+.panel{
 margin-top:20px;
-display:grid;
-grid-template-columns:2fr 1fr;
-gap:15px;
-}
-
-.box{
 background:#fff;
 padding:20px;
 border-radius:12px;
@@ -149,7 +108,7 @@ border:1px solid #eee;
 padding:10px;
 border-left:4px solid red;
 background:#fff5f5;
-margin-bottom:10px;
+margin-bottom:8px;
 font-size:13px;
 }
 </style>
@@ -159,27 +118,14 @@ font-size:13px;
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-  <img src="https://i.ibb.co/XrCbLdJR/eirilar-logo-vermelho.png">
-
   <div class="menu">
-    <a class="active" href="#">Dashboard</a>
+    <a class="active" href="/dashboard">Dashboard</a>
     <a href="#">Usuários</a>
     <a href="#">Orders</a>
     <a href="#">Fraud Alerts</a>
     <a href="#">Risk Scores</a>
-    <a href="#">Dispositivos</a>
-    <a href="#">Geo Tracking</a>
-    <a href="#">Blacklist</a>
-    <a href="#">Blocked IPs</a>
-    <a href="#">Blocked Cards</a>
-    <a href="#">Atividade</a>
     <a href="#">Login History</a>
-    <a href="#">Audit Logs</a>
-    <a href="#">API Logs</a>
-    <a href="#">Active Sessions</a>
-    <a href="#">User Notes</a>
-    <a href="#">Password Resets</a>
-    <a href="#">System Settings</a>
+    <a href="/logout">Sair</a>
   </div>
 </div>
 
@@ -193,29 +139,33 @@ font-size:13px;
 
   <!-- CARDS -->
   <div class="cards">
-    <div class="card"><h3>USUÁRIOS</h3><p>{{ users }}</p></div>
-    <div class="card"><h3>ORDERS</h3><p>{{ orders }}</p></div>
-    <div class="card"><h3>FRAUD ALERTS</h3><p>{{ frauds }}</p></div>
-    <div class="card"><h3>RISK SCORE</h3><p>72%</p></div>
+    <div class="card">
+      <h3>USUÁRIOS</h3>
+      <p>{{ users }}</p>
+    </div>
+
+    <div class="card">
+      <h3>ORDERS</h3>
+      <p>{{ orders }}</p>
+    </div>
+
+    <div class="card">
+      <h3>FRAUD ALERTS</h3>
+      <p>{{ frauds }}</p>
+    </div>
+
+    <div class="card">
+      <h3>RISK SCORE</h3>
+      <p>72%</p>
+    </div>
   </div>
 
-  <!-- CHART + ALERTS -->
-  <div class="right-box">
-
-    <div class="box">
-      <h3>Visão Geral</h3>
-      <p style="color:#888;">(aqui depois colocamos gráfico Chart.js)</p>
-    </div>
-
-    <div class="box">
-      <h3>Alertas Recentes</h3>
-
-      <div class="alert">Login suspeito detectado</div>
-      <div class="alert">IP bloqueado automaticamente</div>
-      <div class="alert">Transação de risco alto</div>
-
-    </div>
-
+  <!-- ALERTAS -->
+  <div class="panel">
+    <h3>Alertas Recentes</h3>
+    <div class="alert">Login suspeito detectado</div>
+    <div class="alert">IP bloqueado automaticamente</div>
+    <div class="alert">Transação de risco alto</div>
   </div>
 
   <!-- USERS TABLE -->
@@ -236,13 +186,9 @@ font-size:13px;
         <td>{{ u[1] }}</td>
         <td>{{ u[2] }}</td>
         <td>
-
-          <button class="btn btn-view" onclick="alert('Detalhes do usuário {{u[0]}}')">Ver</button>
-
-          <button class="btn btn-block" onclick="alert('Usuário bloqueado {{u[0]}}')">Bloquear</button>
-
-          <button class="btn btn-unblock" onclick="alert('Usuário desbloqueado {{u[0]}}')">Desbloquear</button>
-
+          <button class="btn btn-view">Ver</button>
+          <button class="btn btn-block">Bloquear</button>
+          <button class="btn btn-unblock">Desbloquear</button>
         </td>
       </tr>
       {% endfor %}
